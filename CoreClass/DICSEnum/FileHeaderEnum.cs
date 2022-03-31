@@ -1,0 +1,55 @@
+﻿namespace CoreClass.DICSEnum
+{
+    /// <summary>
+    /// 对应cell log 文件中的 header，当设备log储存项目发生改变时请修改该项目；
+    /// </summary>
+    enum FileHeaderEnum
+    {
+        DATE,
+        MODEL,
+        OPERATIONID,
+        PRODUCTTYPE,
+        LINEMODE,
+        INNERID,
+        VCRID,
+        STAGEID,
+        MTPJUDGE,
+        MTPRESULT,
+        MTPTACTTIME,
+        JNCD,
+        MTP_CODE,
+        AVITACTTIME,
+        AVIGRABTACTTIME,
+        AVICLASSTACTTIME,
+        SVITACTTIME,
+        SVIGRABTACTTIME,
+        SVICLASSTACTTIME,
+        MERGE1JUDGE,
+        APPTACTTIME,
+        APPGRABTACTTIME,
+        APPCLASSTACTTIME,
+        MERGETOOLJUDGE,
+        MERGETOOLCODE,
+        DEFECTCODETYPE,
+        DEFECTNAME,
+        MVIJUDGE,
+        MVIRESULT,
+        MVITACTTIME,
+        MVIUSER,
+        MVIUSERID,
+        TSPJUDGE,
+        TSPTACTTIME,
+        LASTRESULT,
+        LASTRESULTNAME,
+        LASTJUDGE,
+        DEFECTCODE,
+        MERGE1TACTTIME,
+        MERGE2TACTTIME,
+        AVIJUDGE,
+        AVICODE,
+        SVIJUDGE,
+        SVICODE,
+        APPJUDGE,
+        APPCODE
+    }
+}

@@ -1,0 +1,12 @@
+.vs
+.vscode
+/CoreClass/bin
+/CoreClass/obj
+/Mordor2.0/bin
+/Mordor2.0/obj
+/Sauron/bin
+/Sauron/obj
+/Spider/bin
+/Spider/obj
+/WebApi/bin
+/WebApi/obj
