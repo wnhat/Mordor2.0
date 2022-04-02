@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CoreClass.Model;
+using CoreClass;
 
 namespace DICS_WebApi.Controllers
 {
@@ -29,7 +31,8 @@ namespace DICS_WebApi.Controllers
             try
             {
                 var products = await _productInfoService.GetProductInfos();
-                string json = JsonConvert.SerializeObject(products);
+                
+                string json = JsonConvert.SerializeObject(products,JsonSerializerSetting.FrontConvertSetting);
                 return Ok(json);
             }
             catch (Exception e)

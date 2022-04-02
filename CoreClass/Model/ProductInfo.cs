@@ -7,6 +7,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using CoreClass.DICSEnum;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace CoreClass.Model
 {
@@ -20,6 +21,7 @@ namespace CoreClass.Model
         public string[] InspectImageNames;
         [BsonRepresentation(BsonType.String)]
         [JsonProperty("producttype")]
+        //[JsonConverter(typeof(StringEnumConverter))]
         public ProductType[] OnInspectTypes;
         [JsonProperty("fgcode")]
         public string FGcode;

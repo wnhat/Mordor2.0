@@ -10,6 +10,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using CoreClass.Model;
+using CoreClass;
 
 namespace WebApi.Service
 {
@@ -24,20 +26,21 @@ namespace WebApi.Service
 
     public class ProductInfoService : IProductInfoService
     {
-        private readonly IMongoCollection<ProductInfo> _productInfo;
+        private static readonly IMongoCollection<ProductInfo> _productInfo = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
 
         public ProductInfoService(IUserDatabaseSettings settings)
         {
-            var client = new MongoClient(settings.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
-            _productInfo = database.GetCollection<ProductInfo>(settings.UsersCollectionName.ProductInfo);
+            //var client = new MongoClient(settings.ConnectionString);
+            //var database = client.GetDatabase(settings.DatabaseName);
+            //_productInfo = database.GetCollection<ProductInfo>(settings.UsersCollectionName.ProductInfo);
         }
 
         public Task<List<ProductInfo>> GetProductInfos()
         {
             return Task.Run(() => {
                 var filter = Builders<ProductInfo>.Filter.Empty;
-                return _productInfo.Find(filter).ToList(); 
+                var products = _productInfo.Find(filter).ToList();
+                return products; 
             });
         }
 
@@ -45,8 +48,8 @@ namespace WebApi.Service
         {
             return Task.Run(() =>
             {
-                product.Img.ImgName = "boe.jpeg";
-                string filepath = @"E:\img\" + product.Img.ImgName;
+                product.Img.Name = "boe.jpeg";
+                string filepath = @"E:\img\" + product.Img.Name;
                 product.Img.Data = ImgToByte(filepath);
 
                 var filter = Builders<ProductInfo>.Filter.Eq("Name", product.Name);
@@ -82,7 +85,7 @@ namespace WebApi.Service
                 }
 
                 product.Id = storeData.Id;
-                product.Img.ImgName = storeData.Img.ImgName;
+                product.Img.Name = storeData.Img.Name;
                 product.Img.Data = storeData.Img.Data;
 
                 if (CompareProperties(product, storeData))
@@ -123,25 +126,6 @@ namespace WebApi.Service
             var bsonElements1 = BsonDocument.Create(obj1.ToBsonDocument());
             var bsonElements2 = BsonDocument.Create(obj2.ToBsonDocument());
             return bsonElements1 == bsonElements2;
-
-
-//            BinaryFormatter binaryFormatter = new();
-//            MemoryStream memoryStream1;
-//            MemoryStream memoryStream2;
-//            using (memoryStream1 = new())
-//            {
-//#pragma warning disable SYSLIB0011 // obsolete method (Object )
-//                binaryFormatter.Serialize(memoryStream1, obj1);
-//            }
-//            using (memoryStream2 = new())
-//            {
-//                binaryFormatter.Serialize(memoryStream2, obj2);
-//#pragma warning restore SYSLIB0011
-//            }
-//            string MD5_1 = MD5Encrypt(memoryStream1.ToArray());
-//            string MD5_2 = MD5Encrypt(memoryStream2.ToArray());
-
-//            return (MD5_1 == MD5_2);
         }
 
         private static string MD5Encrypt(byte[] bytes)
