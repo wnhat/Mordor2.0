@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using DICS_WebApi.Dtos;
-using DICS_WebApi.Models;
+using WebApi.Dtos;
 using WebApi.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CoreClass.Model;
+using CoreClass;
 
-namespace DICS_WebApi.Controllers
+namespace WebApi.Controllers
 {
     [Authorize(Roles = "2")]
     [Route("api/[controller]")]
@@ -35,8 +36,7 @@ namespace DICS_WebApi.Controllers
             try
             {
                 var defectCodes = await _defectCodeService.GetAllDefectCodes();
-                // var defectCodesDtos = _mapper.Map<List<DefectCodeDto>>(defectCodes);
-                string json = JsonConvert.SerializeObject(defectCodes);
+                string json = JsonConvert.SerializeObject(defectCodes, JsonSerializerSetting.FrontConvertSetting);
                 return Ok(json);
             }
             catch (Exception e)
@@ -48,7 +48,7 @@ namespace DICS_WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddDefectCode(DefectCodeDto param)
         {
-            var _param = _mapper.Map<DefectCode>(param);
+            var _param = _mapper.Map<Defect>(param);
 
             try
             {
@@ -63,7 +63,7 @@ namespace DICS_WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(DefectCode param)
+        public async Task<IActionResult> Update(Defect param)
         {
             try
             {

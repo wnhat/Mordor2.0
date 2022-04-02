@@ -6,9 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DICS_WebApi.Models;
 
-namespace DICS_WebApi
+namespace WebApi
 {
     public class Program
     {

@@ -11,7 +11,7 @@ namespace CoreClass
         static JsonSerializerSetting()
         {
             Setting = new JsonSerializerSettings() { StringEscapeHandling = StringEscapeHandling.EscapeNonAscii, ReferenceLoopHandling = ReferenceLoopHandling.Ignore, MaxDepth = 6 };
-            FrontConvertSetting = new JsonSerializerSettings() { };
+            FrontConvertSetting = new JsonSerializerSettings() { StringEscapeHandling = StringEscapeHandling.EscapeNonAscii, ReferenceLoopHandling = ReferenceLoopHandling.Ignore, MaxDepth = 4 };
             FrontConvertSetting.Converters.Add(new StringEnumConverter());
         }
     }

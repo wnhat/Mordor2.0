@@ -1,7 +1,6 @@
 ﻿using CoreClass.Model;
-using WebApi.Models;
+using CoreClass;
 using MongoDB.Driver;
-using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,15 +23,7 @@ namespace WebApi.Service
 
     public class UserService : IUserService
     {
-        private readonly IMongoCollection<User> _users;
-
-        public UserService(IUserDatabaseSettings settings)
-        {
-            var client = new MongoClient(settings.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
-
-            _users = database.GetCollection<User>(settings.UsersCollectionName.User);
-        }
+        private static readonly IMongoCollection<User> _users = DBconnector.DICSDB.GetCollection<User>("User");
 
         public Task<User> Authenticate(string account, string password)
         {

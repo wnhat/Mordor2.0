@@ -17,6 +17,7 @@ namespace CoreClass.Model
         [BsonId]
         public ObjectId Id;
         public string PrefixId; //761L;
+        [JsonProperty("name")]
         public string Name;     //D2 Porto;
         public string[] InspectImageNames;
         [BsonRepresentation(BsonType.String)]

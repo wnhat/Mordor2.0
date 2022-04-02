@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DICS_WebApi.Dtos;
+using WebApi.Dtos;
 using CoreClass.Model;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -17,7 +17,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using WebApi.Service;
 
-namespace DICS_WebApi.Controllers
+namespace WebApi.Controllers
 {
     //AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme
     [Authorize]
