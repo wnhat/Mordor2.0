@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using EyeOfSauron.ViewModel;
 
 namespace EyeOfSauron
 {
@@ -22,8 +23,12 @@ namespace EyeOfSauron
     {
         int flag = 1;
         Mission mission;
+        private readonly TreesViewModel _viewModel;
+        
         public InspWindow()
         {
+            _viewModel = new TreesViewModel();
+            DataContext = _viewModel;
             InitializeComponent();
         }
         public void SetMission(Mission m)
@@ -39,7 +44,6 @@ namespace EyeOfSauron
             ImageBox1.Source = image;
             ImageBox2.Source = image;
             ImageBox3.Source = image;
-            ImageBox4.Source = image;
             //WpfAnimatedGif.ImageBehavior.SetAnimatedSource(ImageBox2, image);
         }
 
@@ -53,6 +57,7 @@ namespace EyeOfSauron
             //ImageViewBox.RenderSize = new System.Windows.Size(3440, 2440);
             //ImageViewBox.RenderSize = flag == 1 ? new System.Windows.Size(1740, 1240) : new System.Windows.Size(3440, 2440);
             flag = flag == 1 ? 0 : 1;
+            _viewModel.Defects.Add(new("Defect3","Saction3"));
             SetImage();
         }
     }
