@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using CoreClass.Model;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -78,21 +79,6 @@ namespace CoreClass
         public static void Save()
         {
 
-        }
-    }
-    public class Defect
-    {
-        public string DefectName;
-        public string DefectCode;
-        public Defect(string defectName, string defectCode)
-        {
-            DefectName = defectName;
-            DefectCode = defectCode;
-        }
-        public Defect() { }
-        public override string ToString()
-        {
-            return DefectName;
         }
     }
 }

@@ -35,8 +35,6 @@ namespace Mordor2._0
         public static IMongoDatabase DICSDB = mongoClient.GetDatabase("DICSAuto");
         static IMongoCollection<PC> IP = DICSDB.GetCollection<PC>("IP");
         static IMongoCollection<PanelInspectHistory> Result = DICSDB.GetCollection<PanelInspectHistory>("InspectResult");
-        static IMongoCollection<ResultFile> AviResult = DICSDB.GetCollection<ResultFile>("AVIResult");
-        static IMongoCollection<ResultFile> SviResult = DICSDB.GetCollection<ResultFile>("SVIResult");
         static IMongoCollection<ProductInfo> ProductInfoCollection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
         /// <summary>
         /// DICS 测试数据库

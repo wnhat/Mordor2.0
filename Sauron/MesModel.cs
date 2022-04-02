@@ -155,14 +155,7 @@ namespace Sauron
         {
             get
             {
-                if (Judge.FinalJudge == JudgeGrade.S)
-                {
-                    return JudgeGrade.G;
-                }
-                else
-                {
-                    return JudgeGrade.N;
-                }
+                return Judge.LotGrade;
             }
         }
         public JudgeGrade PanelJudge
@@ -190,7 +183,6 @@ namespace Sauron
 
         public JudgeGrade LotGrade
         {
-            // todo: add judge logic;
             get
             {
                 if (finished)
@@ -208,15 +200,6 @@ namespace Sauron
                 {
                     return JudgeGrade.U;
                 }
-            }
-        }
-
-        public JudgeGrade OpJudgeGrade
-        {
-            get
-            {
-                int finalScore = 0;
-
             }
         }
         public JudgeGrade FinalJudge
@@ -297,12 +280,13 @@ namespace Sauron
         public bool AddJudge(OperatorJudge judge)
         {
             judges.Add(judge);
+
             return finished;
         }
         // 当N站点历史记录不存在时添加该defect判定作为记录；
         public void AddHistoryNotFoundDefect()
         {
-
+            judges.Add(Defect.);
         }
         public void AddInspectMissionNullDefect()
         {
