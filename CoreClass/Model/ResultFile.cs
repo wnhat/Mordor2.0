@@ -12,54 +12,6 @@ using MongoDB.Driver;
 
 namespace CoreClass.Model
 {
-    public class ResultFile
-    {
-        public static IMongoCollection<ResultFile> AviResult = DBconnector.DICSDB.GetCollection<ResultFile>("AVIResult");
-        public static IMongoCollection<ResultFile> SviResult = DBconnector.DICSDB.GetCollection<ResultFile>("SVIResult");
-
-        [BsonId]
-        public ObjectId Id { get; set; }
-        public ObjectId PanelInspectHistoryId { get; set; }
-        public string PanelId;
-        public Pcinfo Info { get { return PathInfo.PcName; } }
-        public DateTime Createtime;
-        public DirContainer DirContainer;
-        public PanelPathContainer PathInfo;
-
-        public ResultFile(DirContainer Container, PanelInspectHistory history, PanelPathContainer path)
-        {
-            DirContainer = Container;
-            PathInfo = path;
-            PanelId = history.PanelId;
-            PanelInspectHistoryId = history.ID;
-            // 当被搜索电脑时间错乱时可能会导致部分文件过早被删除；
-            Createtime = DirContainer.CreateTime;
-        }
-        //public static ResultFile[] GetResultFile(ObjectId id)
-        //{
-        //    List<ResultFile> results = new List<ResultFile>();
-        //    var filter = Builders<ResultFile>.Filter.Eq<ObjectId>("PanelInspectHistoryId", id);
-        //    results.AddRange(AviResult.Find(filter).ToEnumerable());
-        //    results.AddRange(SviResult.Find(filter).ToEnumerable());
-        //    return results.ToArray();
-        //}
-        public static void InsertAviResultFile(ResultFile item)
-        {
-            AviResult.InsertOneAsync(item);
-        }
-        public static void InsertAviResultFile(ResultFile[] item)
-        {
-            AviResult.InsertManyAsync(item);
-        }
-        public static void InsertSviResultFile(ResultFile item)
-        {
-            SviResult.InsertOneAsync(item);
-        }
-        public static void InsertSviResultFile(ResultFile[] item)
-        {
-            SviResult.InsertManyAsync(item);
-        }
-    }
     public class AETresult
     {
         [BsonIgnore]
@@ -69,11 +21,11 @@ namespace CoreClass.Model
         public ObjectId Id { get; set; }
         public PanelInspectHistory history;
         public string PanelId;
-        public ResultImage[] ResultImages;
-        public ResultImage[] DefectImages;
+        public ImageContainer[] ResultImages;
+        public ImageContainer[] DefectImages;
 
         // 对于检查结果文件中的 765H210002A9AAT05.txt 进行解析,填充下列字段；
-        public DefectCollection defectCollection;
+        public string defectCollection;
         public string AVIRecipeName;
         public string SVIRecipeName;
 
@@ -145,8 +97,8 @@ namespace CoreClass.Model
             this.history = his;
             EqId = his.EqpID;
 
-            List<ResultImage> resultImages = new List<ResultImage>();
-            List<ResultImage> defectimages = new List<ResultImage>();
+            List<ImageContainer> resultImages = new List<ImageContainer>();
+            List<ImageContainer> defectimages = new List<ImageContainer>();
 
             foreach (var path in panelPaths)
             {
@@ -168,7 +120,7 @@ namespace CoreClass.Model
                             {
                                 if (DICSimage.Name.Contains(".jpg"))
                                 {
-                                    resultImages.Add(new ResultImage(DICSimage.Name, DICSimage.Data));
+                                    resultImages.Add(new ImageContainer(DICSimage.Name, DICSimage.Data));
                                 }
                             }
                         }
@@ -179,7 +131,7 @@ namespace CoreClass.Model
                             {
                                 if (Defectimagefile.Name.Contains(".jpg"))
                                 {
-                                    defectimages.Add(new ResultImage(Defectimagefile.Name, Defectimagefile.Data));
+                                    defectimages.Add(new ImageContainer(Defectimagefile.Name, Defectimagefile.Data));
                                 }
                             }
                         }
@@ -196,7 +148,7 @@ namespace CoreClass.Model
                             {
                                 if (DICSimage.Name.Contains(".jpg"))
                                 {
-                                    resultImages.Add(new ResultImage(DICSimage.Name, DICSimage.Data));
+                                    resultImages.Add(new ImageContainer(DICSimage.Name, DICSimage.Data));
                                 }
                             }
                         }
@@ -207,7 +159,7 @@ namespace CoreClass.Model
                             {
                                 if (Defectimagefile.Name.Contains(".jpg"))
                                 {
-                                    defectimages.Add(new ResultImage(Defectimagefile.Name, Defectimagefile.Data));
+                                    defectimages.Add(new ImageContainer(Defectimagefile.Name, Defectimagefile.Data));
                                 }
                             }
                         }
@@ -231,11 +183,11 @@ namespace CoreClass.Model
         }
     }
 
-    public class ResultImage
+    public class ImageContainer
     {
         public string Name;
         public byte[] Data;
-        public ResultImage(string name, byte[] data)
+        public ImageContainer(string name, byte[] data)
         {
             Name = name;
             Data = data;

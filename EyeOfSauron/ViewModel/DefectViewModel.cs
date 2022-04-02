@@ -25,7 +25,7 @@ namespace EyeOfSauron.ViewModel
 
         public string Saction { get; }
     }
-    public sealed class TreesViewModel : ViewModelBase
+    public sealed class ListViewModel : ViewModelBase
     {
         private object? _selectedItem;
 
@@ -37,7 +37,7 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref _selectedItem, value);
         }
 
-        public TreesViewModel()
+        public ListViewModel()
         {
             Defects = new ObservableCollection<Defect>
             {

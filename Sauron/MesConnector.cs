@@ -351,7 +351,7 @@ namespace Sauron
                 {
                     var DEFECT = doc.CreateNode(XmlNodeType.Element, "DEFECT", "");
                     var DEFECTCODE = doc.CreateNode(XmlNodeType.Element, "DEFECTCODE", "");
-                    DEFECTCODE.InnerText = item.Judge.FinalCode;
+                    DEFECTCODE.InnerText = item.Judge.FinalJudge.ToString();
                     DEFECT.AppendChild(DEFECTCODE);
                     DEFECTLIST.AppendChild(DEFECT);
                 }

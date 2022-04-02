@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:EyeOfSauron"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
-        xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel" d:DataContext="{d:DesignInstance Type=viewModel:TreesViewModel}"
+        xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel" d:DataContext="{d:DesignInstance Type=viewModel:ListViewModel}"
         gif:ImageBehavior.AnimateInDesignMode="True"
         mc:Ignorable="d"
         ResizeMode="CanResize"
@@ -140,5 +140,4 @@
             </DockPanel>
         </Grid>
     </Viewbox>
-    
 </Window>

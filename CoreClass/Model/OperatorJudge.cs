@@ -25,7 +25,7 @@ namespace CoreClass.Model
             this.PanelID = mission.PanelId;
             this.UserId = user.Id;
             this.UserName = UserName;
-            this.UserNumber = user.UserNumber;
+            this.UserNumber = user.Account;
             this.Defect = defect;
             this.judge = judge;
         }

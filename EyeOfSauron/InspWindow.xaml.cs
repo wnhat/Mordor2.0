@@ -23,11 +23,10 @@ namespace EyeOfSauron
     {
         int flag = 1;
         Mission mission;
-        private readonly TreesViewModel _viewModel;
-        
+        private readonly ListViewModel _viewModel;
         public InspWindow()
         {
-            _viewModel = new TreesViewModel();
+            _viewModel = new ListViewModel();
             DataContext = _viewModel;
             InitializeComponent();
         }
@@ -46,12 +45,10 @@ namespace EyeOfSauron
             ImageBox3.Source = image;
             //WpfAnimatedGif.ImageBehavior.SetAnimatedSource(ImageBox2, image);
         }
-
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
 
         }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             //ImageViewBox.RenderSize = new System.Windows.Size(3440, 2440);

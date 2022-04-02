@@ -10,7 +10,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace EyeOfSauron
@@ -20,27 +19,12 @@ namespace EyeOfSauron
     /// </summary>
     public partial class MainWindow : Window
     {
+        readonly UserControl _viewContainer = null;
+
         public MainWindow()
         {
-        }
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                //userManager.Authenticate(userNameTextBox.Text, passwordTextBox.Password);
-                Window window = new ProductSelectWindow();
-                Hide();
-                window.ShowDialog();
-                Show();
-            }
-            catch(Exception exception)
-            {
-                MessageBox.Show(exception.Message);
-            }
-        }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
+            DataContext = _viewContainer;
+            InitializeComponent();
         }
     }
 }
