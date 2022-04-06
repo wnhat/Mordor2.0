@@ -11,7 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sauron", "Sauron\Sauron.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spider", "Spider\Spider.csproj", "{B15B0817-7074-4942-8167-1A2F89C77E82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EyeOfSauron", "EyeOfSauron\EyeOfSauron.csproj", "{FE6BA2F0-AAA7-4BFA-9949-5152C76E930E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EyeOfSauron", "EyeOfSauron\EyeOfSauron.csproj", "{FE6BA2F0-AAA7-4BFA-9949-5152C76E930E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{F87BF573-48C0-4748-92AB-0AA0C3B7CE9E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{209870B3-9C77-45E5-9C9A-8815B5C0662E} = {209870B3-9C77-45E5-9C9A-8815B5C0662E}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +66,14 @@ Global
 		{FE6BA2F0-AAA7-4BFA-9949-5152C76E930E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FE6BA2F0-AAA7-4BFA-9949-5152C76E930E}.Release|x64.ActiveCfg = Release|Any CPU
 		{FE6BA2F0-AAA7-4BFA-9949-5152C76E930E}.Release|x64.Build.0 = Release|Any CPU
+		{F87BF573-48C0-4748-92AB-0AA0C3B7CE9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F87BF573-48C0-4748-92AB-0AA0C3B7CE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F87BF573-48C0-4748-92AB-0AA0C3B7CE9E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F87BF573-48C0-4748-92AB-0AA0C3B7CE9E}.Debug|x64.Build.0 = Debug|Any CPU
+		{F87BF573-48C0-4748-92AB-0AA0C3B7CE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F87BF573-48C0-4748-92AB-0AA0C3B7CE9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F87BF573-48C0-4748-92AB-0AA0C3B7CE9E}.Release|x64.ActiveCfg = Release|Any CPU
+		{F87BF573-48C0-4748-92AB-0AA0C3B7CE9E}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -44,14 +44,6 @@ namespace CoreClass
         Field2,
         Field3,
     }
-    public static class JsonSerializerSetting
-    {
-        public static JsonSerializerSettings Setting;
-        static JsonSerializerSetting()
-        {
-            Setting = new JsonSerializerSettings() { StringEscapeHandling = StringEscapeHandling.EscapeNonAscii, ReferenceLoopHandling = ReferenceLoopHandling.Ignore, MaxDepth = 6 };
-        }
-    }
     public class BaseMessage : NetMQMessage
     {
         public MessageType TheMessageType;

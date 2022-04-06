@@ -65,7 +65,7 @@ namespace CoreClass.Model
         public static InspectMission GetMission(ProductInfo info)
         {
             var filter = Builders<InspectMission>.Filter.And(
-                Builders<InspectMission>.Filter.Eq(x => x.Info.id, info.id),
+                Builders<InspectMission>.Filter.Eq(x => x.Info.Id, info.Id),
                 Builders<InspectMission>.Filter.Eq(x => x.requested, false));
             var update = Builders<InspectMission>.Update.Set(x => x.LastRequestTime, DateTime.Now).Set(x => x.requested, true);
 
@@ -79,7 +79,7 @@ namespace CoreClass.Model
         /// <returns></returns>
         public static InspectMission GetMission(ObjectId id)
         {
-            var fileter = Builders<InspectMission>.Filter.Eq(x => x.Info.id, id);
+            var fileter = Builders<InspectMission>.Filter.Eq(x => x.Info.Id, id);
             var mission = Collection.Find(fileter).FirstOrDefault();
             return mission;
         }

@@ -1,4 +1,9 @@
-﻿namespace CoreClass.DICSEnum
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json.Converters;
+using System.Text.Json.Serialization;
+
+namespace CoreClass.DICSEnum
 {
     public enum ProductType
     {
