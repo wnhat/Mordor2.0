@@ -8,8 +8,11 @@ namespace CoreClass.Model
     [BsonIgnoreExtraElements]
     public class Defect
     {
+        [BsonIgnore]
+        [JsonIgnore]
         public static IMongoCollection<Defect> Collection = DBconnector.DICSDB.GetCollection<Defect>("DefectCode");
 
+        [BsonId]
         [JsonProperty("id")]
         public ObjectId Id { get; set; }
         [JsonProperty("code")]
@@ -48,18 +51,20 @@ namespace CoreClass.Model
             var defect = Collection.Find(filter).FirstOrDefault();
             return defect;
         }
+        [JsonIgnore]
         public Defect HistoryNotFound
         {
             get
             {
-                return new Defect("FileNotFound","DE00000");
+                return new Defect("FileNotFound", "DE00000");
             }
         }
+        [JsonIgnore]
         public Defect InspectMissionNull
         {
             get
             {
-                return new Defect("MissionInitialFail","DE00001");
+                return new Defect("MissionInitialFail", "DE00001");
             }
         }
     }

@@ -16,16 +16,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 using WebApi.Service;
 using Microsoft.Extensions.Options;
-using DICS_WebApi.Controllers;
+using WebApi.Controllers;
 using AutoMapper;
-using DICS_WebApi.Helpers;
+using WebApi.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using WebApi.Models;
 
 
-namespace DICS_WebApi
+namespace WebApi
 {
     public class Startup
     {
@@ -120,11 +119,6 @@ namespace DICS_WebApi
             IMapper mapper = mappingConfig.CreateMapper();
 
             services.AddSingleton(mapper);
-
-            // MongoDB Configuration
-            services.Configure<UserDatabaseSettings>(Configuration.GetSection(nameof(UserDatabaseSettings)));
-            services.AddSingleton<IUserDatabaseSettings>(sp =>
-                sp.GetRequiredService<IOptions<UserDatabaseSettings>>().Value);
 
             // CORS
             services.AddCors(option => option.AddPolicy("any", build =>

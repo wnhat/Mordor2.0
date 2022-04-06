@@ -1,14 +1,10 @@
-﻿using DICS_WebApi.Models;
-using WebApi.Models;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using CoreClass.Model;
 using CoreClass;
@@ -27,13 +23,6 @@ namespace WebApi.Service
     public class ProductInfoService : IProductInfoService
     {
         private static readonly IMongoCollection<ProductInfo> _productInfo = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
-
-        public ProductInfoService(IUserDatabaseSettings settings)
-        {
-            //var client = new MongoClient(settings.ConnectionString);
-            //var database = client.GetDatabase(settings.DatabaseName);
-            //_productInfo = database.GetCollection<ProductInfo>(settings.UsersCollectionName.ProductInfo);
-        }
 
         public Task<List<ProductInfo>> GetProductInfos()
         {
@@ -126,20 +115,6 @@ namespace WebApi.Service
             var bsonElements1 = BsonDocument.Create(obj1.ToBsonDocument());
             var bsonElements2 = BsonDocument.Create(obj2.ToBsonDocument());
             return bsonElements1 == bsonElements2;
-        }
-
-        private static string MD5Encrypt(byte[] bytes)
-        {
-            if (bytes == null)
-            {
-                return null;
-            }
-
-            MD5 md5Hasher = MD5.Create();
-            byte[] hashBytes = md5Hasher.ComputeHash(bytes);
-            string result = BitConverter.ToString(hashBytes);
-
-            return result.Replace("-", "").ToUpper();
         }
 
     }

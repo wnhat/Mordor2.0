@@ -1,6 +1,6 @@
 using System;
 
-namespace DICS_WebApi
+namespace WebApi
 {
     public class WeatherForecast
     {

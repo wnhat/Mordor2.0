@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:EyeOfSauron"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
-        xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel" d:DataContext="{d:DesignInstance Type=viewModel:ListViewModel}"
+        xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel" 
+        d:DataContext="{d:DesignInstance Type=viewModel:DefectListViewModel}"
         gif:ImageBehavior.AnimateInDesignMode="True"
         mc:Ignorable="d"
         ResizeMode="CanResize"
@@ -47,30 +48,40 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Image
+                    <materialDesign:Card
                         Grid.Column = "0"
                         Grid.Row="0"
+                        Margin="5,5,5,5"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                        <Image
                         x:Name="ImageBox1"
                         Height="1000"
                         Width="1600"
-                        Stretch="Fill"
-                        Margin="5,5,5,5"/>
-                    <Image
+                        Stretch="Fill"/>
+                    </materialDesign:Card>
+                    <materialDesign:Card
                         Grid.Column = "1"
                         Grid.Row="0"
+                        Margin="5,5,5,5"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                        <Image
                         x:Name="ImageBox2"
                         Height="1000"
                         Width="1600"
-                        Stretch="Fill"
-                        Margin="5,5,5,5"/>
-                    <Image
+                        Stretch="Fill"/>
+                    </materialDesign:Card>
+                    <materialDesign:Card
                         Grid.Column = "0"
                         Grid.Row="1"
+                        Margin="5,5,5,5"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                        <Image
                         x:Name="ImageBox3"
                         Height="1000"
                         Width="1600"
-                        Stretch="Fill"
-                        Margin="5,5,5,5"/>
+                        Stretch="Fill"/>
+                    </materialDesign:Card>
+                    
                     <Grid
                         Grid.Column = "1"
                         Grid.Row="1">
@@ -83,42 +94,57 @@
                         </Grid.RowDefinitions>
                         <StackPanel
                             Grid.Column = "0">
-                            <Image
+                            <materialDesign:Card
+                                Margin="5,5,5,5"
+                                materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                                <Image
                                 Height="490"
                                 Width="790"
-                                Stretch="Fill"
-                                Margin="5,5,5,5"/>
-                            <Image
+                                Stretch="Fill"/>
+                            </materialDesign:Card>
+                            <materialDesign:Card
+                                Margin="5,5,5,5"
+                                materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                                <Image
                                 Height="490"
                                 Width="790"
-                                Stretch="Fill"
-                                Margin="5,5,5,5"/>
+                                Stretch="Fill"/>
+                            </materialDesign:Card>
                         </StackPanel>
                         <StackPanel
                             Grid.Column = "1">
-                            <Border
-                                Width="800"
-                                Height="500"
-                                BorderThickness="1"
-                                BorderBrush="{DynamicResource PrimaryHueMidBrush}"
-                                ClipToBounds="True"
+                            <materialDesign:Card
+                                Height="490"
+                                Width="790"
+                                Margin="5,5,5,5"
+                                materialDesign:ShadowAssist.ShadowDepth="Depth1"
                                 HorizontalAlignment="Stretch">
-                                <ScrollViewer>
+                                <ScrollViewer
+                                    HorizontalScrollBarVisibility="Auto"
+                                    VerticalScrollBarVisibility="Auto">
                                     <ListBox 
                                             x:Name="DefectListBox"
-                                            ItemsSource="{Binding Defects}">
+                                            ItemsSource="{Binding defectLists.list}">
                                         <ListBox.Resources>
                                             <DataTemplate
                                                     DataType="{x:Type viewModel:Defect}">
                                                 <TextBlock
                                                         Text="{Binding Name}"
                                                         Margin="3 2"
-                                                        ToolTip="{Binding Saction}" />
+                                                        ToolTip="{Binding Name}" />
                                             </DataTemplate>
                                         </ListBox.Resources>
                                     </ListBox>
                                 </ScrollViewer>
-                            </Border>
+                            </materialDesign:Card>
+                            <materialDesign:Card
+                                Margin="5,5,5,5"
+                                materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                                <Image
+                                Height="490"
+                                Width="790"
+                                Stretch="Fill"/>
+                            </materialDesign:Card>
                         </StackPanel>
                     </Grid>
                 </Grid>

@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EyeOfSauron" 
         xmlns:viewmodel="clr-namespace:EyeOfSauron.ViewModel" 
+        d:DataContext="{d:DesignInstance viewmodel:MainWindowViewModel}"
         mc:Ignorable="d"
         ResizeMode="CanResize"
         WindowStyle="ThreeDBorderWindow"
@@ -18,11 +19,17 @@
         WindowState="Maximized">
     <Viewbox>
         <Grid>
-            <UserControl DataContext="{Binding ViewContainer}"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <UserControl DataContext="{Binding userInfo}"/>
             <ContentControl
-                            DataContext="{Binding ViewContainer}"
-                            Margin="{Binding MarginRequirement, FallbackValue=16}"
-                            Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"/>
+                            DataContext="{Binding userInfo}"/>
         </Grid>
     </Viewbox>
 </Window>

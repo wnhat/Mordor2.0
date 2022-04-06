@@ -23,10 +23,10 @@ namespace EyeOfSauron
     {
         int flag = 1;
         Mission mission;
-        private readonly ListViewModel _viewModel;
+        private readonly DefectListViewModel _viewModel;
         public InspWindow()
         {
-            _viewModel = new ListViewModel();
+            _viewModel = new DefectListViewModel();
             DataContext = _viewModel;
             InitializeComponent();
         }
@@ -54,7 +54,7 @@ namespace EyeOfSauron
             //ImageViewBox.RenderSize = new System.Windows.Size(3440, 2440);
             //ImageViewBox.RenderSize = flag == 1 ? new System.Windows.Size(1740, 1240) : new System.Windows.Size(3440, 2440);
             flag = flag == 1 ? 0 : 1;
-            _viewModel.Defects.Add(new("Defect3","Saction3"));
+            _viewModel.Defects.Add(new("Defect3"));
             SetImage();
         }
     }

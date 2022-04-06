@@ -1,5 +1,5 @@
-﻿using DICS_WebApi.Models;
-using WebApi.Models;
+﻿using CoreClass;
+using CoreClass.Model;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -10,33 +10,25 @@ namespace WebApi.Service
 {
     public interface IDefectCodeService
     {
-        Task<List<DefectCode>> GetAllDefectCodes();
-        Task<DefectCode> CreateDefectCode(DefectCode param);
-        Task UpdateDefectCode(DefectCode param);
+        Task<List<Defect>> GetAllDefectCodes();
+        Task<Defect> CreateDefectCode(Defect param);
+        Task UpdateDefectCode(Defect param);
         Task DeleteDefectCode(string code);
         Task DeleteDefectCodeMany(string[] code_list);
     }
 
     public class DefectCodeService : IDefectCodeService
     {
-        private readonly IMongoCollection<DefectCode> _defectcodes;
+        private static readonly IMongoCollection<Defect> _defectcodes = DBconnector.DICSDB.GetCollection<Defect>("DefectCode");
 
-        public DefectCodeService(IUserDatabaseSettings settings)
-        {
-            var client = new MongoClient(settings.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
-
-            _defectcodes = database.GetCollection<DefectCode>(settings.UsersCollectionName.DefectCode);
-        }
-
-        public Task<DefectCode> CreateDefectCode(DefectCode param)
+        public Task<Defect> CreateDefectCode(Defect param)
         {
             return Task.Run(() =>
             {
-                var filter = Builders<DefectCode>.Filter.Eq("Code", param.Code);
+                var filter = Builders<Defect>.Filter.Eq("Code", param.DefectCode);
                 if (_defectcodes.Find(filter).FirstOrDefault() != null)
                 {
-                    throw new ApplicationException("Defect \"" + param.Code + "\" is already existed");
+                    throw new ApplicationException("Defect \"" + param.DefectCode + "\" is already existed");
                 }
 
                 _defectcodes.InsertOne(param);
@@ -47,7 +39,7 @@ namespace WebApi.Service
 
         public Task DeleteDefectCode(string code)
         {
-            return Task.Run(() => { return _defectcodes.DeleteOne(defectCode => defectCode.Code == code); });
+            return Task.Run(() => { return _defectcodes.DeleteOne(defectCode => defectCode.DefectCode == code); });
         }
 
         public Task DeleteDefectCodeMany(string[] code_list)
@@ -57,26 +49,26 @@ namespace WebApi.Service
                 // 全选删除
                 if (code_list.Length == 0)
                 {
-                    return _defectcodes.DeleteMany(Builders<DefectCode>.Filter.Empty);
+                    return _defectcodes.DeleteMany(Builders<Defect>.Filter.Empty);
                 }
                 // 多选删除
                 else
                 {
-                    return _defectcodes.DeleteMany(defectCode => code_list.Contains(defectCode.Code));
+                    return _defectcodes.DeleteMany(defectCode => code_list.Contains(defectCode.DefectCode));
                 }
             });
         }
 
-        public Task<List<DefectCode>> GetAllDefectCodes()
+        public Task<List<Defect>> GetAllDefectCodes()
         {
-            return Task.Run(() => { return _defectcodes.Find(defectCode => true).ToList(); });
+            return Task.Run(() => { return _defectcodes.Find(x => true).ToList(); });
         }
 
-        public Task UpdateDefectCode(DefectCode param)
+        public Task UpdateDefectCode(Defect param)
         {
             return Task.Run(() =>
             {
-                var filter = Builders<DefectCode>.Filter.Eq("Id", param.Id);
+                var filter = Builders<Defect>.Filter.Eq("Id", param.Id);
                 var defectCode = _defectcodes.Find(filter).FirstOrDefault();
 
                 if (defectCode == null)

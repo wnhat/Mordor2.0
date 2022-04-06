@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using EyeOfSauron.ViewModel;
 
 namespace EyeOfSauron
 {
@@ -19,11 +20,8 @@ namespace EyeOfSauron
     /// </summary>
     public partial class MainWindow : Window
     {
-        readonly UserControl _viewContainer = null;
-
         public MainWindow()
         {
-            DataContext = _viewContainer;
             InitializeComponent();
         }
     }

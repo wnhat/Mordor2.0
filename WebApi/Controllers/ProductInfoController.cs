@@ -1,5 +1,4 @@
-﻿using DICS_WebApi.Models;
-using WebApi.Service;
+﻿using WebApi.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 using CoreClass.Model;
 using CoreClass;
 
-namespace DICS_WebApi.Controllers
+namespace WebApi.Controllers
 {
     [AllowAnonymous]
     [Route("api/[controller]")]
@@ -32,7 +31,7 @@ namespace DICS_WebApi.Controllers
             {
                 var products = await _productInfoService.GetProductInfos();
                 
-                string json = JsonConvert.SerializeObject(products,JsonSerializerSetting.FrontConvertSetting);
+                string json = JsonConvert.SerializeObject(products, JsonSerializerSetting.FrontConvertSetting);
                 return Ok(json);
             }
             catch (Exception e)
