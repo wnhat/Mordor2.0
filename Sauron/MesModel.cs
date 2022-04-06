@@ -286,7 +286,7 @@ namespace Sauron
         // 当N站点历史记录不存在时添加该defect判定作为记录；
         public void AddHistoryNotFoundDefect()
         {
-            judges.Add(Defect.);
+            judges.Add(Defect.HistoryNotFound);
         }
         public void AddInspectMissionNullDefect()
         {

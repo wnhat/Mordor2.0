@@ -31,14 +31,14 @@ namespace CoreClass.Model
             var defect = Collection.Find(filter).FirstOrDefault();
             return defect;
         }
-        public Defect HistoryNotFound
+        public static Defect HistoryNotFound
         {
             get
             {
                 return new Defect("FileNotFound","DE00000");
             }
         }
-        public Defect InspectMissionNull
+        public static Defect InspectMissionNull
         {
             get
             {
