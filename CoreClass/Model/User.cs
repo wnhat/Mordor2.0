@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,6 +84,13 @@ namespace CoreClass.Model
                 UserWeight = "2";
             }
         }
-
+        [JsonIgnore]
+        public static User AutoJudgeUser
+        {
+            get
+            {
+                return new User() {Username = "AutoJudgeUser" , Account = "10086"};
+            }
+        }
     }
 }

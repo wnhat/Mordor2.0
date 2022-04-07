@@ -141,33 +141,25 @@ namespace CoreClass
             return JsonConvert.DeserializeObject<List<ProductInfo>>(missionstring, JsonSerializerSetting.Setting);
         }
     }
-    //public class PanelMissionRequestMessage : BaseMessage
-    //{
-    //    // TODO: 将任务申请operator 添加为附件；
-    //    public ProductInfo Info;
-    //    public User Operater;
-    //    public PanelMissionRequestMessage(ProductInfo info, User op) : base(MessageType.CLINET_GET_PANEL_MISSION, StaticVersion.Version)
-    //    {
-    //        Info = info;
-    //        Operater = op;
-    //        this.Append(TransferToString(Info));
-    //        this.Append(TransferToString(Operater));
-    //    }
-    //    public PanelMissionRequestMessage(ProductInfo info) : base(MessageType.CONTROLER_ADD_MISSION, StaticVersion.Version)
-    //    {
-    //        Info = info;
-    //        Operater = null;
-    //        this.Append(TransferToString(Info));
-    //        this.Append(TransferToString(Operater));
-    //    }
-    //    string TransferToString(object field)
-    //    {
-    //        return JsonConvert.SerializeObject(field, JsonSerializerSetting.Setting);
-    //    }
-    //    public PanelMissionRequestMessage(NetMQMessage theMessage) : base(theMessage)
-    //    {
-    //        Info = JsonConvert.DeserializeObject<ProductInfo>(theMessage[(int)MessageFieldName.Field1].ConvertToString(), JsonSerializerSetting.Setting);
-    //        Operater = JsonConvert.DeserializeObject<User>(theMessage[(int)MessageFieldName.Field2].ConvertToString(), JsonSerializerSetting.Setting);
-    //    }
-    //}
+    public class OperatorJudgeMessage : BaseMessage
+    {
+        public OperatorJudge judge;
+        public OperatorJudgeMessage(OperatorJudge operatorJudge) : base(MessageType.CLIENT_SEND_MISSION_RESULT, StaticVersion.Version)
+        {
+            judge = operatorJudge;
+            this.Append(TransferToString(judge));
+        }
+        public OperatorJudgeMessage(NetMQMessage theMessage) : base(theMessage)
+        {
+            judge = TransferTojudge(theMessage[(int)MessageFieldName.Field1].ConvertToString());
+        }
+        string TransferToString(OperatorJudge operatorJudge)
+        {
+            return JsonConvert.SerializeObject(operatorJudge, JsonSerializerSetting.Setting);
+        }
+        OperatorJudge TransferTojudge(string operatorJudge)
+        {
+            return JsonConvert.DeserializeObject<OperatorJudge>(operatorJudge, JsonSerializerSetting.Setting);
+        }
+    }
 }

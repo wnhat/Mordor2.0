@@ -63,7 +63,7 @@ namespace Sauron
             }
             return false;
         }
-        public bool AddJudge(OperatorJudge judge)
+        public void AddJudge(OperatorJudge judge)
         {
             // 检查任务是否完成；
             var mission = missions.Where(x => x.PanelId == judge.PanelID).FirstOrDefault();
@@ -80,7 +80,16 @@ namespace Sauron
                 var option = new UpdateOptions { ArrayFilters = arrayFilters };
                 LotCollection.UpdateOneAsync(filter, update, option);
                 // 更新内存记录并返回是否完成;
-                return mission.AddJudge(judge);
+                var finished = mission.AddJudge(judge);
+                // 当任务需要匹配多人检查结果时，更新inspectmission 数据库信息；
+                if (finished)
+                {
+                    InspectMission.SetFinishedMission(judge.InspectMission);
+                }
+                else
+                {
+                    InspectMission.SetUnfinishedMission(judge.InspectMission);
+                }
             }
         }
         /// <summary>
@@ -286,7 +295,8 @@ namespace Sauron
         // 当N站点历史记录不存在时添加该defect判定作为记录；
         public void AddHistoryNotFoundDefect()
         {
-            judges.Add(Defect.HistoryNotFound);
+            OperatorJudge judge = new OperatorJudge(null, Defect.HistoryNotFound, User.AutoJudgeUser.Username,User.AutoJudgeUser.Account, null);
+            judges.Add(judge);
         }
         public void AddInspectMissionNullDefect()
         {

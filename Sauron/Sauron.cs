@@ -30,7 +30,6 @@ namespace Sauron
         static void MissionAdd(object sender, NetMQTimerEventArgs eventArgs)
         {
             Task.Run(manager.AddAutoMission);
-            
         }
         static void OnMessageArrive(object sender, NetMQSocketEventArgs eventArgs)
         {
@@ -40,8 +39,9 @@ namespace Sauron
             BaseMessage switchmessage = new BaseMessage(messageIn);
             if (switchmessage.TheMessageType == MessageType.CLIENT_SEND_MISSION_RESULT)
             {
-                // TODO:完成检查任务；
-                //manager.FinishMission();
+                OperatorJudgeMessage message = new OperatorJudgeMessage(messageIn);
+                // 完成检查任务；
+                manager.FinishMission(message.judge);
             }
         }
     }

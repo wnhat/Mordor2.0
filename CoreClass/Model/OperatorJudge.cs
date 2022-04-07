@@ -13,21 +13,20 @@ namespace CoreClass.Model
         public DateTime CreateTime { get; set; } = DateTime.Now;
         public Defect Defect { get; set; }
         // Only S,E,F grade;
-        public JudgeGrade judge { get; set; }
         public InspectMission InspectMission { get; set; }
         public string PanelID { get; set; }
         public int Score { get; set; }
-        public ObjectId UserId { get; set; }
+        public ObjectId? UserId { get; set; }
         public string UserName { get; set; }
-        public string UserNumber { get; set; }
-        public OperatorJudge(User user, InspectMission mission, Defect defect, JudgeGrade judge)
+        public string Account { get; set; }
+        public OperatorJudge(InspectMission mission, Defect defect, string userName, string account, ObjectId? userId)
         {
+            InspectMission = mission;
             this.PanelID = mission.PanelId;
-            this.UserId = user.Id;
-            this.UserName = UserName;
-            this.UserNumber = user.Account;
+            this.UserName = userName;
+            this.Account = account;
             this.Defect = defect;
-            this.judge = judge;
+            UserId = userId;
         }
         public MissionType MissionType { get { return InspectMission.type; } }
         // 当inspectmission 的requesttime 和相应的judge不同时，该judge结果将被抛弃；
