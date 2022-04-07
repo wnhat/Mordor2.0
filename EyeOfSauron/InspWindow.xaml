@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel" 
-        d:DataContext="{d:DesignInstance Type=viewModel:DefectListViewModel}"
+        
         gif:ImageBehavior.AnimateInDesignMode="True"
         mc:Ignorable="d"
         ResizeMode="CanResize"
@@ -32,8 +32,15 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button
+            <StackPanel>
+                <TextBox
+                    x:Name="UserAccountTextBox"
+                    Text="{Binding defectLists.list[0].Name,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+                </TextBox>
+                <Button
                 Click="Button_Click"/>
+            </StackPanel>
+            
             <DockPanel
                 Grid.Column="1">
                 <Grid 
@@ -57,7 +64,8 @@
                         x:Name="ImageBox1"
                         Height="1000"
                         Width="1600"
-                        Stretch="Fill"/>
+                        Stretch="Fill"
+                        Source="{Binding _inspImage.defaultImage, UpdateSourceTrigger=PropertyChanged}"/>
                     </materialDesign:Card>
                     <materialDesign:Card
                         Grid.Column = "1"
@@ -68,7 +76,8 @@
                         x:Name="ImageBox2"
                         Height="1000"
                         Width="1600"
-                        Stretch="Fill"/>
+                        Stretch="Fill"
+                        Source="{Binding _inspImage.imageArray[1]}"/>
                     </materialDesign:Card>
                     <materialDesign:Card
                         Grid.Column = "0"
@@ -79,7 +88,8 @@
                         x:Name="ImageBox3"
                         Height="1000"
                         Width="1600"
-                        Stretch="Fill"/>
+                        Stretch="Fill"
+                        Source="{Binding _inspImage.imageArray[2]}"/>
                     </materialDesign:Card>
                     
                     <Grid
@@ -123,15 +133,17 @@
                                     HorizontalScrollBarVisibility="Auto"
                                     VerticalScrollBarVisibility="Auto">
                                     <ListBox 
-                                            x:Name="DefectListBox"
-                                            ItemsSource="{Binding defectLists.list}">
+                                        d:DataContext="{d:DesignInstance Type=viewModel:MainWindowViewModel}"
+                                        x:Name="DefectListBox"
+                                        ItemsSource="{Binding _defectList.defectLists.list}">
                                         <ListBox.Resources>
                                             <DataTemplate
                                                     DataType="{x:Type viewModel:Defect}">
                                                 <TextBlock
-                                                        Text="{Binding Name}"
-                                                        Margin="3 2"
-                                                        ToolTip="{Binding Name}" />
+                                                    
+                                                    Text="{Binding Name}"
+                                                    Margin="3 2"
+                                                    ToolTip="{Binding Name}" />
                                             </DataTemplate>
                                         </ListBox.Resources>
                                     </ListBox>

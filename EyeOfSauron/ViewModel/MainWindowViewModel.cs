@@ -10,10 +10,15 @@ namespace EyeOfSauron.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        User user;
-        BitmapImage[] imageArray = new BitmapImage[3];
-        public MainWindowViewModel()
+        public UserInfoViewModel _userInfo;
+        public DefectListViewModel _defectList;
+        public InspImageViewModel _inspImage;
+        public DefectJudgeViewModel _defectJudge = new DefectJudgeViewModel();
+        public MainWindowViewModel(UserInfoViewModel userInfo)
         {
+            _userInfo = userInfo;
+            _defectList = new DefectListViewModel();
+            _inspImage = new InspImageViewModel();
         }
     }
 }

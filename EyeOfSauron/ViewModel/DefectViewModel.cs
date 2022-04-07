@@ -10,28 +10,7 @@ using MaterialDesignThemes.Wpf;
 
 namespace EyeOfSauron.ViewModel
 {
-    public sealed class Defect
-    {
-        public Defect(string name)
-        {
-            Name = name;
-        }
 
-        public string Name { get; }
-
-    }
-    public sealed class DefectList : ViewModelBase
-    {
-        public ObservableCollection<Defect> list { get; }
-        public DefectList()
-        {
-            list = new ObservableCollection<Defect>
-            {
-                new Defect("InnerDefect1"),
-                new Defect("InnerDefect2"),
-            };
-        }
-    }
     public sealed class DefectListViewModel : ViewModelBase
     {
         private object? _selectedItem;
@@ -47,6 +26,28 @@ namespace EyeOfSauron.ViewModel
         public DefectListViewModel()
         {
             defectLists = new DefectList();
+        }
+    }
+    public sealed class Defect
+    {
+        public Defect(string name)
+        {
+            Name = name;
+        }
+
+        public string Name { get; set; }
+
+    }
+    public sealed class DefectList : ViewModelBase
+    {
+        public ObservableCollection<Defect> list { get; }
+        public DefectList()
+        {
+            list = new ObservableCollection<Defect>
+            {
+                new Defect("InnerDefect1"),
+                new Defect("InnerDefect2"),
+            };
         }
     }
 }

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using EyeOfSauron.ViewModel;
 
 namespace EyeOfSauron
 {
@@ -20,15 +21,18 @@ namespace EyeOfSauron
     /// </summary>
     public partial class LogininWindow : Window
     {
+        private readonly UserInfoViewModel _viewModel;
         public LogininWindow()
         {
+            _viewModel = new UserInfoViewModel();
+            DataContext = _viewModel;
         }
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             try
             {
-                //userManager.Authenticate(userNameTextBox.Text, passwordTextBox.Password);
-                Window window = new ProductSelectWindow();
+                _viewModel.Authenticate(userNameTextBox.Text, passwordTextBox.Password);
+                Window window = new ProductSelectWindow(_viewModel);
                 Hide();
                 window.ShowDialog();
                 Show();

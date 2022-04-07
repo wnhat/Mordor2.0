@@ -23,11 +23,14 @@ namespace EyeOfSauron
     {
         int flag = 1;
         Mission mission;
-        private readonly DefectListViewModel _viewModel;
-        public InspWindow()
+        private  MainWindowViewModel _viewModel;
+        public  DefectListViewModel _viewModel2;
+        public InspWindow(UserInfoViewModel userInfo)
         {
-            _viewModel = new DefectListViewModel();
+            _viewModel = new MainWindowViewModel(userInfo);
             DataContext = _viewModel;
+            _viewModel2 = new DefectListViewModel();
+            //DataContext = _viewModel2;
             InitializeComponent();
         }
         public void SetMission(Mission m)
@@ -40,9 +43,13 @@ namespace EyeOfSauron
             image.BeginInit();
             image.UriSource = new Uri(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
             image.EndInit();
-            ImageBox1.Source = image;
-            ImageBox2.Source = image;
-            ImageBox3.Source = image;
+            _viewModel._inspImage.imageArray[0] = image;
+            _viewModel._inspImage.imageArray[1] = image;
+            _viewModel._inspImage.imageArray[2] = image;
+            UserAccountTextBox.Text = _viewModel._userInfo.user.Account;
+            //ImageBox1.Source = image;
+            //ImageBox2.Source = image;
+            //ImageBox3.Source = image;
             //WpfAnimatedGif.ImageBehavior.SetAnimatedSource(ImageBox2, image);
         }
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -54,7 +61,7 @@ namespace EyeOfSauron
             //ImageViewBox.RenderSize = new System.Windows.Size(3440, 2440);
             //ImageViewBox.RenderSize = flag == 1 ? new System.Windows.Size(1740, 1240) : new System.Windows.Size(3440, 2440);
             flag = flag == 1 ? 0 : 1;
-            _viewModel.defectLists.list.Add(new("Defect3"));
+            _viewModel._defectList.defectLists.list.Add(new("Defect3"));
             SetImage();
         }
     }

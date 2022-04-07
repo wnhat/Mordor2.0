@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using EyeOfSauron.ViewModel;
 
 namespace EyeOfSauron
 {
@@ -20,9 +21,11 @@ namespace EyeOfSauron
     /// </summary>
     public partial class ProductSelectWindow : Window
     {
+        public readonly ProductViewModel _viewModel;
         MissionManager missionManager;
-        public ProductSelectWindow()
+        public ProductSelectWindow(UserInfoViewModel userInfo)
         {
+            _viewModel = new ProductViewModel(userInfo);
             GetMissions();
             InitializeComponent();
         }
@@ -48,7 +51,7 @@ namespace EyeOfSauron
         private void Button2_Click(object sender, RoutedEventArgs e)
         {
             Hide();
-            InspWindow inspWindow = new InspWindow();
+            InspWindow inspWindow = new InspWindow(_viewModel._userInfo);
             inspWindow.ShowDialog();
             Show();
         }

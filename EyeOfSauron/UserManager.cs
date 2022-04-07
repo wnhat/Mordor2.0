@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Security.Cryptography;
@@ -11,14 +13,14 @@ using System.Drawing.Imaging;
 using CoreClass;
 using CoreClass.Model;
 
-namespace EyeOfSauron.ViewModel
+namespace EyeOfSauron
 {
-    public class UserInfoViewModel : ViewModelBase
+    public class UserManager
     {
-        public User user;
-        Bitmap? image;
-        Image? image1;
-        public UserInfoViewModel()
+        User user;
+        Bitmap image;
+        Image image1;
+        public UserManager()
         {
             user = new User();
         }
