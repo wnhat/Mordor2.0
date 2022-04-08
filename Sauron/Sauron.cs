@@ -22,6 +22,8 @@ namespace Sauron
             // 为poller绑定触发事件；
             routerSocket.ReceiveReady += OnMessageArrive;
             MissionTimer.Elapsed += MissionAdd;
+            // add a new timer to poller and refresh defect list;
+            
         }
         public static void Run()
         {
@@ -41,7 +43,21 @@ namespace Sauron
             {
                 OperatorJudgeMessage message = new OperatorJudgeMessage(messageIn);
                 // 完成检查任务；
-                manager.FinishMission(message.judge);
+                manager.FinishMission(message.Judge,message.Mission);
+            }
+        }
+        // refesh defect list every 5 minutes;
+        public static void RefreshDefectList()
+        {
+            try
+            {
+                Task.Run(Defects.RefreshDefectList);
+            }
+            catch (Exception e)
+            {
+                // log exception details;
+                Log.Logger.Error(e.Message);
+                throw;
             }
         }
     }

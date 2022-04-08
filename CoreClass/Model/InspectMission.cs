@@ -17,8 +17,8 @@ namespace CoreClass.Model
         public static IMongoCollection<InspectMission> Collection = DBconnector.DICSDB.GetCollection<InspectMission>("InspectMission");
         [BsonId]
         public ObjectId ID;
-        public string PanelId;
-        public MissionType type;
+        public string PanelID;
+        public MissionType Type;
         public ObjectId HistoryID;
         public ObjectId ResultContainerId;
         public ProductInfo Info;
@@ -32,8 +32,8 @@ namespace CoreClass.Model
 
         public InspectMission(string panelId, MissionType type, ObjectId historyID, ObjectId resultContainerId, ProductInfo info)
         {
-            PanelId = panelId;
-            this.type = type;
+            PanelID = panelId;
+            this.Type = type;
             HistoryID = historyID;
             ResultContainerId = resultContainerId;
             Info = info;

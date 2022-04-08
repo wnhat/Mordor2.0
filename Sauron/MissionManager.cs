@@ -16,13 +16,13 @@ namespace Sauron
 
         static IMongoCollection<ProductInfo> ProductInfoCollection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
 
-        public void FinishMission(OperatorJudge judge)
+        public void FinishMission(OperatorJudge judge,InspectMission mission)
         {
-            if (judge.MissionType == MissionType.MesMission)
+            if (mission.Type == MissionType.MesMission)
             {
-                MesMissionStorage.AddJudge(judge);
+                MesMissionStorage.AddJudge(judge,mission);
             }
-            else if (judge.MissionType == MissionType.S_GradeCheck)
+            else if (mission.Type == MissionType.S_GradeCheck)
             {
 
             }
@@ -142,19 +142,18 @@ namespace Sauron
 
             return new MesMission(mission, history);
         }
-        public static void AddJudge(OperatorJudge judge)
+        public static void AddJudge(OperatorJudge judge, InspectMission Inspectmission)
         {
-            var lotid = judge.InspectMission.MesLotId;
-            var mission = InspectMission.GetMission(judge.InspectMission.ID);
-            if (LotContainer.ContainsKey(lotid) && judge.RequestTime == mission.LastRequestTime && mission!= null)
+            var lotid = Inspectmission.MesLotId;
+            var mission = InspectMission.GetMission(Inspectmission.ID);
+            if (LotContainer.ContainsKey(lotid) && Inspectmission.LastRequestTime == mission.LastRequestTime && mission!= null)
             {
-                LotContainer[lotid].AddJudge(judge); 
+                LotContainer[lotid].AddJudge(judge, Inspectmission); 
             }
             else
             {
                 Log.Logger.Information("客户端发回的检查结果被抛弃{@Judge}", judge);
             }
         }
-
     }
 }

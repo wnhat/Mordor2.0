@@ -143,23 +143,31 @@ namespace CoreClass
     }
     public class OperatorJudgeMessage : BaseMessage
     {
-        public OperatorJudge judge;
-        public OperatorJudgeMessage(OperatorJudge operatorJudge) : base(MessageType.CLIENT_SEND_MISSION_RESULT, StaticVersion.Version)
+        public OperatorJudge Judge;
+        public InspectMission Mission;
+        public OperatorJudgeMessage(OperatorJudge operatorJudge, InspectMission mission) : base(MessageType.CLIENT_SEND_MISSION_RESULT, StaticVersion.Version)
         {
-            judge = operatorJudge;
-            this.Append(TransferToString(judge));
+            Judge = operatorJudge;
+            this.Append(TransferToString(Judge));
+            Mission = mission;
+            this.Append(TransferToString(Mission));
         }
         public OperatorJudgeMessage(NetMQMessage theMessage) : base(theMessage)
         {
-            judge = TransferTojudge(theMessage[(int)MessageFieldName.Field1].ConvertToString());
+            Judge = TransferTojudge(theMessage[(int)MessageFieldName.Field1].ConvertToString());
+            Mission = TransferToMission(theMessage[(int)MessageFieldName.Field2].ConvertToString());
         }
-        string TransferToString(OperatorJudge operatorJudge)
+        string TransferToString(object operatorJudge)
         {
             return JsonConvert.SerializeObject(operatorJudge, JsonSerializerSetting.Setting);
         }
         OperatorJudge TransferTojudge(string operatorJudge)
         {
             return JsonConvert.DeserializeObject<OperatorJudge>(operatorJudge, JsonSerializerSetting.Setting);
+        }
+        InspectMission TransferToMission(string operatorJudge)
+        {
+            return JsonConvert.DeserializeObject<InspectMission>(operatorJudge, JsonSerializerSetting.Setting);
         }
     }
 }
