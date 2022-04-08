@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel" 
-        
+        d:DataContext="{d:DesignInstance Type=viewModel:MainWindowViewModel}"
         gif:ImageBehavior.AnimateInDesignMode="True"
         mc:Ignorable="d"
         ResizeMode="CanResize"
@@ -35,7 +35,7 @@
             <StackPanel>
                 <TextBox
                     x:Name="UserAccountTextBox"
-                    Text="{Binding defectLists.list[0].Name,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+                    Text="{Binding _userInfo.user.Account}">
                 </TextBox>
                 <Button
                 Click="Button_Click"/>
@@ -65,7 +65,7 @@
                         Height="1000"
                         Width="1600"
                         Stretch="Fill"
-                        Source="{Binding _inspImage.defaultImage, UpdateSourceTrigger=PropertyChanged}"/>
+                        Source="{Binding _inspImage.imageArray[0]}"/>
                     </materialDesign:Card>
                     <materialDesign:Card
                         Grid.Column = "1"
@@ -133,17 +133,15 @@
                                     HorizontalScrollBarVisibility="Auto"
                                     VerticalScrollBarVisibility="Auto">
                                     <ListBox 
-                                        d:DataContext="{d:DesignInstance Type=viewModel:MainWindowViewModel}"
                                         x:Name="DefectListBox"
                                         ItemsSource="{Binding _defectList.defectLists.list}">
                                         <ListBox.Resources>
                                             <DataTemplate
                                                     DataType="{x:Type viewModel:Defect}">
                                                 <TextBlock
-                                                    
-                                                    Text="{Binding Name}"
+                                                    Text="{Binding Path=Name}"
                                                     Margin="3 2"
-                                                    ToolTip="{Binding Name}" />
+                                                    ToolTip="{Binding Path=Name}" />
                                             </DataTemplate>
                                         </ListBox.Resources>
                                     </ListBox>
