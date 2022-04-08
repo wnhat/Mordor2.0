@@ -52,7 +52,7 @@ namespace CoreClass.Model
             return defect;
         }
         [JsonIgnore]
-        public Defect HistoryNotFound
+        public static Defect HistoryNotFound
         {
             get
             {
@@ -60,7 +60,7 @@ namespace CoreClass.Model
             }
         }
         [JsonIgnore]
-        public Defect InspectMissionNull
+        public static Defect InspectMissionNull
         {
             get
             {

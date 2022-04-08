@@ -13,6 +13,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using EyeOfSauron.ViewModel;
+using MongoDB.Driver;
+using CoreClass;
+using CoreClass.Model;
+using System.IO;
+using System.Windows.Media.Imaging;
 
 namespace EyeOfSauron
 {
@@ -35,7 +40,17 @@ namespace EyeOfSauron
         }
         public void SetImage()
         {
-
+            var colcetion = DBconnector.DICSDB.GetCollection<AETresult>("AETresult");
+            var filter = Builders<AETresult>.Filter.Eq("ModelId", "606_AUTO_ET_L5");
+            AETresult resultFile;
+            resultFile = colcetion.Find(filter).FirstOrDefault();
+            byte[] buffer = resultFile.ResultImages[0].Data;
+            //Image image1 = Image.FromStream(ms);
+            BitmapImage defaultImage = new BitmapImage();
+            defaultImage.BeginInit();
+            defaultImage.StreamSource = new MemoryStream(buffer);
+            defaultImage.EndInit();
+            _viewModel._inspImage.imageArray[0] = defaultImage;
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {

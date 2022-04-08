@@ -15,7 +15,7 @@ namespace EyeOfSauron.ViewModel
 {
     public class UserInfoViewModel : ViewModelBase
     {
-        public User user;
+        public User user { get; set; }
         Bitmap? image;
         Image? image1;
         public UserInfoViewModel()
@@ -31,19 +31,6 @@ namespace EyeOfSauron.ViewModel
             var colcetion = DBconnector.DICSDB.GetCollection<User>("User");
             var filter = Builders<User>.Filter.Eq("Account", account);
             user = colcetion.Find(filter).FirstOrDefault();
-
-            //var colcetion1 = DBConnecter.database.GetCollection<AVIResult>("AVIResult");
-            //var filter1 = Builders<AVIResult>.Filter.Eq("PanelId", "712B210008B2BAR17");
-            //AVIResult aVIResult = colcetion1.Find(filter1).FirstOrDefault();
-            //byte[] buffer = aVIResult.DirContainer.DirContainerArray[0].FileContainerArray[0].Data;
-            //MemoryStream ms = new MemoryStream(buffer);
-            //Image image1 = Image.FromStream(ms);
-            //Bitmap image = new Bitmap(ms);
-            //BitmapImage image = new BitmapImage();
-            //image.BeginInit();
-            //image.UriSource = new Uri(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
-            //image.EndInit();
-
             if (user == null)
             {
                 throw new Exception("Account not exist");

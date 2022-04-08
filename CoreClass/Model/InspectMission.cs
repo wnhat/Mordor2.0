@@ -25,7 +25,8 @@ namespace CoreClass.Model
         public ObjectId ParentStorage;
         public ObjectId MesLotId;
 
-        public bool requested = false;
+        public bool Requested = false;
+        public bool Finished = false;
         public DateTime LastRequestTime = DateTime.Now;
         public DateTime CreateTime = DateTime.Now;
 
@@ -36,7 +37,6 @@ namespace CoreClass.Model
             HistoryID = historyID;
             ResultContainerId = resultContainerId;
             Info = info;
-            // TODO: 检验result的完整性；
         }
 
         public static void AddInspectMission(InspectMission mission)
@@ -48,7 +48,7 @@ namespace CoreClass.Model
             KeyValuePair<ProductInfo, int> data = new KeyValuePair<ProductInfo, int>();
 
             var filter = Builders<InspectMission>.Filter.And(
-                Builders<InspectMission>.Filter.Eq(x => x.requested, false));
+                Builders<InspectMission>.Filter.Eq(x => x.Requested, false));
 
             var projection = new ProjectionDefinitionBuilder<InspectMission>().Include(x => x.Info);
 
@@ -66,8 +66,8 @@ namespace CoreClass.Model
         {
             var filter = Builders<InspectMission>.Filter.And(
                 Builders<InspectMission>.Filter.Eq(x => x.Info.Id, info.Id),
-                Builders<InspectMission>.Filter.Eq(x => x.requested, false));
-            var update = Builders<InspectMission>.Update.Set(x => x.LastRequestTime, DateTime.Now).Set(x => x.requested, true);
+                Builders<InspectMission>.Filter.Eq(x => x.Requested, false));
+            var update = Builders<InspectMission>.Update.Set(x => x.LastRequestTime, DateTime.Now).Set(x => x.Requested, true);
 
             InspectMission mission = Collection.FindOneAndUpdate(filter, update);
             return mission;
@@ -83,9 +83,42 @@ namespace CoreClass.Model
             var mission = Collection.Find(fileter).FirstOrDefault();
             return mission;
         }
+        /// <summary>
+        /// 用于客户端判级信息发回后刷新任务的状态信息；
+        /// </summary>
+        /// <param name="inspectMission"></param>
+        public static void SetUnfinishedMission(InspectMission inspectMission)
+        {
+            var filter = Builders<InspectMission>.Filter.Eq(x => x.ID, inspectMission.ID);
+            var update = Builders<InspectMission>.Update.Set(x => x.Requested, false);
+            Collection.UpdateOneAsync(filter,update);
+        }
+        /// <summary>
+        /// 用于客户端判级信息发回后刷新任务的状态信息；
+        /// </summary>
+        /// <param name="inspectMission"></param>
+        public static void SetFinishedMission(InspectMission inspectMission)
+        {
+            var filter = Builders<InspectMission>.Filter.Eq(x => x.ID, inspectMission.ID);
+            var update = Builders<InspectMission>.Update.Set(x => x.Finished, true);
+            Collection.UpdateOneAsync(filter, update);
+        }
+        /// <summary>
+        /// 将超过10min没有返回检查结果的任务进行初始化；
+        /// </summary>
+        public static void ManageLostMission()
+        {
+            var time = DateTime.Now - TimeSpan.FromMinutes(15);
+            var filter = Builders<InspectMission>.Filter.And(
+                Builders<InspectMission>.Filter.Eq(x => x.Finished, false),
+                Builders<InspectMission>.Filter.Eq(x => x.Requested, true),
+                Builders<InspectMission>.Filter.Lte(x => x.LastRequestTime, time));
+            var update = Builders<InspectMission>.Update.Set(x => x.Requested, false);
+            Collection.UpdateManyAsync(filter, update);
+        }
     }
     /// <summary>
-    /// 任务属性标签
+    /// 任务属性标签，用于标记任务的用途，包括正常量产，抽检等；
     /// </summary>
     public enum MissionType
     { 

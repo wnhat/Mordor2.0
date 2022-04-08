@@ -9,7 +9,7 @@ namespace EyeOfSauron.ViewModel
 {
     public class InspImageViewModel
     {
-        public BitmapImage[] imageArray { get; }
+        public BitmapImage[] imageArray { get; set; }
         public BitmapImage defaultImage { get; }
 
         Uri defaultImageUri;
