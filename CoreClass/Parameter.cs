@@ -1,4 +1,5 @@
 ﻿using CoreClass.Model;
+using MongoDB.Bson;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -7,9 +8,15 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using CoreClass;
+using MongoDB.Driver;
 
 namespace CoreClass
 {
+    public interface IParameter
+    {
+        
+    }
     public static class Parameter
     {
         public static string SavePath;
@@ -79,6 +86,19 @@ namespace CoreClass
         public static void Save()
         {
 
+        }
+    }
+    /// <summary>
+    /// recommend the parameter from and to the database；
+    /// you need to use string(parameter name) to get the value;
+    /// </summary>
+    public static class Parameter2
+    {
+        // the parameter database collection;
+        public static IMongoCollection<BsonDocument> Collection = DBconnector.DICSDB.GetCollection<BsonDocument>("Parameter");
+        static Parameter2()
+        {
+            
         }
     }
 }

@@ -63,32 +63,34 @@ namespace Sauron
             }
             return false;
         }
-        public void AddJudge(OperatorJudge judge)
+        public void AddJudge(OperatorJudge judge,InspectMission inspectMission)
         {
             // 检查任务是否完成；
-            var mission = missions.Where(x => x.PanelId == judge.PanelID).FirstOrDefault();
+            var mission = missions.Where(x => x.PanelId == inspectMission.PanelID).FirstOrDefault();
             if (mission == null)
             {
                 throw new Exception("该lot中没有这个panel；");
             }
             else
             {
-                // 更新数据库记录;
-                var filter = Builders<MesLot>.Filter.Eq(x => x.ID, this.ID);
-                var update = Builders<MesLot>.Update.Push<OperatorJudge>("MesMission.$[MesMission].Judge.judges", judge);
-                var arrayFilters = new List<ArrayFilterDefinition> { new BsonDocumentArrayFilterDefinition<MesMission>(new BsonDocument("MesMission.PanelId", judge.PanelID)) };
-                var option = new UpdateOptions { ArrayFilters = arrayFilters };
-                LotCollection.UpdateOneAsync(filter, update, option);
                 // 更新内存记录并返回是否完成;
                 var finished = mission.AddJudge(judge);
+                
+                // update judge to meslot;
+                var filter = Builders<MesLot>.Filter.Eq(x => x.ID, this.ID);
+                var arrayFilters = new List<ArrayFilterDefinition> { new BsonDocumentArrayFilterDefinition<MesMission>(new BsonDocument("MesMission.PanelId", inspectMission.PanelID)) };
+                var option = new UpdateOptions { ArrayFilters = arrayFilters };
+                var set = Builders<MesLot>.Update.Set("MesMission.$[MesMission].Judge", mission.Judge);
+                LotCollection.UpdateOneAsync(filter, set, option);
+
                 // 当任务需要匹配多人检查结果时，更新inspectmission 数据库信息；
                 if (finished)
                 {
-                    InspectMission.SetFinishedMission(judge.InspectMission);
+                    InspectMission.SetFinishedMission(inspectMission);
                 }
                 else
                 {
-                    InspectMission.SetUnfinishedMission(judge.InspectMission);
+                    InspectMission.SetUnfinishedMission(inspectMission);
                 }
             }
         }
@@ -295,12 +297,13 @@ namespace Sauron
         // 当N站点历史记录不存在时添加该defect判定作为记录；
         public void AddHistoryNotFoundDefect()
         {
-            OperatorJudge judge = new OperatorJudge(null, Defect.HistoryNotFound, User.AutoJudgeUser.Username,User.AutoJudgeUser.Account, null);
+            OperatorJudge judge = new OperatorJudge(Defect.HistoryNotFound, User.AutoJudgeUser.Username,User.AutoJudgeUser.Account, null);
             judges.Add(judge);
         }
         public void AddInspectMissionNullDefect()
         {
-
+            OperatorJudge judge = new OperatorJudge(Defect.InspectMissionNull, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, null);
+            judges.Add(judge);
         }
     }
 
