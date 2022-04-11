@@ -15,12 +15,15 @@ namespace EyeOfSauron.ViewModel
 {
     public class UserInfoViewModel : ViewModelBase
     {
-        public User user { get; set; }
-        Bitmap? image;
-        Image? image1;
+        private User _user;
         public UserInfoViewModel()
         {
-            user = new User();
+            _user = new User();
+        }
+        public User user
+        {
+            get => _user;
+            set => SetProperty(ref _user, value);
         }
         public void Authenticate(string account, string password)
         {
@@ -30,19 +33,19 @@ namespace EyeOfSauron.ViewModel
             }
             var colcetion = DBconnector.DICSDB.GetCollection<User>("User");
             var filter = Builders<User>.Filter.Eq("Account", account);
-            user = colcetion.Find(filter).FirstOrDefault();
-            if (user == null)
+            _user = colcetion.Find(filter).FirstOrDefault();
+            if (_user == null)
             {
                 throw new Exception("Account not exist");
             }
-            else if (!user.VerifyPasswordHash(password))
+            else if (!_user.VerifyPasswordHash(password))
             {
                 throw new Exception("Password error");
             }
         }
         public bool UserExist()
         {
-            if (user != null)
+            if (_user != null)
             {
                 return true;
             }

@@ -35,7 +35,7 @@
             <StackPanel>
                 <TextBox
                     x:Name="UserAccountTextBox"
-                    Text="{Binding _userInfo.user.Account}">
+                    Text="{Binding _defectList.defectLists.list[0].Name,UpdateSourceTrigger=PropertyChanged}">
                 </TextBox>
                 <Button
                 Click="Button_Click"/>

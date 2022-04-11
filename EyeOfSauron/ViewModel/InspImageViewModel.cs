@@ -7,25 +7,36 @@ using System.Windows.Media.Imaging;
 
 namespace EyeOfSauron.ViewModel
 {
-    public class InspImageViewModel
+    public class InspImageViewModel : ViewModelBase
     {
-        public BitmapImage[] imageArray { get; set; }
-        public BitmapImage defaultImage { get; }
+        public BitmapImage[] _imageArray;
+        private BitmapImage _defaultImage;
 
         Uri defaultImageUri;
         public InspImageViewModel()
         {
-            imageArray = new BitmapImage[3];
-            defaultImage = new BitmapImage();
+            _imageArray = new BitmapImage[3];
+            _defaultImage = new BitmapImage();
             defaultImageUri = new Uri(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
-            defaultImage.BeginInit();
-            defaultImage.UriSource = defaultImageUri;
-            defaultImage.EndInit();
+            _defaultImage.BeginInit();
+            _defaultImage.UriSource = defaultImageUri;
+            _defaultImage.EndInit();
             for (int i = 0; i < 3; i++)
             {
-                imageArray[i] = defaultImage;
+                _imageArray[i] = _defaultImage;
             }
         }
-        
+        public BitmapImage defaultImage
+        {
+            get => _defaultImage;
+            set => SetProperty(ref _defaultImage, value);
+        }
+        public BitmapImage[] imageArray
+        {
+            get => _imageArray;
+            set => SetProperty(ref _imageArray, value);
+        }
+
+
     }
 }
