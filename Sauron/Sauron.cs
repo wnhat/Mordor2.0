@@ -1,4 +1,5 @@
 ﻿using CoreClass;
+using CoreClass.Model;
 using NetMQ;
 using NetMQ.Sockets;
 using System;
@@ -51,7 +52,7 @@ namespace Sauron
         {
             try
             {
-                Task.Run(Defects.RefreshDefectList);
+                Task.Run(Defect.RefreshDefectList);
             }
             catch (Exception e)
             {

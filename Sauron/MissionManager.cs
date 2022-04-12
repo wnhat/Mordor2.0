@@ -12,15 +12,14 @@ namespace Sauron
 {
     public class MissionManager
     {
-        MesConnector theMesConnector = new MesConnector();       //管理与MES的链接；
 
         static IMongoCollection<ProductInfo> ProductInfoCollection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
 
-        public void FinishMission(OperatorJudge judge,InspectMission mission)
+        public void FinishMission(OperatorJudge judge, InspectMission mission)
         {
             if (mission.Type == MissionType.MesMission)
             {
-                MesMissionStorage.AddJudge(judge,mission);
+                MesMissionStorage.AddJudge(judge, mission);
             }
             else if (mission.Type == MissionType.S_GradeCheck)
             {
@@ -47,7 +46,7 @@ namespace Sauron
                         {
                             try
                             {
-                                MesLot newmissionlot = theMesConnector.RequestMission(product, productType);
+                                MesLot newmissionlot = MesConnector.RequestMission(product, productType);
                                 if (newmissionlot == null)
                                 {
                                     break;
@@ -86,9 +85,9 @@ namespace Sauron
                 }
                 catch (Exception e)
                 {
-                    Log.Logger.Error(e,"初始化lot时发生了未经处理的异常；");
+                    Log.Logger.Error(e, "初始化lot时发生了未经处理的异常；");
                 }
-               
+
             }
         }
         /// <summary>
@@ -111,7 +110,7 @@ namespace Sauron
 
         static MesMissionStorage()
         {
-            
+
         }
         public static void InitialLot(MesLot lot)
         {
@@ -122,33 +121,37 @@ namespace Sauron
                 MesMission newmission = CreateMesMission(panel, lot.ProductInfo, lot.ID);
                 if (!newmission.Finished)
                 {
+                    // 为初始化完成但为自动判定的任务创建检查数据；
                     InspectMission.AddInspectMission(newmission.mission);
                 }
                 lot.missions.Add(newmission);
             }
-            var filter = Builders<MesLot>.Filter.Eq(x => x.ID,lot.ID);
-            var update = Builders<MesLot>.Update.Set(x => x.missions, lot.missions).Set(x => x.Added,true);
+            var filter = Builders<MesLot>.Filter.Eq(x => x.ID, lot.ID);
+            var update = Builders<MesLot>.Update.Set(x => x.missions, lot.missions).Set(x => x.Added, true);
             MesLot.LotCollection.UpdateOneAsync(filter, update);
         }
         public static MesMission CreateMesMission(string panelid, ProductInfo info, ObjectId lotid)
         {
             PanelInspectHistory history = PanelInspectHistory.Get(panelid);
+            // 根据historyid 查找对应的检查结果文件；
             AETresult result = AETresult.Get(history.ID);
             if (result == null)
             {
-                return new MesMission(null, history);
+                return new MesMission(panelid, null, history);
             }
-            InspectMission mission = new InspectMission(panelid, MissionType.MesMission, history.ID, result.Id, info);
-
-            return new MesMission(mission, history);
+            else
+            {
+                InspectMission mission = new InspectMission(panelid, MissionType.MesMission, history.ID, result.Id, info);
+                return new MesMission(panelid, mission, history);
+            }
         }
         public static void AddJudge(OperatorJudge judge, InspectMission Inspectmission)
         {
             var lotid = Inspectmission.MesLotId;
             var mission = InspectMission.GetMission(Inspectmission.ID);
-            if (LotContainer.ContainsKey(lotid) && Inspectmission.LastRequestTime == mission.LastRequestTime && mission!= null)
+            if (LotContainer.ContainsKey(lotid) && Inspectmission.LastRequestTime == mission.LastRequestTime && mission != null)
             {
-                LotContainer[lotid].AddJudge(judge, Inspectmission); 
+                LotContainer[lotid].AddJudge(judge, Inspectmission);
             }
             else
             {

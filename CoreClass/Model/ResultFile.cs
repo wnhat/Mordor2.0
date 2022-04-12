@@ -32,8 +32,10 @@ namespace CoreClass.Model
         // 当没有相关文件的情况下，这些值有可能会是空或null或default，在使用该值前应自行校验；
         public int EqId;
         public string AviIp;
+        [BsonRepresentation(BsonType.String)]
         public Disk AviDisk;
         public string SviIp;
+        [BsonRepresentation(BsonType.String)]
         public Disk SviDisk;
 
         public string EqName
@@ -95,6 +97,7 @@ namespace CoreClass.Model
         public AETresult(PanelInspectHistory his,PanelPathContainer[] panelPaths)
         {
             this.history = his;
+            PanelId = his.PanelId;
             EqId = his.EqpID;
 
             List<ImageContainer> resultImages = new List<ImageContainer>();
@@ -178,7 +181,7 @@ namespace CoreClass.Model
         }
         public static AETresult Get(ObjectId id)
         {
-            var getresult = AETresultCollection.Find(x => x.Id == id).FirstOrDefault();
+            var getresult = AETresultCollection.Find(x => x.history.ID == id).FirstOrDefault();
             return getresult;
         }
     }

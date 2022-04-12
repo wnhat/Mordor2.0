@@ -84,6 +84,22 @@ namespace CoreClass.Model
                 return new Defect("MissionInitialFail", "DE00001");
             }
         }
+        [JsonIgnore]
+        public static Defect OperaterEjudge
+        {
+            get
+            {
+                return new Defect("OperaterEjudge", "DE00002");
+            }
+        }
+        [JsonIgnore]
+        public static Defect AETEjudge
+        {
+            get
+            {
+                return new Defect("AETEjudge", "DE00003");
+            }
+        }
         public static void AddDefect(Defect defect)
         {
             DefectsList.Add(defect);

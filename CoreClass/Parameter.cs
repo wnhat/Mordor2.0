@@ -29,6 +29,9 @@ namespace CoreClass
         public static string SviExamFilePath;
         public static int MesConnectTimeOut;
         //public static DateTime SearchAfterDate = DateTime.Parse("2022-01-10T09:30:41");
+        // 抽样比例为0~100 内的整数；
+        public static int SgradeSimplingRatio;
+        public static int FgradeSimplingRatio;
 
         static Parameter()
         {
