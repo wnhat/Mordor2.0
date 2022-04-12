@@ -12,6 +12,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using EyeOfSauron.ViewModel;
+using MongoDB.Driver;
+using CoreClass;
+using CoreClass.Model;
+using System.IO;
 
 namespace EyeOfSauron
 {
@@ -20,10 +25,12 @@ namespace EyeOfSauron
     /// </summary>
     public partial class InspWindow : Window
     {
-        int flag = 1;
         Mission mission;
-        public InspWindow()
+        private  MainWindowViewModel _viewModel;
+        public InspWindow(UserInfoViewModel userInfo)
         {
+            _viewModel = new MainWindowViewModel(userInfo);
+            DataContext = _viewModel;
             InitializeComponent();
         }
         public void SetMission(Mission m)
@@ -32,27 +39,30 @@ namespace EyeOfSauron
         }
         public void SetImage()
         {
-            BitmapImage image = new BitmapImage();
-            image.BeginInit();
-            image.UriSource = new Uri(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
-            image.EndInit();
-            ImageBox1.Source = image;
-            ImageBox2.Source = image;
-            ImageBox3.Source = image;
-            ImageBox4.Source = image;
-            //WpfAnimatedGif.ImageBehavior.SetAnimatedSource(ImageBox2, image);
+            var colcetion = DBconnector.DICSDB.GetCollection<AETresult>("AETresult");
+            var filter = Builders<AETresult>.Filter.Eq("history.PanelId", "765E230008B7AAF05");
+            AETresult resultFile;
+            resultFile = colcetion.Find(filter).FirstOrDefault();
+            byte[] buffer = resultFile.ResultImages[0].Data;
+            Dictionary<string, byte[]> imageData = new Dictionary<string, byte[]>();
+            for (int i = 0; i < resultFile.ResultImages.Length; i++)
+            {
+                imageData[resultFile.ResultImages[i].Name] = resultFile.ResultImages[i].Data;
+            }
+            //Image image1 = Image.FromStream(ms);
+            BitmapImage defaultImage = new BitmapImage();
+            defaultImage.BeginInit();
+            defaultImage.StreamSource = new MemoryStream(buffer);
+            defaultImage.EndInit();
+            BitmapImage[] imageArray = new BitmapImage[3];
+            for (int i = 0; i < 3; i++)
+            {
+                imageArray[i] = defaultImage;
+            }
+            _viewModel._inspImage.imageArray = imageArray;
         }
-
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-
-        }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //ImageViewBox.RenderSize = new System.Windows.Size(3440, 2440);
-            //ImageViewBox.RenderSize = flag == 1 ? new System.Windows.Size(1740, 1240) : new System.Windows.Size(3440, 2440);
-            flag = flag == 1 ? 0 : 1;
             SetImage();
         }
     }

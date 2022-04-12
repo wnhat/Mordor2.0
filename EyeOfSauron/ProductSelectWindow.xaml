@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:Converter="clr-namespace:EyeOfSauron.Converter"
+        xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
+        d:DataContext="{d:DesignInstance Type=viewModel:ProductViewModel}"
         mc:Ignorable="d"
         ResizeMode="CanResize"
         WindowStyle="ThreeDBorderWindow"
@@ -90,8 +92,8 @@
                         Margin="30,10,30,280">
                             <TextBlock
                         x:Name = "TextBox1"
-                        TextWrapping="Wrap"
-                        Text="TEXT" 
+                        Text="{Binding productInfo.Name}"
+                        TextWrapping="Wrap" 
                         TextAlignment="Center"
                         Style="{StaticResource MaterialDesignHeadline3TextBlock}"/>
                         </materialDesign:Card>

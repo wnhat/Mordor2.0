@@ -12,6 +12,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MongoDB.Driver;
+using EyeOfSauron.ViewModel;
+using CoreClass;
+using CoreClass.Model;
 
 namespace EyeOfSauron
 {
@@ -20,15 +24,20 @@ namespace EyeOfSauron
     /// </summary>
     public partial class ProductSelectWindow : Window
     {
+        public readonly ProductViewModel _viewModel;
         MissionManager missionManager;
-        public ProductSelectWindow()
+        public ProductSelectWindow(UserInfoViewModel userInfo)
         {
+            _viewModel = new ProductViewModel(userInfo);
             GetMissions();
             InitializeComponent();
         }
 
         private void GetMissions()
         {
+            var colcetion = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
+            var filter = Builders<ProductInfo>.Filter.Eq("Name", "D2");
+            _viewModel.productInfo = colcetion.Find(filter).FirstOrDefault();
             missionManager = new MissionManager();  
         }
         private void WindowClose(object sender, RoutedEventArgs e)
@@ -48,7 +57,7 @@ namespace EyeOfSauron
         private void Button2_Click(object sender, RoutedEventArgs e)
         {
             Hide();
-            InspWindow inspWindow = new InspWindow();
+            InspWindow inspWindow = new InspWindow(_viewModel._userInfo);
             inspWindow.ShowDialog();
             Show();
         }
