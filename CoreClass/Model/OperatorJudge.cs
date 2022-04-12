@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace CoreClass.Model
 {
+    /// <summary>
+    /// 判定S级时，发送至服务器的Defect应为null；
+    /// 判定E级时，发送至服务器的Defect应为Defect.OperatorEjudge；
+    /// </summary>
     public class OperatorJudge
     {
         public DateTime CreateTime { get; set; } = DateTime.Now;
