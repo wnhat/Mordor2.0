@@ -91,7 +91,6 @@ namespace CoreClass.Model
                 return names.ToArray();
             } 
         }
-
         public AETresult(PanelInspectHistory his,PanelPathContainer[] panelPaths)
         {
             this.history = his;

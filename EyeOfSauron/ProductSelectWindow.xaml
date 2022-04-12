@@ -68,7 +68,7 @@
                 Margin="145,150,0,0" 
                 VerticalAlignment="Top"/>
                 <Button 
-                    Click="Button_Click_1" 
+                    Click="ProductSelectBuuttonClick" 
                     x:Name="Button1"
                     Visibility="{Binding Path=IsChecked, ElementName=CheckBox1, Converter={StaticResource BoolToEnumConverter}}"
                     HorizontalAlignment="Stretch" 
@@ -92,7 +92,7 @@
                         Margin="30,10,30,280">
                             <TextBlock
                         x:Name = "TextBox1"
-                        Text="{Binding productInfo.Name}"
+                        Text="{Binding _selectProductInfo.Key.Name}"
                         TextWrapping="Wrap" 
                         TextAlignment="Center"
                         Style="{StaticResource MaterialDesignHeadline3TextBlock}"/>
@@ -108,7 +108,7 @@
                 </Button>
                 <Button 
                     Grid.Column="1"
-                    Click="Button2_Click" 
+                    Click="ProductSelectBuuttonClick" 
                     x:Name="Button2"
                     HorizontalAlignment="Stretch" 
                     Margin="10,10,10,10" 

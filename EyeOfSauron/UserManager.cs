@@ -18,8 +18,6 @@ namespace EyeOfSauron
     public class UserManager
     {
         User user;
-        Bitmap image;
-        Image image1;
         public UserManager()
         {
             user = new User();

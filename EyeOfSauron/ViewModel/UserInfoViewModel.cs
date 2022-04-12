@@ -31,9 +31,9 @@ namespace EyeOfSauron.ViewModel
             {
                 throw new Exception("Empty input");
             }
-            var colcetion = DBconnector.DICSDB.GetCollection<User>("User");
+            var collection = DBconnector.DICSDB.GetCollection<User>("User");
             var filter = Builders<User>.Filter.Eq("Account", account);
-            _user = colcetion.Find(filter).FirstOrDefault();
+            _user = collection.Find(filter).FirstOrDefault();
             if (_user == null)
             {
                 throw new Exception("Account not exist");

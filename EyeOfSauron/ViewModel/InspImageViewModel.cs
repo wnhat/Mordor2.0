@@ -9,15 +9,16 @@ namespace EyeOfSauron.ViewModel
 {
     public class InspImageViewModel : ViewModelBase
     {
-        public BitmapImage[] _imageArray;
+        private BitmapImage[] _imageArray;
+        private string[] _imageNameArray;
         private BitmapImage _defaultImage;
 
-        Uri defaultImageUri;
+        static Uri defaultImageUri = new Uri(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
         public InspImageViewModel()
         {
             _imageArray = new BitmapImage[3];
+            _imageNameArray = new string[3];
             _defaultImage = new BitmapImage();
-            defaultImageUri = new Uri(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
             _defaultImage.BeginInit();
             _defaultImage.UriSource = defaultImageUri;
             _defaultImage.EndInit();
@@ -36,7 +37,10 @@ namespace EyeOfSauron.ViewModel
             get => _imageArray;
             set => SetProperty(ref _imageArray, value);
         }
-
-
+        public string[] imageNameArray
+        {
+            get => _imageNameArray;
+            set => SetProperty(ref _imageNameArray, value);
+        }
     }
 }

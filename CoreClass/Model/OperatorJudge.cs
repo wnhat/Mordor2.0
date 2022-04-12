@@ -17,12 +17,13 @@ namespace CoreClass.Model
         public ObjectId? UserId { get; set; }
         public string UserName { get; set; }
         public string Account { get; set; }
-        public OperatorJudge(Defect defect, string userName, string account, ObjectId? userId)
+        public OperatorJudge(Defect defect, string userName, string account, ObjectId? userId, int score)
         {
             this.UserName = userName;
             this.Account = account;
             this.Defect = defect;
             UserId = userId;
+            Score = score;
         }
     }
 }

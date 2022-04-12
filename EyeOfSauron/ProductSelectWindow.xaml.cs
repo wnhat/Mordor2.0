@@ -35,10 +35,12 @@ namespace EyeOfSauron
 
         private void GetMissions()
         {
-            var colcetion = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
-            var filter = Builders<ProductInfo>.Filter.Eq("Name", "D2");
-            _viewModel.productInfo = colcetion.Find(filter).FirstOrDefault();
-            missionManager = new MissionManager();  
+            ProductInfo info = new ProductInfo();
+            var collection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
+            var filter = Builders<ProductInfo>.Filter.Empty;
+            info = collection.Find(filter).FirstOrDefault();
+            _viewModel.selectProductInfo = new KeyValuePair<ProductInfo, int>(info, 1);
+            return;
         }
         private void WindowClose(object sender, RoutedEventArgs e)
         {
@@ -54,10 +56,12 @@ namespace EyeOfSauron
         { 
         }
 
-        private void Button2_Click(object sender, RoutedEventArgs e)
+        private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)
         {
             Hide();
+            Mission mission = new Mission(_viewModel.selectProductInfo.Key);
             InspWindow inspWindow = new InspWindow(_viewModel._userInfo);
+            inspWindow.SetMission(mission);
             inspWindow.ShowDialog();
             Show();
         }

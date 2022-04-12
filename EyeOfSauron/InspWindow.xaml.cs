@@ -25,7 +25,7 @@ namespace EyeOfSauron
     /// </summary>
     public partial class InspWindow : Window
     {
-        Mission mission;
+        private Mission mission;
         private  MainWindowViewModel _viewModel;
         public InspWindow(UserInfoViewModel userInfo)
         {
@@ -39,27 +39,7 @@ namespace EyeOfSauron
         }
         public void SetImage()
         {
-            var colcetion = DBconnector.DICSDB.GetCollection<AETresult>("AETresult");
-            var filter = Builders<AETresult>.Filter.Eq("history.PanelId", "765E230008B7AAF05");
-            AETresult resultFile;
-            resultFile = colcetion.Find(filter).FirstOrDefault();
-            byte[] buffer = resultFile.ResultImages[0].Data;
-            Dictionary<string, byte[]> imageData = new Dictionary<string, byte[]>();
-            for (int i = 0; i < resultFile.ResultImages.Length; i++)
-            {
-                imageData[resultFile.ResultImages[i].Name] = resultFile.ResultImages[i].Data;
-            }
-            //Image image1 = Image.FromStream(ms);
-            BitmapImage defaultImage = new BitmapImage();
-            defaultImage.BeginInit();
-            defaultImage.StreamSource = new MemoryStream(buffer);
-            defaultImage.EndInit();
-            BitmapImage[] imageArray = new BitmapImage[3];
-            for (int i = 0; i < 3; i++)
-            {
-                imageArray[i] = defaultImage;
-            }
-            _viewModel._inspImage.imageArray = imageArray;
+            _viewModel._inspImage.imageArray = mission.onInspPanelMission.resultImageDataDic.Values.ToArray().Skip(0).Take(3).ToArray();
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
