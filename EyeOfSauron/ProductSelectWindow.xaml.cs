@@ -40,7 +40,6 @@ namespace EyeOfSauron
             var filter = Builders<ProductInfo>.Filter.Empty;
             info = collection.Find(filter).FirstOrDefault();
             _viewModel.selectProductInfo = new KeyValuePair<ProductInfo, int>(info, 1);
-            return;
         }
         private void WindowClose(object sender, RoutedEventArgs e)
         {
