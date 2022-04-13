@@ -15,7 +15,7 @@ namespace EyeOfSauron.ViewModel
     {
         private object? _selectedItem;
 
-        public DefectList defectLists { get; }
+        public DefectList defectList { get; }
 
         public object? SelectedItem
         {
@@ -25,7 +25,7 @@ namespace EyeOfSauron.ViewModel
 
         public DefectListViewModel()
         {
-            defectLists = new DefectList();
+            defectList = new DefectList();
         }
     }
     public sealed class Defect

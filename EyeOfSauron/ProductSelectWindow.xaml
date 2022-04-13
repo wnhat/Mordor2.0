@@ -6,9 +6,10 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:Converter="clr-namespace:EyeOfSauron.Converter"
         xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
+        xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
         d:DataContext="{d:DesignInstance Type=viewModel:ProductViewModel}"
         mc:Ignorable="d"
-        ResizeMode="CanResize"
+        ResizeMode="CanMinimize"
         WindowStyle="ThreeDBorderWindow"
         MaxHeight="2560"
         MaxWidth="3840"
@@ -92,7 +93,7 @@
                         Margin="30,10,30,280">
                             <TextBlock
                         x:Name = "TextBox1"
-                        Text="{Binding _selectProductInfo.Key.Name}"
+                        Text="{Binding ProductInfos[0].Key.Name}"
                         TextWrapping="Wrap" 
                         TextAlignment="Center"
                         Style="{StaticResource MaterialDesignHeadline3TextBlock}"/>
@@ -101,9 +102,10 @@
                         Margin="0,130,0,0"
                         MaxHeight="250"
                         MaxWidth="250"
-                        Height="100" 
+                        Height="{c:Binding 100+100}" 
+                        Width="{Binding RelativeSource={RelativeSource Self},Path=Height}"
                         Fill="{DynamicResource MaterialDesignDarkSeparatorBackground}"
-                        Width="100"/>
+                        />
                     </Grid>
                 </Button>
                 <Button 
@@ -132,19 +134,21 @@
                             <TextBlock
                         x:Name = "TextBox2"
                         TextWrapping="Wrap"
-                        Text="TEXT" 
+                        Text="{Binding ProductInfos[1].Key.Name}" 
                         TextAlignment="Center"
                         Style="{StaticResource MaterialDesignHeadline3TextBlock}"/>
                         </materialDesign:Card>
-                        <Ellipse 
+                        <Ellipse
+                            x:Name="Ellipse2"
                         Margin="0,130,0,0"
                         MaxHeight="250"
                         MaxWidth="250"
-                        Height="100" 
-                        Fill="{DynamicResource MaterialDesignDarkSeparatorBackground}"
-                        Width="100"/>
+                        Height="{c:Binding Math.Log(ProductInfos[0].Value)*25+100}" 
+                        Width="{Binding RelativeSource={RelativeSource Self},Path=Height}"
+                        Fill="{DynamicResource MaterialDesignDarkSeparatorBackground}"/>
                     </Grid>
                 </Button>
+                <Button Grid.Column="2" Content="{Binding SelectProductInfo.Key.Name}" HorizontalAlignment="Left" Margin="141,203,0,0" VerticalAlignment="Top" Click="Button_Click"/>
             </Grid>
         </Grid>
     </Viewbox>
