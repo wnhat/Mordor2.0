@@ -431,17 +431,17 @@ namespace Sauron
         // 当N站点历史记录不存在时添加该defect判定作为记录；
         public void AddHistoryNotFoundDefect()
         {
-            OperatorJudge judge = new OperatorJudge(Defect.HistoryNotFound, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, null);
+            OperatorJudge judge = new OperatorJudge(Defect.HistoryNotFound, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, null,0);
             AddJudge(judge);
         }
         public void AddInspectMissionNullDefect()
         {
-            OperatorJudge judge = new OperatorJudge(Defect.InspectMissionNull, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, null);
+            OperatorJudge judge = new OperatorJudge(Defect.InspectMissionNull, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, null,0);
             AddJudge(judge);
         }
         internal void AddAETJudgeDefect()
         {
-            OperatorJudge judge = new OperatorJudge(Defect.AETEjudge, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, null);
+            OperatorJudge judge = new OperatorJudge(Defect.AETEjudge, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, null,0);
             AddJudge(judge);
         }
     }
