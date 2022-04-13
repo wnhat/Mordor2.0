@@ -29,16 +29,17 @@ namespace CoreClass
 
             // check if collection AETresult exists;
             var collectionList = DICSDB.ListCollections().ToList();
-            if (collectionList.Any(x => x == "AETresult"))
+            if (!collectionList.Any(x => x.GetValue("name") == "AETresult"))
             {
                 DICSDB.CreateCollection("AETresult");
                 // initial AETresult collection;
-                DICSDB.GetCollection<AETresult>("AETresult").Indexes.CreateOne(new CreateIndexModel<AETresult>(Builders<AETresult>.IndexKeys.Ascending("history._id")));
-                DICSDB.GetCollection<AETresult>("AETresult").Indexes.CreateOne(new CreateIndexModel<AETresult>(Builders<AETresult>.IndexKeys.Ascending("history.InspDate")));
+                DICSDB.GetCollection<AETresult>("AETresult").Indexes.CreateOne(new CreateIndexModel<AETresult>(Builders<AETresult>.IndexKeys.Descending("history._id")));
                 DICSDB.GetCollection<AETresult>("AETresult").Indexes.CreateOne(new CreateIndexModel<AETresult>(Builders<AETresult>.IndexKeys.Ascending("PanelId")));
+                // create ttl index with field history.InspDate;
+                DICSDB.GetCollection<AETresult>("AETresult").Indexes.CreateOne(new CreateIndexModel<AETresult>(Builders<AETresult>.IndexKeys.Descending("history.InspDate"), new CreateIndexOptions { ExpireAfter = TimeSpan.FromDays(40) }));
             }
              // check if collection InspectResult exists;
-            if (collectionList.Any(x => x == "InspectResult"))
+            if (!collectionList.Any(x => x.GetValue("name") == "InspectResult"))
             {
                 DICSDB.CreateCollection("InspectResult");
                 // check existed indexes;

@@ -18,13 +18,11 @@ namespace Spider
     public static class Spider
     {
         static DateTime RestartTime = DateTime.Now;
-        //static string connectstring = @"@tcp://172.16.210.22:5554";
-        static string connectstring = @"@tcp://172.16.200.100:5554";
 
         static List<EqpSpider> eqplist = new List<EqpSpider>();
 
         // Initial Poller;
-        public static RouterSocket routerSocket = new RouterSocket(connectstring);
+        public static RouterSocket routerSocket = new RouterSocket(SpiderParameter.Pcip);
         static NetMQTimer PathRefreshTimer = new NetMQTimer(TimeSpan.FromSeconds(900));
         static NetMQTimer OtherTimer = new NetMQTimer(TimeSpan.FromSeconds(900));
         static NetMQPoller Poller = new NetMQPoller { PathRefreshTimer, Spider.routerSocket, OtherTimer};
@@ -96,7 +94,14 @@ namespace Spider
 
             Loger.Logger.Information("开始上传新添加的resultfile");
             DateTime resultFileAddBeferDate = DateTime.Now - TimeSpan.FromMinutes(30);
-            Parallel.ForEach(eqplist, (eq) => { eq.AddNewResultAuto(resultFileAddBeferDate); });
+            try
+            {
+                Parallel.ForEach(eqplist, (eq) => { eq.AddNewResultAuto(resultFileAddBeferDate); });
+            }
+            catch (Exception e)
+            {
+                Loger.Logger.Error(e, "添加新的resultfile时发生了异常，需调查异常发生的情况");
+            }
 
             Loger.Logger.Information("添加完成；");
         }

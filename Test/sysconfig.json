@@ -1,0 +1,31 @@
+{
+	"SavePath":"D:/eye of sauron/runtime",
+	"AviImageNameList":["04_WHITE_Pre-Input.jpg","06_G64_Pre-Input.jpg","09_DUST_Pre-Input.jpg","00_R_Pre-Input.jpg","01_G_Pre-Input.jpg","02_B_Pre-Input.jpg"],
+	"SviImageNameList":["White_Side_ORG.jpg","White_Side_DeltaE.jpg","White_Side_Contrast.jpg","White_Coaxial_ORG.jpg","White_Side_DeltaC.jpg","G64_Coaxial_ORG.jpg"],
+	"AppImageNameList":[],
+	"PreLoadQuantity":30,
+	"CodeNameList":[
+				   {"DefectName":"EMD",			"DefectCode":"DE24050","Section":1},
+				   {"DefectName":"色彩污渍",	"DefectCode":"DE15050","Section":1},
+				   {"DefectName":"混色",		"DefectCode":"DE24400","Section":1},
+				   {"DefectName":"Mura ETC2",	"DefectCode":"DE15082","Section":0},
+				   {"DefectName":"MURA_ETC4",	"DefectCode":"DE15084","Section":1},
+				   {"DefectName":"MURA_ETC7",	"DefectCode":"DE15086","Section":1},
+				   {"DefectName":"MURA_ETC20",	"DefectCode":"DE15097","Section":0},
+				   {"DefectName":"环状mura",	"DefectCode":"DE13500","Section":0},
+				   {"DefectName":"MURA_ETC1",	"DefectCode":"DE15081","Section":0},
+				   {"DefectName":"MURA_ETC13",	"DefectCode":"DE15090","Section":0},
+				   {"DefectName":"污渍mura1",	"DefectCode":"DE13100","Section":0},
+				   {"DefectName":"Y亮线",		"DefectCode":"DE04400","Section":0},
+				   {"DefectName":"X亮线",		"DefectCode":"DE02600","Section":0},
+				   {"DefectName":"MURA_ETC12",	"DefectCode":"DE15089","Section":0},
+				   {"DefectName":"Hole横向Mura","DefectCode":"DE17000","Section":0},
+				   {"DefectName":"盒内划伤",	"DefectCode":"DE16000","Section":0},
+				   {"DefectName":"MURA_ETC8",	"DefectCode":"DE15070","Section":0}
+				   ],
+	"AviExamFilePath":"\\\\172.16.145.22\\NetworkDrive\\D_Drive\\Mordor\\ExamSimple\\AVI\\",
+	"SviExamFilePath":"\\\\172.16.145.22\\NetworkDrive\\D_Drive\\Mordor\\ExamSimple\\SVI\\",
+	"MesConnectTimeOut":60,
+	"SgradeSimplingRatio": 20,
+	"FgradeSimplingRatio": 60
+}

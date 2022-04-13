@@ -114,6 +114,33 @@ namespace CoreClass.Element
                     FileContainerArray[i] = FileContainer.CreatFileContainer(filenamearray[i]);
                 }
             }
+            // 存在result文件中有10000个不良图片的情况，对于这种文件不进行操作；
+            else if (filenamearray.Count() > 100)
+            {
+                List<FileContainer> filecontainerlist = new List<FileContainer>();
+
+                // 添加文件后缀不为.jpg的情况；
+                string[] filenamearray2 = filenamearray.Where(x => !x.EndsWith(".jpg")).ToArray();
+                if (filenamearray2.Count() > 0)
+                {
+                    foreach (var item in filenamearray2)
+                    {
+                        filecontainerlist.Add(FileContainer.CreatFileContainer(item));
+                    }
+                }
+
+                // 添加文件后缀为.jpg的情况，数量小于50；
+                string[] filenamearray3 = filenamearray.Where(x => x.EndsWith(".jpg")).ToArray();
+                if(filenamearray3.Count() > 50)
+                {
+                    for (int i = 0; i < 50; i++)
+                    {
+                        filecontainerlist.Add(FileContainer.CreatFileContainer(filenamearray3[i]));
+                    }
+                }
+
+                FileContainerArray = filecontainerlist.ToArray();
+            }
         }
         void InitialDir(string path)
         {
