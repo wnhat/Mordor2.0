@@ -45,8 +45,9 @@ namespace EyeOfSauron
             productInfos = collection.Find(filter).ToList();
             foreach (var productInfo in productInfos)
             {
-                count += 1000;
+                count += 100;
                 keyValuePairs.Add(new(productInfo, count));
+                _viewModel.ProductCardViewModels.Add(new ProductCardViewModel(new(productInfo, count)));
             }
             _viewModel.ProductInfos = keyValuePairs;
             _viewModel.SelectProductInfo = keyValuePairs.First();
@@ -76,9 +77,8 @@ namespace EyeOfSauron
             var filter = Builders<ProductInfo>.Filter.Empty;
             List<ProductInfo> productInfos = new();
             productInfos = collection.Find(filter).ToList();
-            count += 1000;
+            count += 100;
             _viewModel.SelectProductInfo = new KeyValuePair<ProductInfo, int>(productInfos.ToArray()[1], count);
-            return;
         }
     }
 }

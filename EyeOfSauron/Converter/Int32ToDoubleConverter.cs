@@ -9,7 +9,7 @@ using System.Globalization;
 
 namespace EyeOfSauron.Converter
 {
-    public class BoolToEnumConverter: IValueConverter
+    public class Int32ToDoubleConverter : IValueConverter
     {
         public object Convert(object value, Type type, object parameter, CultureInfo culture)
         {
@@ -17,28 +17,10 @@ namespace EyeOfSauron.Converter
             {
                 throw new NotImplementedException();
             }
-            Visibility output = Visibility.Visible;
-            if (value is bool)
-            {
-                switch (value)
-                {
-                    case true:
-                        output = Visibility.Hidden;
-                        break;
-                    case false:
-                        output = Visibility.Visible;
-                        break;
-                    default: break;
-                }
-                return output;
-            }
+            double output = 100;
             if (value is Int32)
             {
-                output = Visibility.Visible;
-            }
-            else
-            {
-                output = Visibility.Hidden;
+                output = 100+(10*(int)value)/100;
             }
             return output;
         }
