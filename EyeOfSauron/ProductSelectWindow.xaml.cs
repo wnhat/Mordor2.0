@@ -26,20 +26,31 @@ namespace EyeOfSauron
     {
         public readonly ProductViewModel _viewModel;
         MissionManager missionManager;
+        int count = 100;
         public ProductSelectWindow(UserInfoViewModel userInfo)
         {
             _viewModel = new ProductViewModel(userInfo);
+            DataContext = _viewModel;
             GetMissions();
             InitializeComponent();
         }
 
         private void GetMissions()
         {
-            ProductInfo info = new ProductInfo();
             var collection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
             var filter = Builders<ProductInfo>.Filter.Empty;
-            info = collection.Find(filter).FirstOrDefault();
-            _viewModel.selectProductInfo = new KeyValuePair<ProductInfo, int>(info, 1);
+
+            List<ProductInfo> productInfos;
+            List<KeyValuePair<ProductInfo, int>> keyValuePairs = new();
+            productInfos = collection.Find(filter).ToList();
+            foreach (var productInfo in productInfos)
+            {
+                count += 100;
+                keyValuePairs.Add(new(productInfo, count));
+                _viewModel.ProductCardViewModels.Add(new ProductCardViewModel(new(productInfo, count)));
+            }
+            _viewModel.ProductInfos = keyValuePairs;
+            _viewModel.SelectProductInfo = keyValuePairs.First();
         }
         private void WindowClose(object sender, RoutedEventArgs e)
         {
@@ -50,22 +61,26 @@ namespace EyeOfSauron
         {
             TextBox1.Text = TextBox1.Text.Equals("1")?"2":"1";
         }
-
-        private void WindowMinSize(object sender, RoutedEventArgs e)
-        { 
-        }
-
         private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)
         {
             Hide();
-            Mission mission = new Mission(_viewModel.selectProductInfo.Key);
-            InspWindow inspWindow = new InspWindow(_viewModel._userInfo);
+            Mission mission = new(_viewModel.SelectProductInfo.Key);
+            InspWindow inspWindow = new(_viewModel._userInfo);
             inspWindow.SetMission(mission);
             inspWindow.ShowDialog();
             Show();
             
             
         }
-        
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var collection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
+            var filter = Builders<ProductInfo>.Filter.Empty;
+            List<ProductInfo> productInfos = new();
+            productInfos = collection.Find(filter).ToList();
+            count += 100;
+            _viewModel.SelectProductInfo = new KeyValuePair<ProductInfo, int>(productInfos.ToArray()[1], count);
+        }
     }
 }

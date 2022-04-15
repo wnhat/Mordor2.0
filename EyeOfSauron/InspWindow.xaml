@@ -35,7 +35,7 @@
             <StackPanel>
                 <TextBox
                     x:Name="UserAccountTextBox"
-                    Text="{Binding _defectList.defectLists.list[0].Name,UpdateSourceTrigger=PropertyChanged}">
+                    Text="{Binding _defectList.defectList.list[0].Name,UpdateSourceTrigger=PropertyChanged}">
                 </TextBox>
                 <Button
                 Click="Button_Click"/>
@@ -134,7 +134,7 @@
                                     VerticalScrollBarVisibility="Auto">
                                     <ListBox 
                                         x:Name="DefectListBox"
-                                        ItemsSource="{Binding _defectList.defectLists.list}">
+                                        ItemsSource="{Binding _defectList.defectList.list}">
                                         <ListBox.Resources>
                                             <DataTemplate
                                                     DataType="{x:Type viewModel:Defect}">
