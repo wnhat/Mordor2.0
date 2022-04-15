@@ -19,10 +19,11 @@ namespace EyeOfSauron.ViewModel
         private ObservableCollection<ProductCardViewModel> _productCardViewModels = new();
         private KeyValuePair<ProductInfo, int> _selectProductInfo;
         private List<KeyValuePair<ProductInfo, int>> _productInfos = new();
-        private bool[] product = new bool[10];
         public ProductViewModel(UserInfoViewModel userInfo)
         {
             _userInfo = userInfo;
+            
+            //TODO: 期望返回List<KeyValuePair<ProductInfo, int>>对象
             KeyValuePair<ProductInfo, int> productInfo = InspectMission.GetWaittingMissionOverView();
             for (int i = 0; i < Product.Length; i++)
             {
@@ -35,7 +36,6 @@ namespace EyeOfSauron.ViewModel
                     Product[i] = false;
                 }
             }
-            //TODO: 应当返回List<KeyValuePair<ProductInfo, int>>
             //selectProductInfo = _productInfos[0];
             //TODO 
         }
@@ -44,16 +44,21 @@ namespace EyeOfSauron.ViewModel
             get { return _productInfos; }  
             set { SetProperty(ref _productInfos, value); }
         }
+        
         public KeyValuePair<ProductInfo, int> SelectProductInfo
         {
             get => _selectProductInfo;
             set => SetProperty(ref _selectProductInfo, value);
         }
+
+        //for test, will be removed later;
+        private bool[] product = new bool[10];
         public bool[] Product
         {
             get => product;
             set => SetProperty(ref product, value);
         }
+        
         public ObservableCollection<ProductCardViewModel> ProductCardViewModels
         {
             get => _productCardViewModels;

@@ -18,7 +18,6 @@ namespace EyeOfSauron.ViewModel
         {
             get => ProductInfo;
             set => SetProperty(ref _productInfo, value);
-            
         }
     }
 }

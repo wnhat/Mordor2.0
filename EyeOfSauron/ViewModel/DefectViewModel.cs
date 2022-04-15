@@ -28,9 +28,9 @@ namespace EyeOfSauron.ViewModel
             defectList = new DefectList();
         }
     }
-    public sealed class Defect
+    public sealed class AetDetailDefect
     {
-        public Defect(string name)
+        public AetDetailDefect(string name)
         {
             Name = name;
         }
@@ -40,13 +40,13 @@ namespace EyeOfSauron.ViewModel
     }
     public sealed class DefectList : ViewModelBase
     {
-        public ObservableCollection<Defect> list { get; }
+        public ObservableCollection<AetDetailDefect> list { get; }
         public DefectList()
         {
-            list = new ObservableCollection<Defect>
+            list = new ObservableCollection<AetDetailDefect>
             {
-                new Defect("InnerDefect1"),
-                new Defect("InnerDefect2"),
+                new AetDetailDefect("InnerDefect1"),
+                new AetDetailDefect("InnerDefect2"),
             };
         }
     }

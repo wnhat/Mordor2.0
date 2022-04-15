@@ -137,7 +137,7 @@
                                         ItemsSource="{Binding _defectList.defectList.list}">
                                         <ListBox.Resources>
                                             <DataTemplate
-                                                    DataType="{x:Type viewModel:Defect}">
+                                                    DataType="{x:Type viewModel:AetDetailDefect}">
                                                 <TextBlock
                                                     Text="{Binding Path=Name}"
                                                     Margin="3 2"

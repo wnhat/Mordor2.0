@@ -25,6 +25,7 @@ namespace EyeOfSauron
     /// </summary>
     public partial class InspWindow : Window
     {
+        int refreshPage = 0;
         private Mission mission;
         private  MainWindowViewModel _viewModel;
         public InspWindow(UserInfoViewModel userInfo)
@@ -43,7 +44,21 @@ namespace EyeOfSauron
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            SetImage();
+            RefreshInspImageViewModel();
+        }
+        public void RefreshInspImageViewModel()
+        {
+            if ((refreshPage) * 3 < mission.onInspPanelMission.resultImageDataDic.Values.ToArray().Length)
+            {
+                _viewModel._inspImage.imageArray = mission.onInspPanelMission.resultImageDataDic.Values.ToArray().Skip((refreshPage) * 3).Take(3).ToArray();
+                _viewModel._inspImage.imageNameArray = mission.onInspPanelMission.resultImageDataDic.Keys.ToArray().Skip((refreshPage) * 3).Take(3).ToArray();
+                refreshPage++;
+            }
+            else
+            {
+                refreshPage = 0;
+                RefreshInspImageViewModel();
+            }
         }
     }
 }

@@ -39,10 +39,8 @@ namespace EyeOfSauron
         {
             var collection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
             var filter = Builders<ProductInfo>.Filter.Empty;
-
-            List<ProductInfo> productInfos;
+            List<ProductInfo> productInfos = collection.Find(filter).ToList();
             List<KeyValuePair<ProductInfo, int>> keyValuePairs = new();
-            productInfos = collection.Find(filter).ToList();
             foreach (var productInfo in productInfos)
             {
                 count += 100;
@@ -52,15 +50,7 @@ namespace EyeOfSauron
             _viewModel.ProductInfos = keyValuePairs;
             _viewModel.SelectProductInfo = keyValuePairs.First();
         }
-        private void WindowClose(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            TextBox1.Text = TextBox1.Text.Equals("1")?"2":"1";
-        }
+        
         private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)
         {
             Hide();
@@ -71,6 +61,7 @@ namespace EyeOfSauron
             Show();
         }
 
+        //for test, will be removed later;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var collection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
