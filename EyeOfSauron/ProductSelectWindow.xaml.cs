@@ -59,6 +59,8 @@ namespace EyeOfSauron
             inspWindow.SetMission(mission);
             inspWindow.ShowDialog();
             Show();
+            
+            
         }
 
         //for test, will be removed later;

@@ -106,7 +106,7 @@ namespace CoreClass.Element
         void InitialFile(string path)
         {
             string[] filenamearray = Directory.GetFiles(path);
-            if (filenamearray.Count() > 0)
+            if (filenamearray.Count() > 0 && filenamearray.Count() <= 100)
             {
                 FileContainerArray = new FileContainer[filenamearray.Count()];
                 for (int i = 0; i < FileContainerArray.Count(); i++)

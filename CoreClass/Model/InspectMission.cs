@@ -22,7 +22,6 @@ namespace CoreClass.Model
         public ObjectId HistoryID;
         public ObjectId ResultContainerId;
         public ProductInfo Info;
-        public ObjectId ParentStorage;
         public ObjectId MesLotId;
 
         public bool Requested = false;
@@ -30,13 +29,14 @@ namespace CoreClass.Model
         public DateTime LastRequestTime = DateTime.Now;
         public DateTime CreateTime = DateTime.Now;
 
-        public InspectMission(string panelId, MissionType type, ObjectId historyID, ObjectId resultContainerId, ProductInfo info)
+        public InspectMission(string panelId, MissionType type, ObjectId historyID, ObjectId resultContainerId, ProductInfo info, ObjectId mesLotId)
         {
             PanelID = panelId;
             this.Type = type;
             HistoryID = historyID;
             ResultContainerId = resultContainerId;
             Info = info;
+            MesLotId = mesLotId;
         }
 
         public static void AddInspectMission(InspectMission mission)

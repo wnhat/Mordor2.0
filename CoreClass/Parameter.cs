@@ -36,7 +36,7 @@ namespace CoreClass
             var Filter = new BsonDocument();
             // find new parameter by date;
             var result = Collection.Find(Filter).SortByDescending(x => x["_id"]).FirstOrDefault();
-            result.RemoveElement(result.GetElement("_id"));
+            result.RemoveElement(result.ElementAt(0));
             JObject jsonobj = JObject.Parse(result.ToJson());
             var fieldcollection = typeof(Parameter).GetFields();
             if (CompareNameList(fieldcollection, jsonobj))

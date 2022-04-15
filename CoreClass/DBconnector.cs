@@ -53,6 +53,7 @@ namespace CoreClass
                     new CreateIndexModel<PanelInspectHistory>(Builders<PanelInspectHistory>.IndexKeys.Combine(
                         Builders<PanelInspectHistory>.IndexKeys.Ascending("EqpID"),
                          Builders<PanelInspectHistory>.IndexKeys.Descending("InspDate"))));
+                // 向数据库添加索引，name：eqid;
             }
         }
     }

@@ -155,7 +155,7 @@ namespace CoreClass.Model
                             }
                         }
                         // 添加Defect缩略图；
-                        if (dir != null)
+                        if (dir != null && dir.FileContainerArray != null)
                         {
                             foreach (var Defectimagefile in dir.FileContainerArray)
                             {
