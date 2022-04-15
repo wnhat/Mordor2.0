@@ -90,8 +90,16 @@ namespace Spider
                         {
                             try
                             {
+                                // 正常文件可在500ms传输完成；
                                 AETresult result = new AETresult(panel, path.ToArray());
-                                AETresult.AETresultCollection.InsertOneAsync(result);
+                                if (result.ResultImages == null && result.DefectImages == null)
+                                {
+                                    // 说明文件为空，或着没有任何图像文件，没有上传意义；
+                                }
+                                else
+                                {
+                                    AETresult.AETresultCollection.InsertOneAsync(result);
+                                }
                             }
                             catch (Exception e)
                             {

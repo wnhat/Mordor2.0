@@ -97,11 +97,24 @@ namespace Sauron
         {
 
         }
-        //public void AddMissionTest()
-        //{
-        //    MesLot newmissionlot = theMesConnector.RequestMissionTest();
-        //    MesLot.Insert(newmissionlot);
-        //}
+        /// <summary>
+        /// 生成测试任务不进行mes通信；通过mongodb 近时段产生的结果生成随机lot；
+        /// </summary>
+        public void AddMissionTest()
+        {
+            var builder = Builders<AETresult>.Filter;
+            // get top 12 panel from mongodb collection "AETresult", order by time;
+            var result = AETresult.AETresultCollection.Find(new BsonDocument()).SortByDescending(x => x.history.InspDate).Limit(12).ToList();
+
+            string[] panels = new string[result.Count];
+            for (int i = 0; i < result.Count; i++)
+            {
+                panels[i] = result[i].PanelId;
+            }
+            MesLot newmissionlot = new MesLot("TESTLOT", panels, "", CoreClass.DICSEnum.ProductType.Production, ProductInfo.GetProductInfo());
+            MesLot.Insert(newmissionlot);
+            InitialMesMission();
+        }
     }
     public static class MesMissionStorage
     {
@@ -141,7 +154,7 @@ namespace Sauron
             }
             else
             {
-                InspectMission mission = new InspectMission(panelid, MissionType.MesMission, history.ID, result.Id, info);
+                InspectMission mission = new InspectMission(panelid, MissionType.MesMission, history.ID, result.Id, info, lotid);
                 return new MesMission(panelid, mission, history);
             }
         }

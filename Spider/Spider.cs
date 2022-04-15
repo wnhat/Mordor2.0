@@ -82,6 +82,8 @@ namespace Spider
         }
         static void LaunchNewResultFile(object sender, NetMQTimerEventArgs eventArgs)
         {
+            // TODO：异步执行，应注意异步执行时，超出执行时间间隔未完成的将会导致异常
+
             LaunchNewResultFile();
         }
         static void LaunchNewResultFile()

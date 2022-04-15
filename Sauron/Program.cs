@@ -14,7 +14,9 @@ namespace Sauron
         }
         static void Test()
         {
-            MissionManager testmanager = new MissionManager();
+            //MissionManager testmanager = new MissionManager();
+            //testmanager.AddMissionTest();
+            var aaa = Parameter.AviExamFilePath;
         }
     }
 }
