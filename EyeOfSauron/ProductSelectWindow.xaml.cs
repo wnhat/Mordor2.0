@@ -25,7 +25,6 @@ namespace EyeOfSauron
     public partial class ProductSelectWindow : Window
     {
         public readonly ProductViewModel _viewModel;
-        MissionManager missionManager;
         int count = 100;
         public ProductSelectWindow(UserInfoViewModel userInfo)
         {
@@ -40,27 +39,23 @@ namespace EyeOfSauron
             var collection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
             var filter = Builders<ProductInfo>.Filter.Empty;
             List<ProductInfo> productInfos = collection.Find(filter).ToList();
-            List<KeyValuePair<ProductInfo, int>> keyValuePairs = new();
             foreach (var productInfo in productInfos)
             {
-                count += 100;
-                keyValuePairs.Add(new(productInfo, count));
-                _viewModel.ProductCardViewModels.Add(new ProductCardViewModel(new(productInfo, count)));
+                count += 200;
+                _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfo, count)));
             }
-            _viewModel.ProductInfos = keyValuePairs;
-            _viewModel.SelectProductInfo = keyValuePairs.First();
+            //for test, will be removed later
+            _viewModel.SelectedProductCardViewModel = _viewModel.ProductInfos[0];
         }
-        
+
         private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)
         {
             Hide();
-            Mission mission = new(_viewModel.SelectProductInfo.Key);
+            Mission mission = new(_viewModel.SelectedProductCardViewModel.ProductInfo.Key);
             InspWindow inspWindow = new(_viewModel._userInfo);
             inspWindow.SetMission(mission);
             inspWindow.ShowDialog();
             Show();
-            
-            
         }
 
         //for test, will be removed later;
@@ -71,7 +66,8 @@ namespace EyeOfSauron
             List<ProductInfo> productInfos = new();
             productInfos = collection.Find(filter).ToList();
             count += 100;
-            _viewModel.SelectProductInfo = new KeyValuePair<ProductInfo, int>(productInfos.ToArray()[1], count);
+            //_viewModel.SelectProductInfo = new KeyValuePair<ProductInfo, int>(productInfos.ToArray()[1], count);
+            _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfos.ToArray()[1], count)));
         }
     }
 }

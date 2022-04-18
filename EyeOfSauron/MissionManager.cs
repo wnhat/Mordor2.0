@@ -26,11 +26,7 @@ namespace EyeOfSauron
         public Mission(ProductInfo Info)
         {
             productInfo = Info;
-            //FillPreDownloadMissionQueue();
-            if (PreLoadOneMission())
-            {
-
-            }
+            PreLoadOneMission();
             onInspPanelMission = PreDownloadedPanelMissionQueue.Dequeue();
         }
         private void FillPreDownloadMissionQueue()

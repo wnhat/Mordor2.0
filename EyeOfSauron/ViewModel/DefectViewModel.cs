@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using MaterialDesignThemes.Wpf;
+using System.Windows.Media.Imaging;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -14,6 +15,7 @@ namespace EyeOfSauron.ViewModel
     public sealed class DefectListViewModel : ViewModelBase
     {
         private object? _selectedItem;
+        private BitmapImage detailDefectImage = new BitmapImage();
 
         public DefectList defectList { get; }
 
@@ -27,6 +29,11 @@ namespace EyeOfSauron.ViewModel
         {
             defectList = new DefectList();
         }
+        public BitmapImage DetailDefectImage
+        {
+            get => detailDefectImage;
+            set => SetProperty(ref detailDefectImage, value);
+        }
     }
     public sealed class AetDetailDefect
     {
@@ -36,7 +43,6 @@ namespace EyeOfSauron.ViewModel
         }
 
         public string Name { get; set; }
-
     }
     public sealed class DefectList : ViewModelBase
     {

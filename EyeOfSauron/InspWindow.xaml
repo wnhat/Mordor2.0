@@ -118,7 +118,8 @@
                                 <Image
                                 Height="490"
                                 Width="790"
-                                Stretch="Fill"/>
+                                Source="{Binding _defectList.DetailDefectImage}"
+                                Stretch="Uniform"/>
                             </materialDesign:Card>
                         </StackPanel>
                         <StackPanel
@@ -160,17 +161,27 @@
                 </Grid>
                 <Grid
                     DockPanel.Dock="Right">
-                    <Grid MinWidth="220">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <ListView 
-                            Grid.Row="2">
-                            <ListView.Resources>
-                            </ListView.Resources>
-                        </ListView>
+                    <Grid MinWidth="220" VerticalAlignment="Top">
+                        <ItemsControl ItemsSource="{Binding _defectJudge.DefectJudgeList}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="1"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button 
+                                        Click="Button_Click_1"
+                                        Content="{Binding DefectName}" 
+                                        Height="80" 
+                                        Width="200" 
+                                        Margin="5,5,5,5" 
+                                        materialDesign:ButtonAssist.CornerRadius="5"  
+                                        FontWeight="Bold" 
+                                        FontSize="20"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </Grid>
                 </Grid>
             </DockPanel>
