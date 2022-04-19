@@ -50,6 +50,7 @@ namespace EyeOfSauron
 
         private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)
         {
+            SetSelectProductInfo(sender, e);
             Hide();
             Mission mission = new(_viewModel.SelectedProductCardViewModel.ProductInfo.Key);
             InspWindow inspWindow = new(_viewModel._userInfo);
@@ -68,6 +69,12 @@ namespace EyeOfSauron
             count += 100;
             //_viewModel.SelectProductInfo = new KeyValuePair<ProductInfo, int>(productInfos.ToArray()[1], count);
             _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfos.ToArray()[1], count)));
+        }
+
+        private void SetSelectProductInfo(object sender, RoutedEventArgs e)
+        {
+            ProductCardViewModel viewModel = (sender as Button).DataContext as ProductCardViewModel;
+            _viewModel.SelectProductInfo = viewModel.ProductInfo;
         }
     }
 }

@@ -65,7 +65,7 @@
                         Height="1000"
                         Width="1600"
                         Stretch="Fill"
-                        Source="{Binding _inspImage.imageArray[0],TargetNullValue=_inspImage._defaultImage}"/>
+                        Source="{Binding _inspImage.imageArray[0]}"/>
                     </materialDesign:Card>
                     <materialDesign:Card
                         Grid.Column = "1"

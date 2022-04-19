@@ -50,9 +50,17 @@ namespace EyeOfSauron
         }
         public bool PreLoadOneMission() 
         {
-            PreDownloadedPanelMissionQueue.Enqueue(new PanelMission(productInfo));
-            //TODO: null check
-            return true; 
+            PanelMission mission = new(InspectMission.GetMission(productInfo));
+            //TODO: pre judge;
+            if (mission != null)
+            {
+                PreDownloadedPanelMissionQueue.Enqueue(mission);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
     public class PanelMission
@@ -61,9 +69,9 @@ namespace EyeOfSauron
         public Dictionary<string, BitmapImage> defectImageDataDic = new();
         public InspectMission inspectMission;
         public AETresult aetResult;
-        public PanelMission(ProductInfo info)
+        public PanelMission(InspectMission mission)
         {
-            inspectMission = InspectMission.GetMission(info);
+            inspectMission = mission;
             aetResult = AETresult.Get(inspectMission.HistoryID);
             IniResultImageDic(aetResult.ResultImages);
             IniDefectImageDic(aetResult.DefectImages);
