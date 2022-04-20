@@ -10,6 +10,8 @@ using MongoDB.Driver;
 using CoreClass;
 using CoreClass.Model;
 using System.IO;
+using NetMQ;
+using NetMQ.Sockets;
 
 namespace EyeOfSauron
 {
@@ -19,6 +21,7 @@ namespace EyeOfSauron
     }
     public class Mission
     {
+        //TODO: 区分任务类型
         private Queue<PanelMission> PreDownloadedPanelMissionQueue = new();
         public PanelMission onInspPanelMission;
         private ProductInfo productInfo;
@@ -48,7 +51,7 @@ namespace EyeOfSauron
                 });
             }
         }
-        public bool PreLoadOneMission() 
+        public bool PreLoadOneMission()
         {
             PanelMission mission = new(InspectMission.GetMission(productInfo));
             //TODO: pre judge;
@@ -62,6 +65,10 @@ namespace EyeOfSauron
                 return false;
             }
         }
+        public static void PreJudge(ref InspectMission mission)
+        {
+            //Need User data to initialize OperatorJudgeMessage, this method shoud be implemented other place;
+        }
     }
     public class PanelMission
     {
@@ -73,6 +80,13 @@ namespace EyeOfSauron
         {
             inspectMission = mission;
             aetResult = AETresult.Get(inspectMission.HistoryID);
+            IniResultImageDic(aetResult.ResultImages);
+            IniDefectImageDic(aetResult.DefectImages);
+        }
+        public PanelMission(InspectMission mission, AETresult result)
+        {
+            inspectMission = mission;
+            aetResult = result;
             IniResultImageDic(aetResult.ResultImages);
             IniDefectImageDic(aetResult.DefectImages);
         }
@@ -115,6 +129,7 @@ namespace EyeOfSauron
                 bufferImage[i].StreamSource = new MemoryStream(buffer);
                 bufferImage[i].EndInit();
                 imageDataDic[imageContainer[i].Name] = bufferImage[i];
+                if (i > 100) break;
             }
         }
     }
