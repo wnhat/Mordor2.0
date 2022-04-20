@@ -16,9 +16,8 @@ namespace EyeOfSauron.ViewModel
         }
         public KeyValuePair<ProductInfo, int> ProductInfo
         {
-            get => ProductInfo;
+            get => _productInfo;
             set => SetProperty(ref _productInfo, value);
-            
         }
     }
 }

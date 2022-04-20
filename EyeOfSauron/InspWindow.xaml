@@ -65,7 +65,7 @@
                         Height="1000"
                         Width="1600"
                         Stretch="Fill"
-                        Source="{Binding _inspImage.imageArray[0],TargetNullValue=_inspImage._defaultImage}"/>
+                        Source="{Binding _inspImage.imageArray[0]}"/>
                     </materialDesign:Card>
                     <materialDesign:Card
                         Grid.Column = "1"
@@ -118,7 +118,8 @@
                                 <Image
                                 Height="490"
                                 Width="790"
-                                Stretch="Fill"/>
+                                Source="{Binding _defectList.DetailDefectImage}"
+                                Stretch="Uniform"/>
                             </materialDesign:Card>
                         </StackPanel>
                         <StackPanel
@@ -137,7 +138,7 @@
                                         ItemsSource="{Binding _defectList.defectList.list}">
                                         <ListBox.Resources>
                                             <DataTemplate
-                                                    DataType="{x:Type viewModel:Defect}">
+                                                    DataType="{x:Type viewModel:AetDetailDefect}">
                                                 <TextBlock
                                                     Text="{Binding Path=Name}"
                                                     Margin="3 2"
@@ -160,17 +161,27 @@
                 </Grid>
                 <Grid
                     DockPanel.Dock="Right">
-                    <Grid MinWidth="220">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <ListView 
-                            Grid.Row="2">
-                            <ListView.Resources>
-                            </ListView.Resources>
-                        </ListView>
+                    <Grid MinWidth="220" VerticalAlignment="Top">
+                        <ItemsControl ItemsSource="{Binding _defectJudge.DefectJudgeList}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="1"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button 
+                                        Click="Button_Click_1"
+                                        Content="{Binding DefectName}" 
+                                        Height="80" 
+                                        Width="200" 
+                                        Margin="5,5,5,5" 
+                                        materialDesign:ButtonAssist.CornerRadius="5"  
+                                        FontWeight="Bold" 
+                                        FontSize="20"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </Grid>
                 </Grid>
             </DockPanel>

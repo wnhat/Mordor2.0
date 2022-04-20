@@ -93,7 +93,7 @@
                                         ItemsSource="{Binding Defects}">
                                     <ListBox.Resources>
                                         <DataTemplate
-                                                DataType="{x:Type viewModel:Defect}">
+                                                DataType="{x:Type viewModel:AetDetailDefect}">
                                             <TextBlock
                                                 Text="{Binding Name}"
                                                 Margin="3 2"

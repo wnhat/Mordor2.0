@@ -12,7 +12,6 @@ namespace EyeOfSauron.ViewModel
         private BitmapImage[] _imageArray = new BitmapImage[3];
         private string[] _imageNameArray = new string[3];
         private BitmapImage _defaultImage = new();
-
         static Uri defaultImageUri = new(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
         public InspImageViewModel()
         {
