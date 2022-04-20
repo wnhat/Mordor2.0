@@ -9,6 +9,7 @@ using CoreClass.Element;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 
 namespace CoreClass.Model
 {
@@ -193,6 +194,11 @@ namespace CoreClass.Model
         {
             Name = name;
             Data = data;
+        }
+        [JsonConstructor]
+        public ImageContainer()
+        {
+            
         }
     }
 }
