@@ -17,21 +17,24 @@ namespace CoreClass.Model
     {
         // mongodb product info collection;
         static IMongoCollection<ProductInfo> Collection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
+        static List<ProductInfo> find = Collection.Find(new BsonDocument()).ToList();
+        // random
+        static Random rnd = new Random();
         [BsonId]
-        public ObjectId Id;
-        public string PrefixId; //761L;
+        public ObjectId Id { get; set; }
+        public string PrefixId { get; set; } //761L;
         [JsonProperty("name")]
         public string Name { get; set; }    //D2 Porto;
-        public string[] InspectImageNames;
+        public string[] InspectImageNames { get; set; }
         [BsonRepresentation(BsonType.String)]
         [JsonProperty("producttype")]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public ProductType[] OnInspectTypes;
+        public ProductType[] OnInspectTypes { get; set; }
         [JsonProperty("fgcode")]
-        public string FGcode;
+        public string FGcode { get; set; }
         [JsonProperty("modelid")]
-        public string ModelId;
-        public DateTime LastAddTime;
+        public string ModelId { get; set; }
+        public DateTime LastAddTime { get; set; }
         [JsonProperty("img")]
         public ImageContainer Img { get; set; }
 
@@ -56,7 +59,9 @@ namespace CoreClass.Model
         public static ProductInfo GetProductInfo()
         {
             // get the first product in mongodb;
-            return Collection.Find(new BsonDocument()).FirstOrDefault();
+            var count = Collection.CountDocuments(new BsonDocument());
+            var randomint = rnd.Next(0, (int)count);
+            return find[randomint];
         }
     }
 }

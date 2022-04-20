@@ -104,15 +104,22 @@ namespace Sauron
         {
             var builder = Builders<AETresult>.Filter;
             // get top 12 panel from mongodb collection "AETresult", order by time;
-            var result = AETresult.AETresultCollection.Find(new BsonDocument()).SortByDescending(x => x.history.InspDate).Limit(12).ToList();
+            var result = AETresult.AETresultCollection.Find(new BsonDocument()).SortByDescending(x => x.history.InspDate).Limit(120).ToList();
 
-            string[] panels = new string[result.Count];
-            for (int i = 0; i < result.Count; i++)
+            int ii = 0;
+            
+            for (int i = 0; i < 10; i++)
             {
-                panels[i] = result[i].PanelId;
+                string[] panels = new string[12];
+                for (int s = 0; s < 12; s++)
+                {
+                    panels[s] = result[ii].PanelId;
+                    ii++;
+                }
+                MesLot newmissionlot = new MesLot("TESTLOT" + i + 1, panels, "", CoreClass.DICSEnum.ProductType.Production, ProductInfo.GetProductInfo());
+                MesLot.Insert(newmissionlot);
             }
-            MesLot newmissionlot = new MesLot("TESTLOT", panels, "", CoreClass.DICSEnum.ProductType.Production, ProductInfo.GetProductInfo());
-            MesLot.Insert(newmissionlot);
+            
             InitialMesMission();
         }
     }

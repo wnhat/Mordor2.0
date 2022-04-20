@@ -33,7 +33,7 @@ namespace Spider
         public static string Pcip;
         internal static void initialize(string[] args)
         {
-            if (args == null)
+            if (args.Length == 0)
             {
                 args = new string[] { "172.16.200.100" };
             }
