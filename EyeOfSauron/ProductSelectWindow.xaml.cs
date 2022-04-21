@@ -53,8 +53,8 @@ namespace EyeOfSauron
             SetSelectProductInfo(sender, e);
             Hide();
             Mission mission = new(_viewModel.SelectedProductCardViewModel.ProductInfo.Key);
-            InspWindow inspWindow = new(_viewModel._userInfo);
-            inspWindow.SetMission(mission);
+            InspWindow inspWindow = new(_viewModel._userInfo, mission);
+            //inspWindow.SetMission(mission);
             inspWindow.ShowDialog();
             Show();
         }
