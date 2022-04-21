@@ -12,6 +12,7 @@ using CoreClass.Model;
 using System.IO;
 using NetMQ;
 using NetMQ.Sockets;
+using CoreClass.Service;
 
 namespace EyeOfSauron
 {
@@ -26,6 +27,7 @@ namespace EyeOfSauron
         public PanelMission onInspPanelMission;
         private ProductInfo productInfo;
         readonly object Predownloadlock = new();
+       
         public Mission(ProductInfo Info)
         {
             productInfo = Info;

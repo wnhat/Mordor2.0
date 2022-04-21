@@ -22,7 +22,7 @@ namespace CoreClass.Service
         {
             // find unfinished and unrequested mission then aggregate by productinfo;
             var projection = Builders<InspectMission>.Projection.Exclude("Info.Img");
-            ProjectionDefinition<InspectMission> group = "{'asdasd' : '$Info', count : {$sum : 1}}";
+            ProjectionDefinition<InspectMission> group = "{_id : '$Info', count : {$sum : 1}}";
             var agg = Collection.Aggregate()
                 .Match(x => x.Finished == false && x.Requested == false)
                 .Project<InspectMission>(projection)
