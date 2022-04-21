@@ -8,20 +8,27 @@ using MongoDB.Bson.Serialization.Attributes;
 using CoreClass.DICSEnum;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using MongoDB.Driver;
 
 namespace CoreClass.Model
 {
     [BsonIgnoreExtraElements]
     public class ProductInfo
     {
+        // mongodb product info collection;
+        static IMongoCollection<ProductInfo> Collection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
+        static List<ProductInfo> find = Collection.Find(new BsonDocument()).ToList();
+        // random
+        static Random rnd = new Random();
         [BsonId]
         public ObjectId Id { get; set; }
-        public string PrefixId; //761L;
+        public string PrefixId { get; set; } //761L;
         [JsonProperty("name")]
-        public string Name { get; set; }     //D2 Porto;
+        public string Name { get; set; }    //D2 Porto;
         public string[] InspectImageNames { get; set; }
         [BsonRepresentation(BsonType.String)]
         [JsonProperty("producttype")]
+        //[JsonConverter(typeof(StringEnumConverter))]
         public ProductType[] OnInspectTypes { get; set; }
         [JsonProperty("fgcode")]
         public string FGcode { get; set; }
@@ -40,16 +47,21 @@ namespace CoreClass.Model
             }
             return Id.Equals(((ProductInfo)obj).Id);
         }
-
         // override object.GetHashCode
         public override int GetHashCode()
         {
             return Id.GetHashCode();
         }
-
         public override string ToString()
         {
             return base.ToString();
+        }
+        public static ProductInfo GetProductInfo()
+        {
+            // get the first product in mongodb;
+            var count = Collection.CountDocuments(new BsonDocument());
+            var randomint = rnd.Next(0, (int)count);
+            return find[randomint];
         }
     }
 }

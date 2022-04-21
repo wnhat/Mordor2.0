@@ -15,6 +15,7 @@ namespace Sauron
         static void Test()
         {
             MissionManager testmanager = new MissionManager();
+            testmanager.AddMissionTest();
         }
     }
 }

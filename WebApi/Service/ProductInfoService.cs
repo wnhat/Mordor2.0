@@ -37,6 +37,7 @@ namespace WebApi.Service
         {
             return Task.Run(() =>
             {
+                // TODO:upload from web;
                 product.Img.Name = "boe.jpeg";
                 string filepath = @"E:\img\" + product.Img.Name;
                 product.Img.Data = ImgToByte(filepath);

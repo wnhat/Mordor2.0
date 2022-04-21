@@ -13,14 +13,14 @@ using TIBCO.Rendezvous;
 
 namespace Sauron
 {
-    public class MesConnector
+    public static class MesConnector
     {
-        string service = "21200";
-        string network = ";225.21.21.2";
-        string daemon = "10.141.70.61:7500";
-        string subject = "BOE.B7.MEM.PRD.PEMsvr";
-        Transport transport = null;
-        public MesConnector()
+        static string service = "21200";
+        static string network = ";225.21.21.2";
+        static string daemon = "10.141.70.61:7500";
+        static string subject = "BOE.B7.MEM.PRD.PEMsvr";
+        static Transport transport = null;
+        static MesConnector()
         {
             try
             {
@@ -45,11 +45,11 @@ namespace Sauron
                 System.Environment.Exit(1);
             }
         }
-        //public MesLot RequestMissionTest()
+        //public static MesLot RequestMissionTest(string xml)
         //{
         //    //TODO: addtest；
         //}
-        public MesLot RequestMission(ProductInfo info, ProductType type)
+        public static MesLot RequestMission(ProductInfo info, ProductType type)
         {
             string fgCode = info.FGcode;
             string productInfo = type.ToString();
@@ -127,7 +127,7 @@ namespace Sauron
                 }
             }
         }
-        public void FinishInspect(MesLot lot)
+        public static void FinishInspect(MesLot lot)
         {
             RemoteTrayGroupProcessEnd newfinished = new RemoteTrayGroupProcessEnd(lot);
             LogMesMessage(newfinished.GetXmlDocument());
@@ -173,12 +173,12 @@ namespace Sauron
                 }
             }
         }
-        public void LogMesMessage(string xmlstring)
+        public static void LogMesMessage(string xmlstring)
         {
             XDocument doc = XDocument.Parse(xmlstring);
             Log.MesLog.Information("记录MES消息信息，Time ：{0} \t {1}", DateTime.Now, doc.ToString());
         }
-        public void LogMesMessage(XmlDocument xmlstring)
+        public static void LogMesMessage(XmlDocument xmlstring)
         {
             XDocument doc = XDocument.Parse(xmlstring.InnerXml);
             Log.MesLog.Information("记录MES消息信息，Time ：{0} \t {1}", DateTime.Now, doc.ToString());
@@ -340,14 +340,18 @@ namespace Sauron
                 newpanel.AppendChild(PANELNAME);
                 LOTGRADE.InnerText = item.LotGrade.ToString();
                 newpanel.AppendChild(LOTGRADE);
-                LOTDETAILGRADE.InnerText = item.PanelJudge.ToString();
+                LOTDETAILGRADE.InnerText = item.FinalJudge.ToString();
                 newpanel.AppendChild(LOTDETAILGRADE);
                 USERID.InnerText = "10086";
                 newpanel.AppendChild(USERID);
 
                 // 添加panel defect；
                 var DEFECTLIST = doc.CreateNode(XmlNodeType.Element, "DEFECTLIST", "");
-                if (item.PanelJudge != JudgeGrade.W && item.PanelJudge != JudgeGrade.S && item.PanelJudge != JudgeGrade.A)
+                if (item.FinalJudge == JudgeGrade.U)
+                {
+                    throw new MesMessageException("向MES发送的任务结果中含有未完成检查的Panel，请检查；");
+                }
+                if (item.FinalJudge != JudgeGrade.W && item.FinalJudge != JudgeGrade.S && item.FinalJudge != JudgeGrade.A)
                 {
                     var DEFECT = doc.CreateNode(XmlNodeType.Element, "DEFECT", "");
                     var DEFECTCODE = doc.CreateNode(XmlNodeType.Element, "DEFECTCODE", "");

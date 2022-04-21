@@ -19,21 +19,26 @@ namespace Spider
     {
         static void Main(string[] args)
         {
+            // get parameter from args;
+            SpiderParameter.initialize(args);
             Run();
         }
         static void Run()
         {
             Spider.Run();
         }
-        static void Test()
+    }
+    public static class SpiderParameter
+    {
+        public static string Pcip;
+        internal static void initialize(string[] args)
         {
-            Loger.Testlogger.Information("开始");
-            FileManager.RefreshFileList();
-            EqpSpider eqp = new EqpSpider(1);
-            var DATE = DateTime.Parse("2020/1/24");
-            eqp.SearchAuto(DateTime.Now - TimeSpan.FromDays(1));
-            eqp.AddNewResultAuto(DateTime.Today - TimeSpan.FromDays(1) + TimeSpan.FromHours(1));
-            var a = 1;
+            if (args.Length == 0)
+            {
+                args = new string[] { "172.16.200.100" };
+            }
+            // "@tcp://172.16.210.22:5554";
+            Pcip = @"@tcp://" + args[0] + ":5554";
         }
     }
 }

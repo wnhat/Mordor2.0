@@ -12,6 +12,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MongoDB.Driver;
+using EyeOfSauron.ViewModel;
+using CoreClass;
+using CoreClass.Model;
 
 namespace EyeOfSauron
 {
@@ -20,37 +24,57 @@ namespace EyeOfSauron
     /// </summary>
     public partial class ProductSelectWindow : Window
     {
-        MissionManager missionManager;
-        public ProductSelectWindow()
+        public readonly ProductViewModel _viewModel;
+        int count = 100;
+        public ProductSelectWindow(UserInfoViewModel userInfo)
         {
+            _viewModel = new ProductViewModel(userInfo);
+            DataContext = _viewModel;
             GetMissions();
             InitializeComponent();
         }
 
         private void GetMissions()
         {
-            missionManager = new MissionManager();  
-        }
-        private void WindowClose(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            TextBox1.Text = TextBox1.Text.Equals("1")?"2":"1";
-        }
-
-        private void WindowMinSize(object sender, RoutedEventArgs e)
-        { 
+            var collection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
+            var filter = Builders<ProductInfo>.Filter.Empty;
+            List<ProductInfo> productInfos = collection.Find(filter).ToList();
+            foreach (var productInfo in productInfos)
+            {
+                count += 200;
+                _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfo, count)));
+            }
+            //for test, will be removed later
+            _viewModel.SelectedProductCardViewModel = _viewModel.ProductInfos[0];
         }
 
-        private void Button2_Click(object sender, RoutedEventArgs e)
+        private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)
         {
+            SetSelectProductInfo(sender, e);
             Hide();
-            InspWindow inspWindow = new InspWindow();
+            Mission mission = new(_viewModel.SelectedProductCardViewModel.ProductInfo.Key);
+            InspWindow inspWindow = new(_viewModel._userInfo);
+            inspWindow.SetMission(mission);
             inspWindow.ShowDialog();
             Show();
+        }
+
+        //for test, will be removed later;
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var collection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
+            var filter = Builders<ProductInfo>.Filter.Empty;
+            List<ProductInfo> productInfos = new();
+            productInfos = collection.Find(filter).ToList();
+            count += 100;
+            //_viewModel.SelectProductInfo = new KeyValuePair<ProductInfo, int>(productInfos.ToArray()[1], count);
+            _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfos.ToArray()[1], count)));
+        }
+
+        private void SetSelectProductInfo(object sender, RoutedEventArgs e)
+        {
+            ProductCardViewModel viewModel = (sender as Button).DataContext as ProductCardViewModel;
+            _viewModel.SelectProductInfo = viewModel.ProductInfo;
         }
     }
 }

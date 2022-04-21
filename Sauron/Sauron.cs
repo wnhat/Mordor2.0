@@ -1,4 +1,5 @@
 ﻿using CoreClass;
+using CoreClass.Model;
 using NetMQ;
 using NetMQ.Sockets;
 using System;
@@ -22,6 +23,8 @@ namespace Sauron
             // 为poller绑定触发事件；
             routerSocket.ReceiveReady += OnMessageArrive;
             MissionTimer.Elapsed += MissionAdd;
+            // add a new timer to poller and refresh defect list;
+             
         }
         public static void Run()
         {
@@ -30,7 +33,6 @@ namespace Sauron
         static void MissionAdd(object sender, NetMQTimerEventArgs eventArgs)
         {
             Task.Run(manager.AddAutoMission);
-            
         }
         static void OnMessageArrive(object sender, NetMQSocketEventArgs eventArgs)
         {
@@ -40,9 +42,28 @@ namespace Sauron
             BaseMessage switchmessage = new BaseMessage(messageIn);
             if (switchmessage.TheMessageType == MessageType.CLIENT_SEND_MISSION_RESULT)
             {
-                // TODO:完成检查任务；
-                //manager.FinishMission();
+                OperatorJudgeMessage message = new OperatorJudgeMessage(messageIn);
+                // 完成检查任务；
+                manager.FinishMission(message.Judge, message.Mission);
             }
+        }
+        // refesh defect list every 5 minutes;
+        public static void RefreshDefectList()
+        {
+            Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        Defect.RefreshDefectList();
+                    }
+                    catch (Exception e)
+                    {
+                        // log exception details;
+                        Log.Logger.Error(e,"在刷新Defect列表时发生异常");
+                    }
+                }
+            );
         }
     }
 }

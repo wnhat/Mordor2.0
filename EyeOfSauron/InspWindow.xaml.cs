@@ -12,6 +12,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using EyeOfSauron.ViewModel;
+using MongoDB.Driver;
+using CoreClass;
+using CoreClass.Model;
+using System.IO;
 
 namespace EyeOfSauron
 {
@@ -20,40 +25,49 @@ namespace EyeOfSauron
     /// </summary>
     public partial class InspWindow : Window
     {
-        int flag = 1;
-        Mission mission;
-        public InspWindow()
+        int refreshPage = 0;
+        private Mission mission;
+        private MainWindowViewModel _viewModel;
+        public InspWindow(UserInfoViewModel userInfo)
         {
+            _viewModel = new MainWindowViewModel(userInfo);
+            DataContext = _viewModel;
             InitializeComponent();
         }
         public void SetMission(Mission m)
         {
             mission = m;
         }
-        public void SetImage()
-        {
-            BitmapImage image = new BitmapImage();
-            image.BeginInit();
-            image.UriSource = new Uri(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
-            image.EndInit();
-            ImageBox1.Source = image;
-            ImageBox2.Source = image;
-            ImageBox3.Source = image;
-            ImageBox4.Source = image;
-            //WpfAnimatedGif.ImageBehavior.SetAnimatedSource(ImageBox2, image);
-        }
-
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-
-        }
-
+        
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //ImageViewBox.RenderSize = new System.Windows.Size(3440, 2440);
-            //ImageViewBox.RenderSize = flag == 1 ? new System.Windows.Size(1740, 1240) : new System.Windows.Size(3440, 2440);
-            flag = flag == 1 ? 0 : 1;
-            SetImage();
+            RefreshInspImageViewModel();
+            _viewModel._defectList.DetailDefectImage = mission.onInspPanelMission.defectImageDataDic.FirstOrDefault().Value;
+        }
+        public void RefreshInspImageViewModel()
+        {
+            if ((refreshPage) * 3 < mission.onInspPanelMission.resultImageDataDic.Values.ToArray().Length)
+            {
+                _viewModel._inspImage.imageArray = mission.onInspPanelMission.resultImageDataDic.Values.ToArray().Skip((refreshPage) * 3).Take(3).ToArray();
+                _viewModel._inspImage.imageNameArray = mission.onInspPanelMission.resultImageDataDic.Keys.ToArray().Skip((refreshPage) * 3).Take(3).ToArray();
+                SetInspImage(mission.onInspPanelMission.resultImageDataDic.Values.ToArray().Skip((refreshPage) * 3).Take(3).ToArray(), mission.onInspPanelMission.resultImageDataDic.Keys.ToArray().Skip((refreshPage) * 3).Take(3).ToArray());
+                refreshPage++;
+            }
+            else
+            {
+                refreshPage = 0;
+                RefreshInspImageViewModel();
+            }
+        }
+        public void SetInspImage(BitmapImage[] bitmapImages, string[] imageNames)
+        {
+            _viewModel._inspImage.imageArray = bitmapImages;
+            _viewModel._inspImage.imageNameArray = imageNames;
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

@@ -72,5 +72,10 @@ namespace CoreClass.Model
                 return false;
             }
         }
+        // override object.GetHashCode
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
 }

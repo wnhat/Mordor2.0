@@ -43,6 +43,14 @@ namespace Mordor2._0
 
         static void Main()
         {
+            Test();
+        }
+        static void Test()
+        {
+            
+        }
+        static void Test2()
+        {
             //, { "grade", "$LastJudge" }
             var aggregate = Result.Aggregate()
                 .Group(new BsonDocument { { "_id", new BsonDocument {
@@ -53,23 +61,9 @@ namespace Mordor2._0
                     { "IdList",new BsonDocument{ {"$push", "$PanelId" } }} })
                 .Group(new BsonDocument { { "_id", "$_id.EqpID" }, { "StageCount",new BsonDocument{ { "$push",new BsonDocument{ { "Stage", "$_id.StageID" },{"count" , "$count" },{"IDlist", "$IdList" } }
             } } } });
-                //.Group(new BsonDocument { { "Stage", "$StageID" }, { "count", new BsonDocument("$sum", "$PanelId") } });
+            //.Group(new BsonDocument { { "Stage", "$StageID" }, { "count", new BsonDocument("$sum", "$PanelId") } });
             var result = aggregate.ToList();
             foreach (var item in result)
-            {
-                Testlogger.Information(item.ToJson());
-            }
-        }
-        static void Test()
-        {
-            string path = @"D:\Program\Mordor2.0\missionTest.xml";
-            FileInfo file = new FileInfo(path);
-            string xmlstring = file.OpenText().ReadToEnd();
-            XmlDocument returnxml = new XmlDocument();
-            returnxml.LoadXml(xmlstring);
-
-            var nodelist = returnxml.GetElementsByTagName("PANELID");
-            foreach (var item in nodelist)
             {
                 Testlogger.Information(item.ToJson());
             }

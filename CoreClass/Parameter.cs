@@ -1,4 +1,5 @@
 ﻿using CoreClass.Model;
+using MongoDB.Bson;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -7,9 +8,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using CoreClass;
+using MongoDB.Driver;
 
 namespace CoreClass
 {
+    // 使用mongodb中的parameter表储存设置信息，使用该软件的电脑应能够连接至服务器主机；
     public static class Parameter
     {
         public static string SavePath;
@@ -21,33 +25,30 @@ namespace CoreClass
         public static string AviExamFilePath;
         public static string SviExamFilePath;
         public static int MesConnectTimeOut;
-        //public static DateTime SearchAfterDate = DateTime.Parse("2022-01-10T09:30:41");
+        // 抽样比例为0~100 内的整数；
+        public static int SgradeSimplingRatio;
+        public static int FgradeSimplingRatio;
 
         static Parameter()
         {
-            string sysConfigPath = @"D:\DICS Software\sysconfig.json";
-            FileInfo sysconfig = new FileInfo(sysConfigPath);
-            if (sysconfig.Exists)
+            // Get parameter from mongodb;
+            var Collection = DBconnector.DICSDB.GetCollection<BsonDocument>("Parameter");
+            var Filter = new BsonDocument();
+            // find new parameter by date;
+            var result = Collection.Find(Filter).SortByDescending(x => x["_id"]).FirstOrDefault();
+            result.RemoveElement(result.ElementAt(0));
+            JObject jsonobj = JObject.Parse(result.ToJson());
+            var fieldcollection = typeof(Parameter).GetFields();
+            if (CompareNameList(fieldcollection, jsonobj))
             {
-                var jsonreader = new StreamReader(sysconfig.OpenRead());
-                var jsonstring = jsonreader.ReadToEnd();
-                JObject jsonobj = JObject.Parse(jsonstring);
-                var fieldcollection = typeof(Parameter).GetFields();
-                if (CompareNameList(fieldcollection, jsonobj))
+                foreach (var item in fieldcollection)
                 {
-                    foreach (var item in fieldcollection)
-                    {
-                        var propertyName = item.Name;
-                        var value = jsonobj.GetValue(propertyName);
-                        Type propertytype = item.FieldType;
-                        var convertvalue = value.ToObject(propertytype);
-                        item.SetValue(null, convertvalue);
-                    }
+                    var propertyName = item.Name;
+                    var value = jsonobj.GetValue(propertyName);
+                    Type propertytype = item.FieldType;
+                    var convertvalue = value.ToObject(propertytype);
+                    item.SetValue(null, convertvalue);
                 }
-            }
-            else
-            {
-                throw new ApplicationException("sysconfig.json 文件不存在，请检查与 145.22电脑的链接或相应地址是否存在设置文件；");
             }
         }
         static private bool CompareNameList(FieldInfo[] fieldcollection, JObject jsonobj)

@@ -1,4 +1,4 @@
-﻿<Window x:Class="EyeOfSauron.MainWindow"
+﻿<Window x:Class="EyeOfSauron.LogininWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,6 +9,8 @@
         ResizeMode="NoResize"
         WindowStyle="None"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel" 
+        d:DataContext="{d:DesignInstance Type=viewModel:UserInfoViewModel}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.FontWeight="Medium"
@@ -134,7 +136,6 @@
                     materialDesign:HintAssist.Hint="Password"/>
             </Grid>
             <Button 
-                
                 Click="ButtonBase_OnClick"
                 Height="40" 
                 Width="80" 

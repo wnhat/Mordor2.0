@@ -23,5 +23,38 @@ namespace CoreClass
         /// DICS 测试数据库
         /// </summary>
         static IMongoDatabase DICSTest = mongoClient.GetDatabase("DICSTest");
+        static DBconnector()
+        {
+            // initial mongodb collection;
+
+            // check if collection AETresult exists;
+            var collectionList = DICSDB.ListCollections().ToList();
+            if (!collectionList.Any(x => x.GetValue("name") == "AETresult"))
+            {
+                DICSDB.CreateCollection("AETresult");
+                // initial AETresult collection;
+                DICSDB.GetCollection<AETresult>("AETresult").Indexes.CreateOne(new CreateIndexModel<AETresult>(Builders<AETresult>.IndexKeys.Descending("history._id")));
+                DICSDB.GetCollection<AETresult>("AETresult").Indexes.CreateOne(new CreateIndexModel<AETresult>(Builders<AETresult>.IndexKeys.Ascending("PanelId")));
+                // create ttl index with field history.InspDate;
+                DICSDB.GetCollection<AETresult>("AETresult").Indexes.CreateOne(new CreateIndexModel<AETresult>(Builders<AETresult>.IndexKeys.Descending("history.InspDate"), new CreateIndexOptions { ExpireAfter = TimeSpan.FromDays(40) }));
+            }
+             // check if collection InspectResult exists;
+            if (!collectionList.Any(x => x.GetValue("name") == "InspectResult"))
+            {
+                DICSDB.CreateCollection("InspectResult");
+                // check existed indexes;
+                var indexList = DICSDB.GetCollection<PanelInspectHistory>("InspectResult").Indexes.List().ToList();
+
+                // initial InspectResult collection;
+                DICSDB.GetCollection<PanelInspectHistory>("InspectResult").Indexes.CreateOne(new CreateIndexModel<PanelInspectHistory>(Builders<PanelInspectHistory>.IndexKeys.Descending("InspDate")));
+                DICSDB.GetCollection<PanelInspectHistory>("InspectResult").Indexes.CreateOne(new CreateIndexModel<PanelInspectHistory>(Builders<PanelInspectHistory>.IndexKeys.Ascending("PanelId")));
+                // add combine index [EqpID,InspDate] for InspectResult collection;
+                DICSDB.GetCollection<PanelInspectHistory>("InspectResult").Indexes.CreateOne(
+                    new CreateIndexModel<PanelInspectHistory>(Builders<PanelInspectHistory>.IndexKeys.Combine(
+                        Builders<PanelInspectHistory>.IndexKeys.Ascending("EqpID"),
+                         Builders<PanelInspectHistory>.IndexKeys.Descending("InspDate"))));
+                // 向数据库添加索引，name：eqid;
+            }
+        }
     }
 }
