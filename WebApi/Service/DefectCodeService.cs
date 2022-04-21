@@ -25,7 +25,7 @@ namespace WebApi.Service
         {
             return Task.Run(() =>
             {
-                var filter = Builders<Defect>.Filter.Eq("Code", param.DefectCode);
+                var filter = Builders<Defect>.Filter.Eq("DefectCode", param.DefectCode);
                 if (_defectcodes.Find(filter).FirstOrDefault() != null)
                 {
                     throw new ApplicationException("Defect \"" + param.DefectCode + "\" is already existed");

@@ -15,20 +15,19 @@ namespace CoreClass.Model
     public class ProductInfo
     {
         [BsonId]
-        public ObjectId Id;
+        public ObjectId Id { get; set; }
         public string PrefixId; //761L;
         [JsonProperty("name")]
-        public string Name;     //D2 Porto;
-        public string[] InspectImageNames;
+        public string Name { get; set; }     //D2 Porto;
+        public string[] InspectImageNames { get; set; }
         [BsonRepresentation(BsonType.String)]
         [JsonProperty("producttype")]
-        //[JsonConverter(typeof(StringEnumConverter))]
-        public ProductType[] OnInspectTypes;
+        public ProductType[] OnInspectTypes { get; set; }
         [JsonProperty("fgcode")]
-        public string FGcode;
+        public string FGcode { get; set; }
         [JsonProperty("modelid")]
-        public string ModelId;
-        public DateTime LastAddTime;
+        public string ModelId { get; set; }
+        public DateTime LastAddTime { get; set; }
         [JsonProperty("img")]
         public ImageContainer Img { get; set; }
 

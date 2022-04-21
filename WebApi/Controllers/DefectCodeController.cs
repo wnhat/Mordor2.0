@@ -13,7 +13,7 @@ using CoreClass;
 
 namespace WebApi.Controllers
 {
-    [Authorize(Roles = "2")]
+    [Authorize(Roles = "2,1")]
     [Route("api/[controller]")]
     [ApiController]
     public class DefectCodeController : ControllerBase
@@ -63,11 +63,12 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Defect param)
+        public async Task<IActionResult> Update(DefectCodeDto param)
         {
             try
             {
-                await _defectCodeService.UpdateDefectCode(param);
+                var defect = _mapper.Map<Defect>(param);
+                await _defectCodeService.UpdateDefectCode(defect);
                 return Ok();
             }
             catch (Exception e)

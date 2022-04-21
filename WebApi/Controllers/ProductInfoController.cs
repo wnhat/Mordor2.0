@@ -11,7 +11,7 @@ using CoreClass;
 
 namespace WebApi.Controllers
 {
-    [AllowAnonymous]
+    [Authorize(Roles = "2,1")]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductInfoController : ControllerBase

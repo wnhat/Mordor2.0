@@ -7,9 +7,11 @@ namespace WebApi.Dtos
 {
     public class DefectCodeDto
     {
-        public string Code { get; set; }
+        public string Id { get; set; }
 
-        public string Name { get; set; }
+        public string DefectCode { get; set; }
+
+        public string DefectName { get; set; }
 
         public string Group1 { get; set; }
 
