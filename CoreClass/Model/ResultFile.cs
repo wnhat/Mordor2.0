@@ -199,10 +199,5 @@ namespace CoreClass.Model
             Name = name;
             Data = data;
         }
-        [JsonConstructor]
-        public ImageContainer()
-        {
-            
-        }
     }
 }
