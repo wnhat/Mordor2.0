@@ -1,5 +1,4 @@
-﻿using WebApi.Service;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CoreClass.Model;
 using CoreClass;
+using CoreClass.Service;
 
 namespace WebApi.Controllers
 {

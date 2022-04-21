@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace WebApi.Service
+namespace CoreClass.Service
 { 
     public interface IUserService
     {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using CoreClass.Model;
 using CoreClass;
 
-namespace WebApi.Service
+namespace CoreClass.Service
 {
     public interface IProductInfoService
     {
