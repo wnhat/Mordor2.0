@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
-using WebApi.Service;
 using Microsoft.Extensions.Options;
 using WebApi.Controllers;
 using AutoMapper;
@@ -22,7 +21,7 @@ using WebApi.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-
+using CoreClass.Service;
 
 namespace WebApi
 {

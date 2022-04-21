@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using CoreClass.Model;
 using CoreClass;
 
-namespace WebApi.Service
+namespace CoreClass.Service
 {
     public interface IProductInfoService
     {
@@ -58,6 +58,7 @@ namespace WebApi.Service
                     throw new ApplicationException("产品已存在");
                 }
 
+                product.LastAddTime = DateTime.Now;
                 _productInfo.InsertOne(product);
             });
         }
@@ -74,16 +75,33 @@ namespace WebApi.Service
                     throw new ApplicationException("产品信息不存在");
                 }
 
-                product.Id = storeData.Id;
-                product.Img.Name = storeData.Img.Name;
-                product.Img.Data = storeData.Img.Data;
+                var obj1 = new
+                {
+                    product.Name,
+                    product.OnInspectTypes,
+                    product.FGcode,
+                    product.ModelId
+                };
 
-                if (CompareProperties(product, storeData))
+                var obj2 = new
+                {
+                    storeData.Name,
+                    storeData.OnInspectTypes,
+                    storeData.FGcode,
+                    storeData.ModelId
+                };
+
+                if (CompareProperties(obj1, obj2))
                 {
                     throw new ApplicationException("无信息更新，请重新检查输入");
                 }
 
-                _productInfo.ReplaceOne(filter, product);
+                var update = Builders<ProductInfo>.Update.Set("Name", product.Name)
+                                                         .Set("OnInspectTypes", product.OnInspectTypes)
+                                                         .Set("FGcode", product.FGcode)
+                                                         .Set("ModelId", product.ModelId)
+                                                         .Set("LastAddTime", DateTime.Now);
+                _productInfo.UpdateOne(filter, update);
             });
         }
 
@@ -111,10 +129,10 @@ namespace WebApi.Service
         }
 
         private static bool CompareProperties(object obj1, object obj2)
-        {
-            
+        {   
             var bsonElements1 = BsonDocument.Create(obj1.ToBsonDocument());
             var bsonElements2 = BsonDocument.Create(obj2.ToBsonDocument());
+
             return bsonElements1 == bsonElements2;
         }
 

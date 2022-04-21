@@ -1,11 +1,11 @@
 ﻿using CoreClass;
+using CoreClass.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
-using WebApi.Service;
 
 namespace WebApi.Controllers
 {

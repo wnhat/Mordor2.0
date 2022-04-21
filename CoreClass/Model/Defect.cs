@@ -31,7 +31,7 @@ namespace CoreClass.Model
         [JsonProperty("group3", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Group3 { get; set; }
         [JsonProperty("grade")]
-        public int Grade { get; set; } = 5!;
+        public int Grade { get; set; }
         [JsonProperty("note", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Note { get; set; }
         // defect judge weight for reinspect or not, when have multiple defects, >1 to increase reinspect probability;
