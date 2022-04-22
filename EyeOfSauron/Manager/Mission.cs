@@ -16,25 +16,31 @@ using CoreClass.Service;
 
 namespace EyeOfSauron
 {
-    public class MissionManager
-    {
-
-    }
     public class Mission
     {
         //TODO: 区分任务类型
         private Queue<PanelMission> PreDownloadedPanelMissionQueue = new();
+        
         public PanelMission onInspPanelMission;
-        private ProductInfo productInfo;
+        
+        private readonly ProductInfo productInfo;
+        
         readonly object Predownloadlock = new();
        
         public Mission(ProductInfo Info)
         {
             productInfo = Info;
-            PreLoadOneMission();
-            onInspPanelMission = PreDownloadedPanelMissionQueue.Dequeue();
+            if (PreLoadOneMission())
+            {
+                onInspPanelMission = PreDownloadedPanelMissionQueue.Dequeue();
+            }
+            else
+            {
+                throw new Exception("Mission Empty");
+            }
         }
-        private void FillPreDownloadMissionQueue()
+        
+        public void FillPreDownloadMissionQueue()
         {
             lock (Predownloadlock)
             {
@@ -53,31 +59,83 @@ namespace EyeOfSauron
                 });
             }
         }
+        
         public bool PreLoadOneMission()
         {
-            PanelMission mission = new(InspectMission.GetMission(productInfo));
-            //TODO: pre judge;
-            if (mission != null)
+            try
             {
-                PreDownloadedPanelMissionQueue.Enqueue(mission);
-                return true;
+                InspectMission inspectMission = InspectMission.GetMission(productInfo);
+                if(inspectMission == null)
+                {
+                    return false;
+                }
+                try
+                {
+                    PanelInspectHistory history = PanelInspectHistory.Get(inspectMission.PanelID);
+                    _ = PreJudge(ref inspectMission, ref history);
+                    AETresult aetResult = AETresult.Get(inspectMission.HistoryID);
+                    PanelMission panelMission = new(inspectMission, aetResult);
+                    PreDownloadedPanelMissionQueue.Enqueue(panelMission);
+                    return true;
+                    //Incase get null object;
+                    //Need specific Exception class;
+                }
+                catch (NullReferenceException)
+                {
+                    SeverConnector.SendPanelMissionResult(new OperatorJudge(new Defect("异显", "DE00010"), User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, User.AutoJudgeUser.Id, 1), inspectMission);
+                    return PreLoadOneMission();
+                }
             }
-            else
+            catch (NullReferenceException)
             {
                 return false;
             }
         }
-        public static void PreJudge(ref InspectMission mission)
+        
+        public bool NextMission()
         {
-            //Need User data to initialize OperatorJudgeMessage, this method shoud be implemented other place;
+            if (PreDownloadedPanelMissionQueue.Count == 0)
+            {
+                return false;
+            }
+            else
+            {
+                onInspPanelMission = PreDownloadedPanelMissionQueue.Dequeue();
+                return true;
+            }
+        }
+
+        public static bool PreJudge(ref InspectMission mission, ref PanelInspectHistory aetResult)
+        {
+            //need prejudge logic;
+            Defect defect = new("defactName", "defectCode");
+            if (true)
+            {
+                return false;
+            }
+            else
+            {
+                SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, User.AutoJudgeUser.Id, 1), mission);
+                return true;
+            }
+        }
+        
+        public static void SendOpJudgeResult(Defect defect, User user, int score, InspectMission inspectMission)
+        {
+            SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, user.Username, user.Account, user.Id, score), inspectMission);
         }
     }
+    
     public class PanelMission
     {
         public Dictionary<string, BitmapImage> resultImageDataDic = new();
+        
         public Dictionary<string, BitmapImage> defectImageDataDic = new();
+        
         public InspectMission inspectMission;
+        
         public AETresult aetResult;
+        
         public PanelMission(InspectMission mission)
         {
             inspectMission = mission;
@@ -85,6 +143,7 @@ namespace EyeOfSauron
             IniResultImageDic(aetResult.ResultImages);
             IniDefectImageDic(aetResult.DefectImages);
         }
+        
         public PanelMission(InspectMission mission, AETresult result)
         {
             inspectMission = mission;
@@ -92,6 +151,7 @@ namespace EyeOfSauron
             IniResultImageDic(aetResult.ResultImages);
             IniDefectImageDic(aetResult.DefectImages);
         }
+        
         public void IniResultImageDic(ImageContainer[] ResultImages)
         {
             Dictionary<string, BitmapImage> imageDataDic = new Dictionary<string, BitmapImage>();
@@ -112,10 +172,12 @@ namespace EyeOfSauron
 #pragma warning restore CS8604 // Possible null reference argument.
             }
         }
+        
         public void IniDefectImageDic(ImageContainer[] DefectImages)
         {
             IniImageDic(ref defectImageDataDic, DefectImages);
         }
+        
         public static void IniImageDic(ref Dictionary<string, BitmapImage> imageDataDic, ImageContainer[] imageContainer)
         {
             List<BitmapImage> bufferImage = new();

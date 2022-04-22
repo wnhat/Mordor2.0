@@ -171,7 +171,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Button 
-                                        Click="Button_Click_1"
+                                        Click="JudgeButtonClick"
                                         Content="{Binding DefectName}" 
                                         Height="80" 
                                         Width="200" 

@@ -15,24 +15,26 @@ namespace EyeOfSauron.ViewModel
     public class ProductViewModel : ViewModelBase
     {
         public readonly UserInfoViewModel _userInfo;
+
         private ObservableCollection<ProductCardViewModel> _productCardViewModels = new();
-        private ProductCardViewModel _selectedProductCardViewModel;
+
+        private ProductCardViewModel? _selectedProductCardViewModel;
+
         private KeyValuePair<ProductInfo, int> _selectProductInfo;
+
         public ProductViewModel(UserInfoViewModel userInfo)
         {
             _userInfo = userInfo;
-            
-            //TODO: 期望返回List<KeyValuePair<ProductInfo, int>>对象
-            KeyValuePair<ProductInfo, int> productInfo = InspectMission.GetWaittingMissionOverView();
-            //selectProductInfo = _productInfos[0];
-            //TODO 
         }
 
         public ProductCardViewModel SelectedProductCardViewModel
         {
+#pragma warning disable CS8603 // Possible null reference return.
             get => _selectedProductCardViewModel;
+#pragma warning restore CS8603 // Possible null reference return.
             set => SetProperty(ref _selectedProductCardViewModel, value);
         }
+
         public KeyValuePair<ProductInfo, int> SelectProductInfo
         {
             get => _selectProductInfo;

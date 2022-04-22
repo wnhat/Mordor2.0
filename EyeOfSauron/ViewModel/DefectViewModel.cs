@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Controls;
-using MaterialDesignThemes.Wpf;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Media.Imaging;
 
 namespace EyeOfSauron.ViewModel
 {
-
+    //This class shoudl be rewrite;
     public sealed class DefectListViewModel : ViewModelBase
     {
         private object? _selectedItem;

@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Globalization;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MongoDB.Driver;
 using EyeOfSauron.ViewModel;
 using CoreClass;
@@ -28,8 +19,11 @@ namespace EyeOfSauron
     public partial class ProductSelectWindow : Window
     {
         int count = 0;
+
         public readonly ProductViewModel _viewModel;
+
         static readonly DICSRemainInspectMissionService RemainService = new();
+
         public ProductSelectWindow(UserInfoViewModel userInfo)
         {
             _viewModel = new ProductViewModel(userInfo);
@@ -44,7 +38,7 @@ namespace EyeOfSauron
             var remainMissionCount = await RemainService.GetRemainMissionCount();
             foreach (var item in remainMissionCount)
             {
-                // convert the first BsonElement in item to ProductInfo;
+                // convert the first BsonElement in the item to ProductInfo;
                 var buffer = item.GetValue("_id").ToBsonDocument();
                 var productInfo = BsonSerializer.Deserialize<ProductInfo>(buffer);
                 int count = item.GetValue("count").ToInt32();
@@ -56,10 +50,20 @@ namespace EyeOfSauron
         {
             SetSelectProductInfo(sender, e);
             Hide();
-            Mission mission = new(_viewModel.SelectedProductCardViewModel.ProductInfo.Key);
-            InspWindow inspWindow = new(_viewModel._userInfo, mission);
-            inspWindow.ShowDialog();
-            Show();
+            try
+            {
+                Mission mission = new(_viewModel.SelectedProductCardViewModel.ProductInfo.Key);
+                InspWindow inspWindow = new(_viewModel._userInfo, mission);
+                inspWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                Show();
+            }
         }
 
         //for test, will be removed later;

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
@@ -68,7 +66,6 @@ namespace CoreClass.Model
                 Builders<InspectMission>.Filter.Eq(x => x.Info.Id, info.Id),
                 Builders<InspectMission>.Filter.Eq(x => x.Requested, true));
             var update = Builders<InspectMission>.Update.Set(x => x.LastRequestTime, DateTime.Now).Set(x => x.Requested, true);
-
             InspectMission mission = Collection.FindOneAndUpdate(filter, update);
             return mission;
         }
