@@ -1,184 +1,179 @@
-﻿<Window x:Class="EyeOfSauron.InspWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:EyeOfSauron"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:gif="http://wpfanimatedgif.codeplex.com"
-        xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel" 
-        d:DataContext="{d:DesignInstance Type=viewModel:MainWindowViewModel}"
-        gif:ImageBehavior.AnimateInDesignMode="True"
-        mc:Ignorable="d"
-        ResizeMode="CanResize"
-        WindowStyle="ThreeDBorderWindow"
-        MaxHeight="2500"
-        MaxWidth="3840"
-        Title="InspWindow" 
-        Height="2500" Width="3840" 
-        WindowStartupLocation="CenterScreen" 
-        MinHeight="500" MinWidth="800" 
-        SizeToContent="Manual" 
-        WindowState="Maximized">
+﻿<Window
+    x:Class="EyeOfSauron.InspWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gif="http://wpfanimatedgif.codeplex.com"
+    xmlns:local="clr-namespace:EyeOfSauron"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
+    Title="InspWindow"
+    Width="3840"
+    Height="2500"
+    MinWidth="800"
+    MinHeight="500"
+    MaxWidth="3840"
+    MaxHeight="2500"
+    d:DataContext="{d:DesignInstance Type=viewModel:MainWindowViewModel}"
+    gif:ImageBehavior.AnimateInDesignMode="True"
+    ResizeMode="CanResize"
+    SizeToContent="Manual"
+    WindowStartupLocation="CenterScreen"
+    WindowState="Maximized"
+    WindowStyle="ThreeDBorderWindow"
+    mc:Ignorable="d">
     <Window.Resources>
-        <!--<domain:MovieCategory x:Key="MovieCategory" />-->
     </Window.Resources>
     <Viewbox>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <StackPanel>
-                <TextBox
-                    x:Name="UserAccountTextBox"
-                    Text="{Binding _defectList.defectList.list[0].Name,UpdateSourceTrigger=PropertyChanged}">
-                </TextBox>
-                <Button
-                Click="Button_Click"/>
+                <TextBox x:Name="UserAccountTextBox" Text="{Binding MissionInfoViewModel.PanelId}" />
+                <Button Click="Button_Click" />
             </StackPanel>
-            
-            <DockPanel
-                Grid.Column="1">
-                <Grid 
-                    Width="3220" 
-                    Height="2020"
-                    Grid.Column="1">
+
+            <DockPanel Grid.Column="1">
+                <Grid
+                    Grid.Column="1"
+                    Width="3220"
+                    Height="2020">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <materialDesign:Card
-                        Grid.Column = "0"
                         Grid.Row="0"
+                        Grid.Column="0"
                         Margin="5,5,5,5"
                         materialDesign:ShadowAssist.ShadowDepth="Depth1">
                         <Image
-                        x:Name="ImageBox1"
-                        Height="1000"
-                        Width="1600"
-                        Stretch="Fill"
-                        Source="{Binding _inspImage.imageArray[0]}"/>
+                            x:Name="ImageBox1"
+                            Width="1600"
+                            Height="1000"
+                            Source="{Binding MissionInfoViewModel.InspImage.imageArray[0]}"
+                            Stretch="Fill" />
                     </materialDesign:Card>
                     <materialDesign:Card
-                        Grid.Column = "1"
                         Grid.Row="0"
+                        Grid.Column="1"
                         Margin="5,5,5,5"
                         materialDesign:ShadowAssist.ShadowDepth="Depth1">
                         <Image
-                        x:Name="ImageBox2"
-                        Height="1000"
-                        Width="1600"
-                        Stretch="Fill"
-                        Source="{Binding _inspImage.imageArray[1]}"/>
+                            x:Name="ImageBox2"
+                            Width="1600"
+                            Height="1000"
+                            Source="{Binding MissionInfoViewModel.InspImage.imageArray[1]}"
+                            Stretch="Fill" />
                     </materialDesign:Card>
                     <materialDesign:Card
-                        Grid.Column = "0"
                         Grid.Row="1"
+                        Grid.Column="0"
                         Margin="5,5,5,5"
                         materialDesign:ShadowAssist.ShadowDepth="Depth1">
                         <Image
-                        x:Name="ImageBox3"
-                        Height="1000"
-                        Width="1600"
-                        Stretch="Fill"
-                        Source="{Binding _inspImage.imageArray[2]}"/>
+                            x:Name="ImageBox3"
+                            Width="1600"
+                            Height="1000"
+                            Source="{Binding MissionInfoViewModel.InspImage.imageArray[2]}"
+                            Stretch="Fill" />
                     </materialDesign:Card>
-                    
-                    <Grid
-                        Grid.Column = "1"
-                        Grid.Row="1">
+
+                    <Grid Grid.Row="1" Grid.Column="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <StackPanel
-                            Grid.Column = "0">
-                            <materialDesign:Card
-                                Margin="5,5,5,5"
-                                materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                        <StackPanel Grid.Column="0">
+                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
                                 <Image
-                                Height="490"
-                                Width="790"
-                                Stretch="Fill"/>
+                                    Width="790"
+                                    Height="490"
+                                    Stretch="Fill" />
                             </materialDesign:Card>
-                            <materialDesign:Card
-                                Margin="5,5,5,5"
-                                materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
                                 <Image
-                                Height="490"
-                                Width="790"
-                                Source="{Binding _defectList.DetailDefectImage}"
-                                Stretch="Uniform"/>
+                                    Width="790"
+                                    Height="490"
+                                    Source="{Binding MissionInfoViewModel.DefectList.DetailDefectImage}"
+                                    Stretch="Uniform" />
                             </materialDesign:Card>
                         </StackPanel>
-                        <StackPanel
-                            Grid.Column = "1">
+                        <StackPanel Grid.Column="1">
                             <materialDesign:Card
-                                Height="490"
                                 Width="790"
+                                Height="490"
                                 Margin="5,5,5,5"
-                                materialDesign:ShadowAssist.ShadowDepth="Depth1"
-                                HorizontalAlignment="Stretch">
-                                <ScrollViewer
-                                    HorizontalScrollBarVisibility="Auto"
-                                    VerticalScrollBarVisibility="Auto">
-                                    <ListBox 
+                                HorizontalAlignment="Stretch"
+                                materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                    <!--<ListBox
                                         x:Name="DefectListBox"
-                                        ItemsSource="{Binding _defectList.defectList.list}">
+                                        ItemsSource="{Binding _defectList.defectList.list}"
+                                        SelectionChanged="DefectListBox_SelectionChanged">
                                         <ListBox.Resources>
-                                            <DataTemplate
-                                                    DataType="{x:Type viewModel:AetDetailDefect}">
+                                            <DataTemplate DataType="{x:Type viewModel:AetDetailDefect}">
                                                 <TextBlock
+                                                    Margin="3,2"
                                                     Text="{Binding Path=Name}"
-                                                    Margin="3 2"
                                                     ToolTip="{Binding Path=Name}" />
                                             </DataTemplate>
                                         </ListBox.Resources>
-                                    </ListBox>
+                                    </ListBox>-->
+                                    <ListView
+                                        ItemsSource="{Binding MissionInfoViewModel.DefectList.DefectList.AetDetailDefects}"
+                                        SelectedItem="{Binding MissionInfoViewModel.DefectList.SelectedItem,Mode=TwoWay}">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name1" />
+                                                <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name1" />
+                                                <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name1" />
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
                                 </ScrollViewer>
                             </materialDesign:Card>
-                            <materialDesign:Card
-                                Margin="5,5,5,5"
-                                materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
                                 <Image
-                                Height="490"
-                                Width="790"
-                                Stretch="Fill"/>
+                                    Width="790"
+                                    Height="490"
+                                    Stretch="Fill" />
                             </materialDesign:Card>
                         </StackPanel>
                     </Grid>
                 </Grid>
-                <Grid
-                    DockPanel.Dock="Right">
+                <Grid DockPanel.Dock="Right">
                     <Grid MinWidth="220" VerticalAlignment="Top">
-                        <ItemsControl ItemsSource="{Binding _defectJudge.DefectJudgeList}">
+                        <ItemsControl ItemsSource="{Binding DefectJudge.DefectJudgeList}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <UniformGrid Columns="1"/>
+                                    <UniformGrid Columns="1" />
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Button 
+                                    <Button
+                                        Width="200"
+                                        Height="80"
+                                        Margin="5,5,5,5"
+                                        materialDesign:ButtonAssist.CornerRadius="5"
                                         Click="JudgeButtonClick"
-                                        Content="{Binding DefectName}" 
-                                        Height="80" 
-                                        Width="200" 
-                                        Margin="5,5,5,5" 
-                                        materialDesign:ButtonAssist.CornerRadius="5"  
-                                        FontWeight="Bold" 
-                                        FontSize="20"/>
+                                        Content="{Binding DefectName}"
+                                        FontSize="20"
+                                        FontWeight="Bold" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

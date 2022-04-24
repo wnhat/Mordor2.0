@@ -15,7 +15,7 @@ namespace CoreClass.Model
         public static IMongoCollection<InspectMission> Collection = DBconnector.DICSDB.GetCollection<InspectMission>("InspectMission");
         [BsonId]
         public ObjectId ID;
-        public string PanelID;
+        public string PanelID { get; set; }
         public MissionType Type;
         public ObjectId HistoryID;
         public ObjectId ResultContainerId;
@@ -64,8 +64,8 @@ namespace CoreClass.Model
         {
             var filter = Builders<InspectMission>.Filter.And(
                 Builders<InspectMission>.Filter.Eq(x => x.Info.Id, info.Id),
-                Builders<InspectMission>.Filter.Eq(x => x.Requested, true));
-            var update = Builders<InspectMission>.Update.Set(x => x.LastRequestTime, DateTime.Now).Set(x => x.Requested, true);
+                Builders<InspectMission>.Filter.Eq(x => x.Requested, false));
+            var update = Builders<InspectMission>.Update.Set(x => x.LastRequestTime, DateTime.Now).Set(x => x.Requested, false);
             InspectMission mission = Collection.FindOneAndUpdate(filter, update);
             return mission;
         }

@@ -24,6 +24,7 @@ namespace EyeOfSauron
             DataContext = _viewModel;
             mission = inspMission;
             LoadOnInspPanelMission();
+            mission.FillPreDownloadMissionQueue();
             InitializeComponent();
         }
 
@@ -31,17 +32,18 @@ namespace EyeOfSauron
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             RefreshInspImage();
-            _viewModel._defectList.DetailDefectImage = mission.onInspPanelMission.defectImageDataDic.FirstOrDefault().Value;
+            _viewModel.MissionInfoViewModel.DefectList.DetailDefectImage = mission.onInspPanelMission.defectImageDataDic.FirstOrDefault().Value;
         }
 
         public void LoadOnInspPanelMission()
         {
             if (mission.onInspPanelMission != null)
             {
+                SetPanelInfo();
                 refreshPage = 0;
                 RefreshInspImage();
                 //temp method
-                _viewModel._defectList.DetailDefectImage = mission.onInspPanelMission.defectImageDataDic.FirstOrDefault().Value;
+                _viewModel.MissionInfoViewModel.DefectList.DetailDefectImage = mission.onInspPanelMission.defectImageDataDic.FirstOrDefault().Value;
             }
         }
         
@@ -63,14 +65,18 @@ namespace EyeOfSauron
 
         public void SetInspImage(BitmapImage[] bitmapImages, string[] imageNames)
         {
-            _viewModel._inspImage.imageArray = bitmapImages;
-            _viewModel._inspImage.imageNameArray = imageNames;
+            _viewModel.MissionInfoViewModel.InspImage.imageArray = bitmapImages;
+            _viewModel.MissionInfoViewModel.InspImage.imageNameArray = imageNames;
+        }
+        public void SetPanelInfo()
+        {
+            _viewModel.MissionInfoViewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
         }
 
         private void JudgeButtonClick(object sender, RoutedEventArgs e)
         {
             Defect defect = (sender as Button).DataContext as Defect;
-            SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, _viewModel._userInfo.User.Username, _viewModel._userInfo.User.Account, _viewModel._userInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
+            SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, _viewModel.UserInfo.User.Username, _viewModel.UserInfo.User.Account, _viewModel.UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
             //Should be called after OPJudge action, temporarily call here for test;
             mission.FillPreDownloadMissionQueue();
             if (!mission.NextMission())

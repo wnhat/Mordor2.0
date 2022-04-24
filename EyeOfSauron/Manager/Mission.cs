@@ -46,8 +46,9 @@ namespace EyeOfSauron
             {
                 Task.Run(() =>
                 {
-                    while (PreDownloadedPanelMissionQueue.Count <= Parameter.PreLoadQuantity)
-                    {
+                    while (PreDownloadedPanelMissionQueue.Count <= 3)
+                        //while (PreDownloadedPanelMissionQueue.Count <= Parameter.PreLoadQuantity)
+                        {
                         if (PreLoadOneMission())
                         {
                         }
@@ -77,8 +78,6 @@ namespace EyeOfSauron
                     PanelMission panelMission = new(inspectMission, aetResult);
                     PreDownloadedPanelMissionQueue.Enqueue(panelMission);
                     return true;
-                    //Incase get null object;
-                    //Need specific Exception class;
                 }
                 catch (NullReferenceException)
                 {
@@ -131,7 +130,7 @@ namespace EyeOfSauron
         public Dictionary<string, BitmapImage> resultImageDataDic = new();
         
         public Dictionary<string, BitmapImage> defectImageDataDic = new();
-        
+
         public InspectMission inspectMission;
         
         public AETresult aetResult;
@@ -175,7 +174,15 @@ namespace EyeOfSauron
         
         public void IniDefectImageDic(ImageContainer[] DefectImages)
         {
-            IniImageDic(ref defectImageDataDic, DefectImages);
+            if (DefectImages == null)
+            {
+                return;
+            }
+            else
+            {
+                IniImageDic(ref defectImageDataDic, DefectImages);
+
+            }
         }
         
         public static void IniImageDic(ref Dictionary<string, BitmapImage> imageDataDic, ImageContainer[] imageContainer)

@@ -24,7 +24,7 @@ namespace EyeOfSauron
         public static void SendPanelMissionResult(OperatorJudge operatorJudge, InspectMission mission)
         {
             OperatorJudgeMessage ResultMessage = new(operatorJudge, mission);
-            Request.SendMultipartMessage(ResultMessage);
+            //Request.SendMultipartMessage(ResultMessage);
             //_ = Request.ReceiveSignal();
         }
     }
