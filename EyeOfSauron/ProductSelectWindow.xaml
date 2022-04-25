@@ -218,7 +218,7 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Click="Button_Click"
-                Content="{Binding SelectProductInfo.Key.Name}" />
+                Content="{Binding SelectedProductCardViewModel.ProductInfo.Key.Name}" />
         </Grid>
     </ScrollViewer>
 

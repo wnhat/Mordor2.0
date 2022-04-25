@@ -23,8 +23,7 @@
     WindowState="Maximized"
     WindowStyle="ThreeDBorderWindow"
     mc:Ignorable="d">
-    <Window.Resources>
-    </Window.Resources>
+    <Window.Resources />
     <Viewbox>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -36,7 +35,9 @@
             </Grid.RowDefinitions>
             <StackPanel>
                 <TextBox x:Name="UserAccountTextBox" Text="{Binding MissionInfoViewModel.PanelId}" />
-                <Button Click="Button_Click" />
+                <Button 
+                    Click="Button_Click"
+                    Command="{Binding MissionInfoViewModel.InspImage.RefreshImageCommand}" />
             </StackPanel>
 
             <DockPanel Grid.Column="1">
@@ -61,7 +62,7 @@
                             x:Name="ImageBox1"
                             Width="1600"
                             Height="1000"
-                            Source="{Binding MissionInfoViewModel.InspImage.imageArray[0]}"
+                            Source="{Binding MissionInfoViewModel.InspImage.InspImageArray[0].Value}"
                             Stretch="Fill" />
                     </materialDesign:Card>
                     <materialDesign:Card
@@ -73,7 +74,7 @@
                             x:Name="ImageBox2"
                             Width="1600"
                             Height="1000"
-                            Source="{Binding MissionInfoViewModel.InspImage.imageArray[1]}"
+                            Source="{Binding MissionInfoViewModel.InspImage.InspImageArray[1].Value}"
                             Stretch="Fill" />
                     </materialDesign:Card>
                     <materialDesign:Card
@@ -85,7 +86,7 @@
                             x:Name="ImageBox3"
                             Width="1600"
                             Height="1000"
-                            Source="{Binding MissionInfoViewModel.InspImage.imageArray[2]}"
+                            Source="{Binding MissionInfoViewModel.InspImage.InspImageArray[2].Value}"
                             Stretch="Fill" />
                     </materialDesign:Card>
 
@@ -108,7 +109,7 @@
                                 <Image
                                     Width="790"
                                     Height="490"
-                                    Source="{Binding MissionInfoViewModel.DefectList.DetailDefectImage}"
+                                    Source="{Binding MissionInfoViewModel.DetailDefectList.SelectedItem.DetailDefectImage}"
                                     Stretch="Uniform" />
                             </materialDesign:Card>
                         </StackPanel>
@@ -120,27 +121,12 @@
                                 HorizontalAlignment="Stretch"
                                 materialDesign:ShadowAssist.ShadowDepth="Depth1">
                                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                    <!--<ListBox
-                                        x:Name="DefectListBox"
-                                        ItemsSource="{Binding _defectList.defectList.list}"
-                                        SelectionChanged="DefectListBox_SelectionChanged">
-                                        <ListBox.Resources>
-                                            <DataTemplate DataType="{x:Type viewModel:AetDetailDefect}">
-                                                <TextBlock
-                                                    Margin="3,2"
-                                                    Text="{Binding Path=Name}"
-                                                    ToolTip="{Binding Path=Name}" />
-                                            </DataTemplate>
-                                        </ListBox.Resources>
-                                    </ListBox>-->
-                                    <ListView
-                                        ItemsSource="{Binding MissionInfoViewModel.DefectList.DefectList.AetDetailDefects}"
-                                        SelectedItem="{Binding MissionInfoViewModel.DefectList.SelectedItem,Mode=TwoWay}">
+                                    <ListView ItemsSource="{Binding MissionInfoViewModel.DetailDefectList.AetDetailDefects}" SelectedItem="{Binding MissionInfoViewModel.DetailDefectList.SelectedItem, Mode=TwoWay}">
                                         <ListView.View>
                                             <GridView>
-                                                <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name1" />
-                                                <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name1" />
-                                                <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name1" />
+                                                <GridViewColumn DisplayMemberBinding="{Binding DefectNo}" Header="DEFECT_NO" />
+                                                <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="NAME" />
+                                                <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Unknown" />
                                             </GridView>
                                         </ListView.View>
                                     </ListView>
