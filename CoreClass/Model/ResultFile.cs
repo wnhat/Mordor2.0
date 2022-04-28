@@ -188,8 +188,8 @@ namespace CoreClass.Model
 
     public class ImageContainer
     {
-        public string Name;
-        public byte[] Data;
+        public string Name { get; set; }
+        public byte[] Data { get; set; }
 
         [JsonConstructor]
         public ImageContainer() { }
