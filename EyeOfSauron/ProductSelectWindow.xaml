@@ -158,7 +158,7 @@
     </Grid>-->
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <Grid>
-            <ItemsControl ItemsSource="{Binding ProductInfos}" x:Name="productItemsControl">
+            <ItemsControl x:Name="productItemsControl" ItemsSource="{Binding ProductInfos}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel IsItemsHost="True" />
@@ -184,7 +184,7 @@
                                 <materialDesign:Card
                                     Width="200"
                                     Height="100"
-                                    Margin="30,10,30,280"
+                                    Margin="10,10,10,280"
                                     Padding="8"
                                     Background="{StaticResource PrimaryHueDarkBrush}"
                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
@@ -196,6 +196,11 @@
                                         TextAlignment="Center"
                                         TextWrapping="Wrap" />
                                 </materialDesign:Card>
+                                <TextBlock
+                                    Margin="10,240,10,0"
+                                    Text="{Binding ProductInfo.Value}"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap" />
                                 <Ellipse
                                     Width="{Binding RelativeSource={RelativeSource Self}, Path=Height}"
                                     Height="{Binding ProductInfo.Value, Converter={StaticResource Int32ToDoubleConverter}}"
@@ -213,7 +218,7 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Click="Button_Click"
-                Content="{Binding SelectProductInfo.Key.Name}" />
+                Content="{Binding SelectedProductCardViewModel.ProductInfo.Key.Name}" />
         </Grid>
     </ScrollViewer>
 

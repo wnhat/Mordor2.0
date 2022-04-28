@@ -16,15 +16,18 @@ namespace EyeOfSauron.ViewModel
     public class UserInfoViewModel : ViewModelBase
     {
         private User _user;
+
         public UserInfoViewModel()
         {
             _user = new User();
         }
-        public User user
+
+        public User User
         {
             get => _user;
             set => SetProperty(ref _user, value);
         }
+
         public void Authenticate(string account, string password)
         {
             if (string.IsNullOrEmpty(account) || string.IsNullOrEmpty(password))
@@ -43,6 +46,7 @@ namespace EyeOfSauron.ViewModel
                 throw new Exception("Password error");
             }
         }
+
         public bool UserExist()
         {
             if (_user != null)
@@ -54,6 +58,7 @@ namespace EyeOfSauron.ViewModel
                 return false;
             }
         }
+
         private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
         {
             if (password == null)

@@ -15,34 +15,44 @@ namespace EyeOfSauron.ViewModel
     public class ProductViewModel : ViewModelBase
     {
         public readonly UserInfoViewModel _userInfo;
-        private ObservableCollection<ProductCardViewModel> _productCardViewModels = new();
-        private ProductCardViewModel _selectedProductCardViewModel;
-        private KeyValuePair<ProductInfo, int> _selectProductInfo;
+
+        private ObservableCollection<ProductCardViewModel> productCardViewModels = new();
+
+        private ProductCardViewModel? selectedProductCardViewModel;
+
         public ProductViewModel(UserInfoViewModel userInfo)
         {
             _userInfo = userInfo;
-            
-            //TODO: 期望返回List<KeyValuePair<ProductInfo, int>>对象
-            KeyValuePair<ProductInfo, int> productInfo = InspectMission.GetWaittingMissionOverView();
-            //selectProductInfo = _productInfos[0];
-            //TODO 
         }
 
         public ProductCardViewModel SelectedProductCardViewModel
         {
-            get => _selectedProductCardViewModel;
-            set => SetProperty(ref _selectedProductCardViewModel, value);
-        }
-        public KeyValuePair<ProductInfo, int> SelectProductInfo
-        {
-            get => _selectProductInfo;
-            set => SetProperty(ref _selectProductInfo, value);
+#pragma warning disable CS8603 // Possible null reference return.
+            get => selectedProductCardViewModel;
+#pragma warning restore CS8603 // Possible null reference return.
+            set => SetProperty(ref selectedProductCardViewModel, value);
         }
   
         public ObservableCollection<ProductCardViewModel> ProductInfos
         {
-            get => _productCardViewModels;
-            set => SetProperty(ref _productCardViewModels, value);
+            get => productCardViewModels;
+            set => SetProperty(ref productCardViewModels, value);
+        }
+    }
+
+    public class ProductCardViewModel : ViewModelBase
+    {
+        private KeyValuePair<ProductInfo, int> _productInfo;
+
+        public ProductCardViewModel(KeyValuePair<ProductInfo, int> productInfo)
+        {
+            ProductInfo = productInfo;
+        }
+
+        public KeyValuePair<ProductInfo, int> ProductInfo
+        {
+            get => _productInfo;
+            set => SetProperty(ref _productInfo, value);
         }
     }
 }
