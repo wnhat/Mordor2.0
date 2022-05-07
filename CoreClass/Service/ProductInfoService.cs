@@ -17,7 +17,7 @@ namespace CoreClass.Service
         Task UploadIMG(ProductInfo product);
         Task AddNewProduct(ProductInfo product);
         Task UpdateProduct(ProductInfo product);
-        Task DeleteProduct(ProductInfo product);
+        Task DeleteProduct(string name);
     }
 
     public class ProductInfoService : IProductInfoService
@@ -105,11 +105,11 @@ namespace CoreClass.Service
             });
         }
 
-        public Task DeleteProduct(ProductInfo product)
+        public Task DeleteProduct(string name)
         {
             return Task.Run(() =>
             {
-                var filter = Builders<ProductInfo>.Filter.Eq("Name", product.Name);
+                var filter = Builders<ProductInfo>.Filter.Eq("Name", name);
                 if (_productInfo.Find(filter).FirstOrDefault() == null)
                 {
                     throw new ApplicationException("产品信息不存在");

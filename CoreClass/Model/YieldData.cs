@@ -1,8 +1,8 @@
 ﻿using MongoDB.Bson;
-using MongoDB.Driver;
 using Newtonsoft.Json;
 using MongoDB.Bson.Serialization.Attributes;
 using CoreClass.DICSEnum;
+using System;
 
 namespace CoreClass.Model
 {
@@ -17,9 +17,27 @@ namespace CoreClass.Model
         [JsonProperty("producttype")]
         public ProductType OnInspectTypes { get; set; }
         [JsonProperty("yieldtrend")]
-        public float[] YieldTrend { get; set; }
+        public YieldDataSpecifiedByDay[] YieldTrend { get; set; }
+        [JsonProperty("time")]
+        public DateTime Time { get; set; }
         [JsonProperty("average")]
-        public float Average { get; set; }
+        public Double Average { get; set; }
+        // 上班次良率
+        [JsonProperty("lastshift")]
+        public Double LastShift { get; set; }
+        // 本班次良率
+        [JsonProperty("thisshift")]
+        public Double ThisShift { get; set; }
+
+        public class YieldDataSpecifiedByDay
+
+        {
+            [JsonConstructor]
+            public YieldDataSpecifiedByDay() { }
+
+            public string Date { get; set; }
+            public Double Data { get; set; }
+        }
 
         public override bool Equals(object obj)
         {

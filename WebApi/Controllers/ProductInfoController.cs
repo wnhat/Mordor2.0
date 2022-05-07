@@ -23,6 +23,10 @@ namespace WebApi.Controllers
             _productInfoService = productInfoService;
         }
 
+        /// <summary>
+        /// Get all product info
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllProductInfo()
@@ -39,7 +43,12 @@ namespace WebApi.Controllers
                 return BadRequest(new { message = e.Message });
             }
         }
-
+        
+        /// <summary>
+        /// Upload an IMG from local path(Not in use)
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
         [HttpPut]
         public async Task<IActionResult> UploadImg(ProductInfo product)
         {
@@ -54,6 +63,11 @@ namespace WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Add a new product
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> AddNewProduct(ProductInfo product)
         {
@@ -68,6 +82,11 @@ namespace WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Update a product's info. Return bad request if it is not exist.
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
         [HttpPut("{name}")]
         public async Task<IActionResult> UpdateProductInfo(ProductInfo product)
         {
@@ -82,12 +101,17 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteProductInfo(ProductInfo product)
+        /// <summary>
+        /// Delete product
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [HttpDelete("{name}")]
+        public async Task<IActionResult> DeleteProductInfo(string name)
         {
             try
             {
-                await _productInfoService.DeleteProduct(product);
+                await _productInfoService.DeleteProduct(name);
                 return Ok();
             }
             catch (Exception e)
