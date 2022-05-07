@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using EyeOfSauron.ViewModel;
 using CoreClass.Model;
 using System.Collections.Generic;
+using System;
 
 namespace EyeOfSauron
 {
@@ -13,9 +14,7 @@ namespace EyeOfSauron
     /// </summary>
     public partial class InspWindow : Window
     {
-        private int refreshPage = 0;
-        
-        private Mission mission;
+        private readonly Mission mission;
 
         private readonly MainWindowViewModel _viewModel;
         
@@ -32,9 +31,8 @@ namespace EyeOfSauron
         //for test, will be removed later;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            
-            //RefreshInspImage();
-            //_viewModel.MissionInfoViewModel.DetailDefectList.SelectedItem.DetailDefectImage = mission.onInspPanelMission.defectImageDataDic.FirstOrDefault().Value;
+            mission.NextMission();
+            LoadOnInspPanelMission();
         }
 
         public void LoadOnInspPanelMission()
@@ -42,49 +40,23 @@ namespace EyeOfSauron
             if (mission.onInspPanelMission != null)
             {
                 SetPanelInfo();
-                refreshPage = 0;
-                RefreshInspImage();
-                //temp method
-                _viewModel.MissionInfoViewModel.DetailDefectList.SelectedItem.DetailDefectImage = mission.onInspPanelMission.defectImageDataDic.FirstOrDefault().Value;
-                
+                _viewModel.MissionInfoViewModel.InspImage.refreshPage = 0;
+                _viewModel.MissionInfoViewModel.InspImage.RefreshImageMethod();
             }
-        }
-        
-        public void RefreshInspImage()
-        {
-            if ((refreshPage) * 3 < mission.onInspPanelMission.resultImageDataDic.Values.ToArray().Length)
-            {
-                //SetInspImage(mission.onInspPanelMission.resultImageDataDic.Values.ToArray().Skip((refreshPage) * 3).Take(3).ToArray(), mission.onInspPanelMission.resultImageDataDic.Keys.ToArray().Skip((refreshPage) * 3).Take(3).ToArray());
-                SetInspImage(mission.onInspPanelMission.resultImageDataDic, mission.onInspPanelMission.resultImageDataDic);
-                refreshPage++;
-            }
-            else
-            {
-                refreshPage = 0;
-                RefreshInspImage();
-            }
-        }
-
-        public void SetInspImage(BitmapImage[] bitmapImages, string[] imageNames)
-        {
-            //_viewModel.MissionInfoViewModel.InspImage.ImageArray = bitmapImages;
-            //_viewModel.MissionInfoViewModel.InspImage.ImageNameArray = imageNames;
         }
 
         public void SetPanelInfo()
         {
             _viewModel.MissionInfoViewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
-            SetInspImage(mission.onInspPanelMission.resultImageDataDic, mission.onInspPanelMission.resultImageDataDic);
-        }
-        
-        public void SetInspImage(Dictionary<string, BitmapImage> resultImageDataDic, Dictionary<string, BitmapImage> defectImageDataDic)
-        {
-            _viewModel.MissionInfoViewModel.InspImage.resultImageDataDic = resultImageDataDic;
-            _viewModel.MissionInfoViewModel.InspImage.defectImageDataDic = defectImageDataDic;
-            Application.Current.Dispatcher.Invoke(() =>
+            if (mission.onInspPanelMission.resultImageDataList != null)
             {
-                _viewModel.MissionInfoViewModel.InspImage.InspImageArray = resultImageDataDic.ToList().ToArray().Take(3).ToArray();
-            });
+                _viewModel.MissionInfoViewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
+            }
+            else
+            {
+                _viewModel.MissionInfoViewModel.InspImage.resultImageDataList.Clear();
+            }
+            _viewModel.MissionInfoViewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
         }
 
         private void JudgeButtonClick(object sender, RoutedEventArgs e)
@@ -101,6 +73,18 @@ namespace EyeOfSauron
             else
             {
                 LoadOnInspPanelMission();
+            }
+        }
+
+        private new void KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+                switch (e.Key)
+            {
+                case System.Windows.Input.Key.Tab:
+                    _viewModel.MissionInfoViewModel.InspImage.RefreshImageMethod();
+                    break;
+                default:
+                    break;
             }
         }
     }

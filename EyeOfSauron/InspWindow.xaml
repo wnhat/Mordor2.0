@@ -24,7 +24,7 @@
     WindowStyle="ThreeDBorderWindow"
     mc:Ignorable="d">
     <Window.Resources />
-    <Viewbox>
+    <Viewbox KeyUp="KeyDown">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150" />
@@ -35,9 +35,10 @@
             </Grid.RowDefinitions>
             <StackPanel>
                 <TextBox x:Name="UserAccountTextBox" Text="{Binding MissionInfoViewModel.PanelId}" />
-                <Button 
-                    Click="Button_Click"
-                    Command="{Binding MissionInfoViewModel.InspImage.RefreshImageCommand}" />
+                <Button Command="{Binding MissionInfoViewModel.InspImage.RefreshImageCommand}" />
+                <Label Height="31" Content="{Binding MissionInfoViewModel.InspImage.InspImages[0].Name}"/>
+                <Label Height="31" Content="{Binding MissionInfoViewModel.InspImage.InspImages[1].Name}"/>
+                <Label Height="31" Content="{Binding MissionInfoViewModel.InspImage.InspImages[2].Name}"/>
             </StackPanel>
 
             <DockPanel Grid.Column="1">
@@ -62,7 +63,7 @@
                             x:Name="ImageBox1"
                             Width="1600"
                             Height="1000"
-                            Source="{Binding MissionInfoViewModel.InspImage.InspImageArray[0].Value}"
+                            Source="{Binding MissionInfoViewModel.InspImage.InspImages[0].BitmapImage}"
                             Stretch="Fill" />
                     </materialDesign:Card>
                     <materialDesign:Card
@@ -74,7 +75,7 @@
                             x:Name="ImageBox2"
                             Width="1600"
                             Height="1000"
-                            Source="{Binding MissionInfoViewModel.InspImage.InspImageArray[1].Value}"
+                            Source="{Binding MissionInfoViewModel.InspImage.InspImages[1].BitmapImage}"
                             Stretch="Fill" />
                     </materialDesign:Card>
                     <materialDesign:Card
@@ -86,7 +87,7 @@
                             x:Name="ImageBox3"
                             Width="1600"
                             Height="1000"
-                            Source="{Binding MissionInfoViewModel.InspImage.InspImageArray[2].Value}"
+                            Source="{Binding MissionInfoViewModel.InspImage.InspImages[2].BitmapImage}"
                             Stretch="Fill" />
                     </materialDesign:Card>
 
@@ -159,7 +160,7 @@
                                         Click="JudgeButtonClick"
                                         Content="{Binding DefectName}"
                                         FontSize="20"
-                                        FontWeight="Bold" />
+                                        FontWeight="Bold"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

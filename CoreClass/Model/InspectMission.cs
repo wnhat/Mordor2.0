@@ -65,7 +65,7 @@ namespace CoreClass.Model
             var filter = Builders<InspectMission>.Filter.And(
                 Builders<InspectMission>.Filter.Eq(x => x.Info.Id, info.Id),
                 Builders<InspectMission>.Filter.Eq(x => x.Requested, false));
-            var update = Builders<InspectMission>.Update.Set(x => x.LastRequestTime, DateTime.Now).Set(x => x.Requested, false);
+            var update = Builders<InspectMission>.Update.Set(x => x.LastRequestTime, DateTime.Now).Set(x => x.Requested, true);
             InspectMission mission = Collection.FindOneAndUpdate(filter, update);
             return mission;
         }

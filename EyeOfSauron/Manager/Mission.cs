@@ -20,13 +20,13 @@ namespace EyeOfSauron
     {
         //TODO: 区分任务类型
         private Queue<PanelMission> PreDownloadedPanelMissionQueue = new();
-        
+
         public PanelMission onInspPanelMission;
-        
+
         private readonly ProductInfo productInfo;
-        
+
         readonly object Predownloadlock = new();
-       
+
         public Mission(ProductInfo Info)
         {
             productInfo = Info;
@@ -39,20 +39,17 @@ namespace EyeOfSauron
                 throw new Exception("Mission Empty");
             }
         }
-        
+
         public void FillPreDownloadMissionQueue()
         {
             lock (Predownloadlock)
             {
                 Task.Run(() =>
                 {
-                    while (PreDownloadedPanelMissionQueue.Count <= 3)
-                        //while (PreDownloadedPanelMissionQueue.Count <= Parameter.PreLoadQuantity)
-                        {
-                        if (PreLoadOneMission())
-                        {
-                        }
-                        else
+                    //while (PreDownloadedPanelMissionQueue.Count <= 3)
+                    while (PreDownloadedPanelMissionQueue.Count <= Parameter.PreLoadQuantity)
+                    {
+                        if (!PreLoadOneMission())
                         {
                             break;
                         }
@@ -60,13 +57,13 @@ namespace EyeOfSauron
                 });
             }
         }
-        
+
         public bool PreLoadOneMission()
         {
             try
             {
                 InspectMission inspectMission = InspectMission.GetMission(productInfo);
-                if(inspectMission == null)
+                if (inspectMission == null)
                 {
                     return false;
                 }
@@ -90,7 +87,7 @@ namespace EyeOfSauron
                 return false;
             }
         }
-        
+
         public bool NextMission()
         {
             if (PreDownloadedPanelMissionQueue.Count == 0)
@@ -118,61 +115,76 @@ namespace EyeOfSauron
                 return true;
             }
         }
-        
+
         public static void SendOpJudgeResult(Defect defect, User user, int score, InspectMission inspectMission)
         {
             SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, user.Username, user.Account, user.Id, score), inspectMission);
         }
     }
-    
+
     public class PanelMission
     {
-        public Dictionary<string, BitmapImage> resultImageDataDic = new();
-        
-        public Dictionary<string, BitmapImage> defectImageDataDic = new();
+        public List<ImageContainer> resultImageDataList = new();
+
+        public List<ImageContainer> defectImageDataList = new();
 
         public InspectMission inspectMission;
-        
+
         public AETresult aetResult;
-        
+
         public PanelMission(InspectMission mission)
         {
             inspectMission = mission;
             aetResult = AETresult.Get(inspectMission.HistoryID);
-            IniResultImageDic(aetResult.ResultImages);
-            IniDefectImageDic(aetResult.DefectImages);
+            IniResultImageDataList(aetResult.ResultImages);
+            IniDefectImageDataList(aetResult.DefectImages);
         }
-        
+
         public PanelMission(InspectMission mission, AETresult result)
         {
             inspectMission = mission;
             aetResult = result;
-            IniResultImageDic(aetResult.ResultImages);
-            IniDefectImageDic(aetResult.DefectImages);
+            IniResultImageDataList(aetResult.ResultImages);
+            IniDefectImageDataList(aetResult.DefectImages);
         }
-        
-        public void IniResultImageDic(ImageContainer[] ResultImages)
+
+        public void IniResultImageDataList(ImageContainer[] ResultImages)
         {
-            Dictionary<string, BitmapImage> imageDataDic = new Dictionary<string, BitmapImage>();
-            IniImageDic(ref imageDataDic, ResultImages);
-            BitmapImage? bufferImage;
+            List<string> imageNmaeIndex = new();
+            
+            if (ResultImages != null)
+            {
+                foreach (ImageContainer image in ResultImages)
+                {
+                    imageNmaeIndex.Add(image.Name);
+                }
+            }
             foreach (string aviImageName in Parameter.AviImageNameList)
             {
-                imageDataDic.TryGetValue(aviImageName, out bufferImage);
-#pragma warning disable CS8604 // Possible null reference argument.
-                resultImageDataDic.Add(aviImageName, bufferImage);
-#pragma warning restore CS8604 // Possible null reference argument.
+                if (imageNmaeIndex.Contains(aviImageName))
+                {
+                    resultImageDataList.Add(ResultImages[imageNmaeIndex.IndexOf(aviImageName)]);
+                }
+                else
+                {
+                    resultImageDataList.Add(new ImageContainer(aviImageName));
+                }
             }
+
             foreach (string sviImageName in Parameter.SviImageNameList)
             {
-                imageDataDic.TryGetValue(sviImageName, out bufferImage);
-#pragma warning disable CS8604 // Possible null reference argument.
-                resultImageDataDic.Add(sviImageName, bufferImage);
-#pragma warning restore CS8604 // Possible null reference argument.
+                if (imageNmaeIndex.Contains(sviImageName))
+                {
+                    resultImageDataList.Add(ResultImages[imageNmaeIndex.IndexOf(sviImageName)]);
+                }
+                else
+                {
+                    resultImageDataList.Add(new ImageContainer(sviImageName));
+                }
             }
         }
-        
-        public void IniDefectImageDic(ImageContainer[] DefectImages)
+
+        public void IniDefectImageDataList(ImageContainer[] DefectImages)
         {
             if (DefectImages == null)
             {
@@ -180,28 +192,33 @@ namespace EyeOfSauron
             }
             else
             {
-                IniImageDic(ref defectImageDataDic, DefectImages);
-
+                for (int i = 0; i < DefectImages.Length; i++)
+                {
+                    defectImageDataList.Add(DefectImages[i]);
+                    if (i > 50)
+                    {
+                        break;
+                    }
+                }
             }
         }
-        
-        public static void IniImageDic(ref Dictionary<string, BitmapImage> imageDataDic, ImageContainer[] imageContainer)
+    }
+    
+    public class BitmapImageContainer : ImageContainer
+    {
+        public BitmapImage? BitmapImage { get; set; }
+        //initialize with ImageContainer constructor
+        public BitmapImageContainer(ImageContainer imageContainer) : base(imageContainer.Name, imageContainer.Data)
         {
-            List<BitmapImage> bufferImage = new();
-            for (int i = 0; i < imageContainer.Length; i++)
+            if (imageContainer == null || imageContainer.Data == null || imageContainer.Data.Length == 0)
             {
-                byte[] buffer = imageContainer[i].Data;
-                bufferImage.Add(new BitmapImage());
-                if (buffer.Length == 0)
-                {
-                    continue;
-                }
-                bufferImage[i].BeginInit();
-                bufferImage[i].StreamSource = new MemoryStream(buffer);
-                bufferImage[i].EndInit();
-                imageDataDic[imageContainer[i].Name] = bufferImage[i];
-                if (i > 100) break;
+                return;
             }
+            BitmapImage = new BitmapImage();
+            BitmapImage.BeginInit();
+            BitmapImage.StreamSource = new MemoryStream(imageContainer.Data);
+            BitmapImage.EndInit();
+            BitmapImage.Freeze();
         }
     }
 }

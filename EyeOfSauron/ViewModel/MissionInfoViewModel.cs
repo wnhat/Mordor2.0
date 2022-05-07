@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.Linq;
+using CoreClass.Model;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -29,30 +30,47 @@ namespace EyeOfSauron.ViewModel
 
     public class InspImageViewModel : ViewModelBase
     {
-        private int refreshPage = 0;
+        public int refreshPage = 0;
 
         private BitmapImage _defaultImage = new();
 
         static readonly Uri _defaultImageUri = new(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
 
-        private KeyValuePair<string, BitmapImage>[] inspImageArray = new KeyValuePair<string, BitmapImage>[3];
+        private ObservableCollection<BitmapImageContainer>? inspImages;
+        
+        private ImageContainer[] inspImageArray1 = new ImageContainer[3];
 
-        public Dictionary<string, BitmapImage> resultImageDataDic = new();
+        public List<ImageContainer> resultImageDataList = new();
 
-        public Dictionary<string, BitmapImage> defectImageDataDic = new();
+        public List<ImageContainer> defectImageDataList = new();
+
+        public ImageContainer[] InspImageArray1
+        {
+            get => inspImageArray1;
+            set => SetProperty(ref inspImageArray1, value);
+        }
+
+        public ObservableCollection<BitmapImageContainer> InspImages
+        {
+            get => inspImages;
+            set => SetProperty(ref inspImages, value);
+        }
 
         public InspImageViewModel()
         {
             _defaultImage.BeginInit();
             _defaultImage.UriSource = _defaultImageUri;
             _defaultImage.EndInit();
-            //for (int i = 0; i < 3; i++)
-            //{
-            //    imageArray[i] = _defaultImage;
-            //}
+            _defaultImage.Freeze();
+            inspImages = new ObservableCollection<BitmapImageContainer>
+            {
+                new BitmapImageContainer(new ImageContainer()),
+                new BitmapImageContainer(new ImageContainer()),
+                new BitmapImageContainer(new ImageContainer())
+            };
             RefreshImageCommand = new CommandImplementation(
                 _ => RefreshImageMethod(),
-                _ => resultImageDataDic != null); 
+                _ => resultImageDataList != null);
         }
 
         public BitmapImage DefaultImage
@@ -61,41 +79,26 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref _defaultImage, value);
         }
 
-        public KeyValuePair<string, BitmapImage>[] InspImageArray
-        {
-            get => inspImageArray;
-            set => SetProperty(ref inspImageArray, value);
-        }
-
-
-        //public BitmapImage[] ImageArray
-        //{
-        //    get => imageArray;
-        //    set => SetProperty(ref imageArray, value);
-        //}
-
-        //public string[] ImageNameArray
-        //{
-        //    get => imageNameArray;
-        //    set => SetProperty(ref imageNameArray, value);
-        //}
-
-
-
         public CommandImplementation RefreshImageCommand { get; }
         
-        private void RefreshImageMethod()
+        public void RefreshImageMethod()
         {
-            if ((refreshPage) * 3 < resultImageDataDic.Values.ToArray().Length)
+            if (resultImageDataList.Count == 0)
             {
-                inspImageArray = resultImageDataDic.ToArray().Skip((refreshPage) * 3).Take(3).ToArray();
-                refreshPage++;
+                return;
+            }
+            if (refreshPage < resultImageDataList.ToArray().Length)
+            {
+                for (int i = 0; i < InspImages.Count; i++)
+                {
+                    InspImages[i] = new BitmapImageContainer(resultImageDataList[refreshPage + i]);
+                }
+                refreshPage += 3;
             }
             else
             {
                 refreshPage = 0;
                 RefreshImageMethod();
-                
             }
         }
     }
@@ -151,9 +154,9 @@ namespace EyeOfSauron.ViewModel
 
     public sealed class AetDetailDefect : ViewModelBase
     {
-        private string defectNo;
+        private string defectNo = "";
 
-        private string name;
+        private string name = "";
 
         private BitmapImage detailDefectImage = new();
 
