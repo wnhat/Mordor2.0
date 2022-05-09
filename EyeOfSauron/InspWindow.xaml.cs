@@ -31,8 +31,8 @@ namespace EyeOfSauron
         //for test, will be removed later;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            mission.NextMission();
-            LoadOnInspPanelMission();
+            //mission.NextMission();
+            //LoadOnInspPanelMission();
         }
 
         public void LoadOnInspPanelMission()
@@ -61,9 +61,20 @@ namespace EyeOfSauron
 
         private void JudgeButtonClick(object sender, RoutedEventArgs e)
         {
-            Defect defect = (sender as Button).DataContext as Defect;
+            Defect defect;
+            if ((sender as Button).Content == "S")
+            {
+                defect = null;
+            }
+            else if((sender as Button).Content == "E")
+            {
+                defect = Defect.OperaterEjudge;
+            }
+            else
+            {
+                defect = (sender as Button).DataContext as Defect;
+            }
             SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, _viewModel.UserInfo.User.Username, _viewModel.UserInfo.User.Account, _viewModel.UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
-            //Should be called after OPJudge action, temporarily call here for test;
             mission.FillPreDownloadMissionQueue();
             if (!mission.NextMission())
             {

@@ -27,9 +27,7 @@ namespace EyeOfSauron.ViewModel
 
         public ProductCardViewModel SelectedProductCardViewModel
         {
-#pragma warning disable CS8603 // Possible null reference return.
             get => selectedProductCardViewModel;
-#pragma warning restore CS8603 // Possible null reference return.
             set => SetProperty(ref selectedProductCardViewModel, value);
         }
   
