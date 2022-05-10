@@ -56,6 +56,10 @@ namespace CoreClass.Model
         {
             return base.ToString();
         }
+        /// <summary>
+        /// 仅测试使用
+        /// </summary>
+        /// <returns></returns>
         public static ProductInfo GetProductInfo()
         {
             // get the first product in mongodb;

@@ -1,19 +1,4 @@
-﻿using System;
-using CoreClass.LogSpider;
-using CoreClass.Model;
-using CoreClass;
-using CoreClass.DICSEnum;
-using System.Collections.Generic;
-using CoreClass.Element;
-using MongoDB.Driver;
-using MongoDB.Bson;
-using System.IO;
-using NetMQ;
-using NetMQ.Sockets;
-using System.Threading.Tasks;
-using System.Threading;
-
-namespace Spider
+﻿namespace Spider
 {
     class Program
     {

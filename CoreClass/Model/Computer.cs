@@ -42,6 +42,41 @@ namespace CoreClass.Model
                 return @"\\172.16.150.200\eDiasLogs\TEST\" + EqName + @"\LOG\{0}\Cell.csv";
             }
         }
+        public string MainTactPath
+        {
+            get
+            {
+                return @"\\" + PcIp + @"\NetworkDrive\D_Drive\MaruTest\Log\{0}\MainTact.csv";
+            }
+        }
+        public string AlignErrorPath
+        {
+            get
+            {
+                return @"\\" + PcIp + @"\NetworkDrive\D_Drive\MaruTest\Log\{0}\AlignError.csv";
+            }
+        }
+        public string OperatingRatioPath
+        {
+            get
+            {
+                return @"\\" + PcIp + @"\NetworkDrive\D_Drive\MaruTest\Log\{0}\OperatingRatio.csv";
+            }
+        }
+        public string ErrorTypePath
+        {
+            get
+            {
+                return @"\\" + PcIp + @"\NetworkDrive\D_Drive\MaruTest\Log\{0}\ErrorType.csv";
+            }
+        }
+        public string LossTimePath
+        {
+            get
+            {
+                return @"\\" + PcIp + @"\NetworkDrive\D_Drive\MaruTest\Log\{0}\LossTime.csv";
+            }
+        }
         public string EqName
         {
             get

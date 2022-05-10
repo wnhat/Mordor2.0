@@ -8,6 +8,9 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using CoreClass.Model;
 using CoreClass;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Bson.Serialization;
+using CoreClass.DICSEnum;
 
 namespace CoreClass.Service
 {
@@ -17,6 +20,8 @@ namespace CoreClass.Service
         Task UploadIMG(ProductInfo product);
         Task AddNewProduct(ProductInfo product);
         Task UpdateProduct(ProductInfo product);
+        Task<IEnumerable<BsonDocument>> GetOninspectProduction();
+        Task UpdateOninspectProduct(string id, string[] types);
         Task DeleteProduct(string name);
     }
 
@@ -118,7 +123,28 @@ namespace CoreClass.Service
                 _productInfo.DeleteOne(filter);
             });
         }
-
+        
+        public async Task<IEnumerable<BsonDocument>> GetOninspectProduction()
+        {
+            var filter = new BsonDocument();
+            var project = Builders<ProductInfo>.Projection.Include("Name").Include("OnInspectTypes").Include("FGcode").Include("ModelId");
+            var products = await _productInfo.Find(filter).Project(project).ToListAsync();
+            return products;
+        }
+        
+        public async Task UpdateOninspectProduct(string id, string[] types)
+        {
+            ObjectId productid = new ObjectId(id);
+            var filter = Builders<ProductInfo>.Filter.Eq("_id", productid);
+            ProductType[] newtypes = new ProductType[types.Length];
+            for (int i = 0; i < types.Length; i++)
+            {
+                newtypes[i] = (ProductType)Enum.Parse(typeof(ProductType), types[i]);
+            }
+            var update = Builders<ProductInfo>.Update.Set("OnInspectTypes", newtypes);
+            await _productInfo.UpdateOneAsync(filter, update);
+        }
+        
         private static byte[] ImgToByte(string path)
         {
             FileStream fs = new(path, FileMode.Open, FileAccess.Read);

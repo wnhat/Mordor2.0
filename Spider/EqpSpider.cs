@@ -27,6 +27,7 @@ namespace Spider
         // 组件
         // 添加组件时请注意是否要在数据库中保存组件的状态；
         public CellLogSpider cellLogSpiders;
+        public TactTimeSpider tactTimeSpider;
 
         // 事件
         public event EventHandler<SearchEventArgs> RaiseSearchEvent;
@@ -34,6 +35,10 @@ namespace Spider
         public EqpSpider(int eqpId)
         {
             EqpId = eqpId;
+            InitialComponent();
+        }
+        public EqpSpider()
+        {
             InitialComponent();
         }
         /// <summary>
@@ -45,6 +50,11 @@ namespace Spider
             {
                 var mainpc = IpTransform.Name2IP(new List<int>() { EqpId }, new Pcinfo[] { Pcinfo.MAIN }).FirstOrDefault();
                 cellLogSpiders = new CellLogSpider(mainpc);
+            }
+            if (tactTimeSpider == null)
+            {
+                var mainpc = IpTransform.Name2IP(new List<int>() { EqpId }, new Pcinfo[] { Pcinfo.MAIN }).FirstOrDefault();
+                tactTimeSpider = new TactTimeSpider(mainpc);
             }
         }
         /// <summary>
