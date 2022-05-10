@@ -8,7 +8,7 @@ using System.Threading;
 using MongoDB;
 using MongoDB.Driver;
 using MongoDB.Bson;
-using CoreClass;
+using CoreClass.Service;
 using CoreClass.DICSEnum;
 using MongoDB.Bson.Serialization.Attributes;
 using CoreClass.Model;
@@ -47,6 +47,8 @@ namespace Mordor2._0
         }
         static void Test()
         {
+            var service = new DICSRemainInspectMissionService();
+            var result = service.GetRemainDetail(new ObjectId( "61cbf0b213b23dec5a9a0709")).Result;
             
         }
         static void Test2()

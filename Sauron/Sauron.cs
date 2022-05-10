@@ -13,9 +13,10 @@ namespace Sauron
     public static class Sauron
     {
         // TODO: Use DB parameter to control refresh span;
-        static NetMQTimer MissionTimer = new NetMQTimer(TimeSpan.FromSeconds(3600));
+        static NetMQTimer MissionTimer = new NetMQTimer(TimeSpan.FromMinutes(60));
+        static NetMQTimer DefectTimer = new NetMQTimer(TimeSpan.FromMinutes(5));
         static RouterSocket routerSocket = new RouterSocket("@tcp://172.16.200.100:5555");
-        static NetMQPoller poller = new NetMQPoller { routerSocket, MissionTimer };
+        static NetMQPoller poller = new NetMQPoller { routerSocket, MissionTimer, DefectTimer };
         static MissionManager manager = new MissionManager();
 
         static Sauron()
@@ -23,8 +24,8 @@ namespace Sauron
             // 为poller绑定触发事件；
             routerSocket.ReceiveReady += OnMessageArrive;
             MissionTimer.Elapsed += MissionAdd;
+            DefectTimer.Elapsed += RefreshDefectList;
             // add a new timer to poller and refresh defect list;
-             
         }
         public static void Run()
         {
@@ -48,7 +49,7 @@ namespace Sauron
             }
         }
         // refesh defect list every 5 minutes;
-        public static void RefreshDefectList()
+        public static void RefreshDefectList(object sender, NetMQTimerEventArgs eventArgs)
         {
             Task.Run(
                 () =>
@@ -64,6 +65,10 @@ namespace Sauron
                     }
                 }
             );
+        }
+        public static void serverTest()
+        {
+            
         }
     }
 }
