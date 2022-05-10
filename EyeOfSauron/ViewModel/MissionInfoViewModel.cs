@@ -32,6 +32,8 @@ namespace EyeOfSauron.ViewModel
     {
         public int refreshPage = 0;
 
+        public bool isVisible = false;
+
         private BitmapImage _defaultImage = new();
 
         static readonly Uri _defaultImageUri = new(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
@@ -43,6 +45,12 @@ namespace EyeOfSauron.ViewModel
         public List<ImageContainer> resultImageDataList = new();
 
         public List<ImageContainer> defectImageDataList = new();
+
+        public bool IsVisible
+        {
+            get => isVisible;
+            set => SetProperty(ref isVisible, value);
+        }
 
         public ImageContainer[] InspImageArray1
         {

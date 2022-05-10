@@ -89,10 +89,28 @@ namespace EyeOfSauron
 
         private new void KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-                switch (e.Key)
+            switch (e.Key)
             {
+                case System.Windows.Input.Key.Enter:
+                    e.Handled = true;
+                    break;
                 case System.Windows.Input.Key.Tab:
                     _viewModel.MissionInfoViewModel.InspImage.RefreshImageMethod();
+                    break;
+                case System.Windows.Input.Key.LeftCtrl:
+                    _viewModel.MissionInfoViewModel.InspImage.IsVisible = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private new void KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case System.Windows.Input.Key.LeftCtrl:
+                    _viewModel.MissionInfoViewModel.InspImage.IsVisible = false;
                     break;
                 default:
                     break;

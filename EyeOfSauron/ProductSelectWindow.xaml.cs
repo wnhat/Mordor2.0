@@ -35,6 +35,7 @@ namespace EyeOfSauron
         private async void GetMissions()
         {
             // get the remain mission count to set viewmodel
+            _viewModel.ProductInfos.Clear();
             var remainMissionCount = await RemainService.GetRemainMissionCount();
             foreach (var item in remainMissionCount)
             {
@@ -44,6 +45,7 @@ namespace EyeOfSauron
                 int count = item.GetValue("count").ToInt32();
                 _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfo, count)));
             }
+            _viewModel.SelectedProductCardViewModel = _viewModel.ProductInfos.First();
         }
 
         private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)
@@ -62,7 +64,8 @@ namespace EyeOfSauron
             }
             finally
             {
-                Show();
+                GetMissions();
+                ShowDialog();
             }
         }
 

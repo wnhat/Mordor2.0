@@ -28,7 +28,7 @@ namespace EyeOfSauron
             _viewModel = new UserInfoViewModel();
             DataContext = _viewModel;
         }
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private void LoginButtonClick(object sender, RoutedEventArgs e)
         {
             try
             {

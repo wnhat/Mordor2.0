@@ -103,7 +103,6 @@ namespace EyeOfSauron
 
         public static bool PreJudge(ref InspectMission mission, ref PanelInspectHistory aetResult)
         {
-            //need prejudge logic;
             Defect defect = new("defactName", "defectCode");
             if (true)
             {

@@ -12,7 +12,7 @@
                     BaseTheme="Light"
                     ColorAdjustment="{materialDesign:ColorAdjustment}"
                     PrimaryColor="Cyan"
-                    SecondaryColor="Green" />
+                    SecondaryColor="Cyan" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
