@@ -10,16 +10,38 @@ namespace CoreClass.Service
 {
     public interface IYieldService
     {
-        Task<List<YieldData>> GetYield();
+        // 获取本班次生产产品的良率
+        Task<List<YieldData>> GetThisShiftYield();
     }
 
     public class YieldService : IYieldService
     {
-        private static readonly IMongoCollection<YieldData> _yieldData = DBconnector.DICSDB.GetCollection<YieldData>("");
+        private static readonly IMongoCollection<YieldData> _yieldData = DBconnector.DICSDB.GetCollection<YieldData>("DailyYield");
 
-        public Task<List<YieldData>> GetYield()
+        public Task<List<YieldData>> GetThisShiftYield()
         {
-            throw new NotImplementedException();
+            return Task.Run(() =>
+            {
+                var year  = DateTime.Now.Year;
+                var month = DateTime.Now.Month;
+                var day   = DateTime.Now.Day;
+                var hour = DateTime.Now.Hour;
+                if (hour < 6 || hour >= 18)
+                {
+                    // 夜班
+                    List<YieldData> result = _yieldData.Find(x =>
+                                                             x.Time >= new DateTime(year, month, day-1, 18, 0, 0) &&
+                                                             x.Time <  new DateTime(year, month, day,    6, 0, 0)).ToList();
+                    return result;
+                } else
+                {
+                    // 白班
+                    List<YieldData> result = _yieldData.Find(x =>
+                                                             x.Time >= new DateTime(year, month, day,  6, 0, 0) &&
+                                                             x.Time <  new DateTime(year, month, day, 18, 0, 0)).ToList();
+                    return result;
+                }
+            });
         }
     }
 }

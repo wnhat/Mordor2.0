@@ -5,6 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DBconnect\**" />
+    <Compile Remove="File\**" />
+    <Compile Remove="ServerConnect\**" />
+    <EmbeddedResource Remove="DBconnect\**" />
+    <EmbeddedResource Remove="File\**" />
+    <EmbeddedResource Remove="ServerConnect\**" />
+    <None Remove="DBconnect\**" />
+    <None Remove="File\**" />
+    <None Remove="ServerConnect\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CsvHelper" Version="27.2.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
     <PackageReference Include="NetMQ" Version="4.0.1.8" />
@@ -14,12 +26,6 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.MongoDB" Version="5.1.2" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DBconnect\" />
-    <Folder Include="File\" />
-    <Folder Include="ServerConnect\" />
   </ItemGroup>
 
 </Project>

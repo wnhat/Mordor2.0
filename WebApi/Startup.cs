@@ -128,6 +128,7 @@ namespace WebApi
             services.AddScoped<IDefectCodeService, DefectCodeService>();
             services.AddSingleton<IProductInfoService, ProductInfoService>();
             services.AddScoped<IDICSRemainInspectMissionService, DICSRemainInspectMissionService>();
+            services.AddSingleton<IYieldService, YieldService>();
             // services.AddSingleton<IUserService, UserService>();
         }
 

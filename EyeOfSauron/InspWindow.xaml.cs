@@ -1,7 +1,11 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Windows.Controls;
 using EyeOfSauron.ViewModel;
+using CoreClass.Model;
+using System.Collections.Generic;
+using System;
 
 namespace EyeOfSauron
 {
@@ -10,49 +14,89 @@ namespace EyeOfSauron
     /// </summary>
     public partial class InspWindow : Window
     {
-        int refreshPage = 0;
-        private Mission mission;
-        private MainWindowViewModel _viewModel;
-        public InspWindow(UserInfoViewModel userInfo)
+        private readonly Mission mission;
+
+        private readonly MainWindowViewModel _viewModel;
+        
+        public InspWindow(UserInfoViewModel userInfo, Mission inspMission)
         {
             _viewModel = new MainWindowViewModel(userInfo);
             DataContext = _viewModel;
+            mission = inspMission;
+            LoadOnInspPanelMission();
+            mission.FillPreDownloadMissionQueue();
             InitializeComponent();
         }
-        public void SetMission(Mission m)
-        {
-            mission = m;
-        }
-        
+
+        //for test, will be removed later;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            RefreshInspImageViewModel();
-            _viewModel._defectList.DetailDefectImage = mission.onInspPanelMission.defectImageDataDic.FirstOrDefault().Value;
+            //mission.NextMission();
+            //LoadOnInspPanelMission();
         }
-        public void RefreshInspImageViewModel()
+
+        public void LoadOnInspPanelMission()
         {
-            if ((refreshPage) * 3 < mission.onInspPanelMission.resultImageDataDic.Values.ToArray().Length)
+            if (mission.onInspPanelMission != null)
             {
-                _viewModel._inspImage.imageArray = mission.onInspPanelMission.resultImageDataDic.Values.ToArray().Skip((refreshPage) * 3).Take(3).ToArray();
-                _viewModel._inspImage.imageNameArray = mission.onInspPanelMission.resultImageDataDic.Keys.ToArray().Skip((refreshPage) * 3).Take(3).ToArray();
-                SetInspImage(mission.onInspPanelMission.resultImageDataDic.Values.ToArray().Skip((refreshPage) * 3).Take(3).ToArray(), mission.onInspPanelMission.resultImageDataDic.Keys.ToArray().Skip((refreshPage) * 3).Take(3).ToArray());
-                refreshPage++;
+                SetPanelInfo();
+                _viewModel.MissionInfoViewModel.InspImage.refreshPage = 0;
+                _viewModel.MissionInfoViewModel.InspImage.RefreshImageMethod();
+            }
+        }
+
+        public void SetPanelInfo()
+        {
+            _viewModel.MissionInfoViewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
+            if (mission.onInspPanelMission.resultImageDataList != null)
+            {
+                _viewModel.MissionInfoViewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
             }
             else
             {
-                refreshPage = 0;
-                RefreshInspImageViewModel();
+                _viewModel.MissionInfoViewModel.InspImage.resultImageDataList.Clear();
             }
-        }
-        public void SetInspImage(BitmapImage[] bitmapImages, string[] imageNames)
-        {
-            _viewModel._inspImage.imageArray = bitmapImages;
-            _viewModel._inspImage.imageNameArray = imageNames;
+            _viewModel.MissionInfoViewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void JudgeButtonClick(object sender, RoutedEventArgs e)
         {
-            
+            Defect defect;
+            if ((sender as Button).Content == "S")
+            {
+                defect = null;
+            }
+            else if((sender as Button).Content == "E")
+            {
+                defect = Defect.OperaterEjudge;
+            }
+            else
+            {
+                defect = (sender as Button).DataContext as Defect;
+            }
+            SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, _viewModel.UserInfo.User.Username, _viewModel.UserInfo.User.Account, _viewModel.UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
+            mission.FillPreDownloadMissionQueue();
+            if (!mission.NextMission())
+            {
+                MessageBox.Show("There is no mission left.");
+                this.Close();
+            }
+            else
+            {
+                LoadOnInspPanelMission();
+            }
+        }
+
+        private new void KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+                switch (e.Key)
+            {
+                case System.Windows.Input.Key.Tab:
+                    _viewModel.MissionInfoViewModel.InspImage.RefreshImageMethod();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
