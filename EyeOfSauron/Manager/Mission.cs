@@ -21,6 +21,8 @@ namespace EyeOfSauron
         //TODO: 区分任务类型
         private Queue<PanelMission> PreDownloadedPanelMissionQueue = new();
 
+        static readonly DICSRemainInspectMissionService dicsRemainInspectMissionService = new();
+
         public PanelMission onInspPanelMission;
 
         private readonly ProductInfo productInfo;
@@ -70,7 +72,7 @@ namespace EyeOfSauron
                 try
                 {
                     PanelInspectHistory history = PanelInspectHistory.Get(inspectMission.PanelID);
-                    _ = PreJudge(ref inspectMission, ref history);
+                    //_ = PreJudge(ref inspectMission, ref history);
                     AETresult aetResult = AETresult.Get(inspectMission.HistoryID);
                     PanelMission panelMission = new(inspectMission, aetResult);
                     PreDownloadedPanelMissionQueue.Enqueue(panelMission);
@@ -99,6 +101,18 @@ namespace EyeOfSauron
                 onInspPanelMission = PreDownloadedPanelMissionQueue.Dequeue();
                 return true;
             }
+        }
+
+        public async Task<int> RemainMissionCount()
+        {
+            return PreDownloadedPanelMissionQueue.Count + await GetRemainingQuantityOfTheProduct();
+        }
+
+        private async Task<int> GetRemainingQuantityOfTheProduct()
+        {
+            // get the remaining mission quantity to set viewmodel
+            var remainMissionCount = await dicsRemainInspectMissionService.GetRemainMissionCount(productInfo.Id);
+            return remainMissionCount.GetValue("count").ToInt32();
         }
 
         public static bool PreJudge(ref InspectMission mission, ref PanelInspectHistory aetResult)

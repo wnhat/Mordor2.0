@@ -32,17 +32,18 @@ namespace EyeOfSauron
         {
             try
             {
-                _viewModel.Authenticate(userNameTextBox.Text, passwordTextBox.Password);
-                Window window = new ProductSelectWindow(_viewModel);
-                Hide();
-                window.ShowDialog();
-                Show();
+            _viewModel.Authenticate(userNameTextBox.Text, passwordTextBox.Password);
+            Window window = new ProductSelectWindow(_viewModel);
+            Hide();
+            window.ShowDialog();
+            Show();
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 MessageBox.Show(exception.Message);
             }
         }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();

@@ -11,6 +11,10 @@ namespace EyeOfSauron.ViewModel
     {
         private string panelId = "";
 
+        private ProductInfo productInfo;
+
+        private int remainingCount;
+
         public DefectListViewModel DetailDefectList { get; }
 
         public InspImageViewModel InspImage { get; }
@@ -25,6 +29,18 @@ namespace EyeOfSauron.ViewModel
         {
             get => panelId;
             set => SetProperty(ref panelId, value);
+        }
+
+        public ProductInfo ProductInfo
+        {
+            get => productInfo;
+            set => SetProperty(ref productInfo, value);
+        }
+
+        public int RemainingCount
+        {
+            get => remainingCount;
+            set => SetProperty(ref remainingCount, value);
         }
     }
 

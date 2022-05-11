@@ -45,17 +45,12 @@ namespace EyeOfSauron
             }
         }
 
-        public void SetPanelInfo()
+        public async void SetPanelInfo()
         {
+            _viewModel.MissionInfoViewModel.RemainingCount = await mission.RemainMissionCount();
             _viewModel.MissionInfoViewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
-            if (mission.onInspPanelMission.resultImageDataList != null)
-            {
-                _viewModel.MissionInfoViewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
-            }
-            else
-            {
-                _viewModel.MissionInfoViewModel.InspImage.resultImageDataList.Clear();
-            }
+            _viewModel.MissionInfoViewModel.ProductInfo = mission.onInspPanelMission.inspectMission.Info;
+            _viewModel.MissionInfoViewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
             _viewModel.MissionInfoViewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
         }
 
@@ -92,6 +87,7 @@ namespace EyeOfSauron
             switch (e.Key)
             {
                 case System.Windows.Input.Key.Enter:
+                case System.Windows.Input.Key.Space:
                     e.Handled = true;
                     break;
                 case System.Windows.Input.Key.Tab:
