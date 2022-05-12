@@ -35,23 +35,27 @@ namespace EyeOfSauron
             //LoadOnInspPanelMission();
         }
 
-        public void LoadOnInspPanelMission()
+        public async void LoadOnInspPanelMission()
         {
             if (mission.onInspPanelMission != null)
             {
-                SetPanelInfo();
+                _viewModel.MissionInfoViewModel.RemainingCount = await mission.RemainMissionCount();
+                _viewModel.MissionInfoViewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
+                _viewModel.MissionInfoViewModel.ProductInfo = mission.onInspPanelMission.inspectMission.Info;
+                _viewModel.MissionInfoViewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
+                _viewModel.MissionInfoViewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
+                _viewModel.MissionInfoViewModel.DetailDefectList.AetDetailDefects.Clear();
+                foreach (var item in mission.onInspPanelMission.bitmapImageContainers)
+                {
+                    _viewModel.MissionInfoViewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.Name, item.Name, item.BitmapImage));
+                }
+                if (_viewModel.MissionInfoViewModel.DetailDefectList.AetDetailDefects.Count != 0)
+                {
+                    _viewModel.MissionInfoViewModel.DetailDefectList.SelectedItem = _viewModel.MissionInfoViewModel.DetailDefectList.AetDetailDefects.FirstOrDefault();
+                }
                 _viewModel.MissionInfoViewModel.InspImage.refreshPage = 0;
                 _viewModel.MissionInfoViewModel.InspImage.RefreshImageMethod();
             }
-        }
-
-        public async void SetPanelInfo()
-        {
-            _viewModel.MissionInfoViewModel.RemainingCount = await mission.RemainMissionCount();
-            _viewModel.MissionInfoViewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
-            _viewModel.MissionInfoViewModel.ProductInfo = mission.onInspPanelMission.inspectMission.Info;
-            _viewModel.MissionInfoViewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
-            _viewModel.MissionInfoViewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
         }
 
         private void JudgeButtonClick(object sender, RoutedEventArgs e)
@@ -111,6 +115,13 @@ namespace EyeOfSauron
                 default:
                     break;
             }
+        }
+
+        private void PanelIDLableDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            string text = (sender as Label).Content.ToString();
+            Clipboard.SetDataObject(text);
+            e.Handled = true;
         }
     }
 }

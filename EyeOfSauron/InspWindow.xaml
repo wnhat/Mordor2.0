@@ -36,25 +36,36 @@
                 <RowDefinition Height="120" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal">
-                <StackPanel>
-                    <TextBlock
-                        FontSize="16"
-                        Text="{Binding MissionInfoViewModel.PanelId}"
-                        TextAlignment="Center" />
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
-                            FontSize="16"
-                            Text="剩余任务数量："
-                            TextAlignment="Right" />
-                        <TextBlock
-                            FontSize="16"
-                            Text="{Binding MissionInfoViewModel.RemainingCount}"
-                            TextAlignment="Left" />
-                    </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Label
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Content="{Binding MissionInfoViewModel.PanelId}"
+                    FontSize="16"
+                    MouseDoubleClick="PanelIDLableDoubleClick" />
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    FontSize="16">
+                    <!--<Label.Content>
+                        <MultiBinding StringFormat="{}剩余任务数量：{0}" Converter="{StaticResource ComboBoxClearButtonMarginConverter }">
+                            <Binding Path="MissionInfoViewModel.RemainingCount" />
+                        </MultiBinding>
+                    </Label.Content>-->
+                </Label>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Command="{Binding MissionInfoViewModel.InspImage.RefreshImageCommand}" FontSize="16" />
                 </StackPanel>
-                <Button Command="{Binding MissionInfoViewModel.InspImage.RefreshImageCommand}" FontSize="16" />
-            </StackPanel>
+            </Grid>
             <DockPanel Grid.Row="1">
                 <Grid
                     Grid.Column="1"

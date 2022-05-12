@@ -55,7 +55,7 @@ namespace EyeOfSauron.ViewModel
         static readonly Uri _defaultImageUri = new(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
 
         private ObservableCollection<BitmapImageContainer>? inspImages;
-        
+
         private ImageContainer[] inspImageArray1 = new ImageContainer[3];
 
         public List<ImageContainer> resultImageDataList = new();
@@ -104,7 +104,7 @@ namespace EyeOfSauron.ViewModel
         }
 
         public CommandImplementation RefreshImageCommand { get; }
-        
+
         public void RefreshImageMethod()
         {
             if (resultImageDataList.Count == 0)
@@ -141,7 +141,7 @@ namespace EyeOfSauron.ViewModel
                 new AetDetailDefect("InnerDefect1","0001"),
                 new AetDetailDefect("InnerDefect2","0002"),
             };
-            
+
             SelectedItem = AetDetailDefects.FirstOrDefault();
 
             SelectedItemChangedCommand = new CommandImplementation(
@@ -188,6 +188,13 @@ namespace EyeOfSauron.ViewModel
         {
             Name = name;
             DefectNo = defectNo;
+        }
+
+        public AetDetailDefect(string name, string defectNo, BitmapImage bitmapImage)
+        {
+            Name = name;
+            DefectNo = defectNo;
+            DetailDefectImage = bitmapImage;
         }
 
         public string Name

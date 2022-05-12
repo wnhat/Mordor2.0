@@ -103,7 +103,7 @@ namespace CoreClass.Service
         }
 
         // get specific product's mission count;
-        public async Task<BsonDocument> GetRemainMissionCount(ObjectId id)
+        public static async Task<BsonDocument> GetRemainMissionCount(ObjectId id)
         {
             var projection = Builders<InspectMission>.Projection.Exclude("Info.Img");
             ProjectionDefinition<InspectMission> group = "{_id : '$Info', count : {$sum : 1}}";
