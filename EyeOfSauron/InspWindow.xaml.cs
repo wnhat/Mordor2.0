@@ -1,11 +1,8 @@
 ﻿using System.Linq;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using EyeOfSauron.ViewModel;
 using CoreClass.Model;
-using System.Collections.Generic;
-using System;
 
 namespace EyeOfSauron
 {
@@ -16,11 +13,12 @@ namespace EyeOfSauron
     {
         private readonly Mission mission;
 
-        private readonly MainWindowViewModel _viewModel;
+        private readonly InspMainWindowViewModel _viewModel;
         
         public InspWindow(UserInfoViewModel userInfo, Mission inspMission)
         {
-            _viewModel = new MainWindowViewModel(userInfo);
+            _viewModel = new InspMainWindowViewModel(userInfo);
+            _viewModel.MissionInfoViewModel.ProductInfo = inspMission.productInfo;
             DataContext = _viewModel;
             mission = inspMission;
             LoadOnInspPanelMission();

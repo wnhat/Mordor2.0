@@ -27,7 +27,7 @@ namespace EyeOfSauron
 
         public PanelMission onInspPanelMission;
 
-        private readonly ProductInfo productInfo;
+        public readonly ProductInfo productInfo;
 
         readonly object Predownloadlock = new();
 

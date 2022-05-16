@@ -104,7 +104,7 @@
             FontSize="12"
             FontStyle="Normal"
             FontWeight="Bold"
-            Foreground="{DynamicResource PrimaryHueLightForegroundBrush}" />
+            Style="{StaticResource MaterialDesignRaisedLightButton}" />
         <!--<StackPanel>
             <Grid Width="400">
                 <StackPanel Orientation="Horizontal">
