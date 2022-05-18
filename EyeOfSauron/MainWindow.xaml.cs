@@ -23,7 +23,7 @@ namespace EyeOfSauron
             {
                 //note you can use the message queue from any thread, but just for the demo here we 
                 //need to get the message queue from the snackbar, so need to be on the dispatcher
-                MainSnackbar.MessageQueue?.Enqueue("Welcome to Material Design In XAML Tookit");
+                MainSnackbar.MessageQueue?.Enqueue("Welcome Login to Eye of Sauron");
             }, TaskScheduler.FromCurrentSynchronizationContext());
 
             DataContext = new MainWindowViewModel(MainSnackbar.MessageQueue!);
@@ -82,7 +82,7 @@ namespace EyeOfSauron
         }
 
         private void MenuToggleButton_OnClick(object sender, RoutedEventArgs e) 
-            => DemoItemsSearchBox.Focus();
+            => MainScrollViewer.Focus();
 
         private void MenuDarkModeButton_Click(object sender, RoutedEventArgs e) 
             => ModifyTheme(DarkModeToggleButton.IsChecked == true);
@@ -98,5 +98,11 @@ namespace EyeOfSauron
 
         private void OnSelectedItemChanged(object sender, DependencyPropertyChangedEventArgs e)
             => MainScrollViewer.ScrollToHome();
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Window window = new LogininWindow();
+            window.ShowDialog();
+        }
     }
 }

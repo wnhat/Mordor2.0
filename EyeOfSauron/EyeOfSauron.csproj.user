@@ -38,6 +38,9 @@
     <Page Update="UserControl\ProductSelectWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="UserControl\ThemeSettings.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="ViewModel\DocumentationLinks.xaml">
       <SubType>Designer</SubType>
     </Page>

@@ -45,7 +45,10 @@ namespace EyeOfSauron
                 int count = item.GetValue("count").ToInt32();
                 _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfo, count)));
             }
-            _viewModel.SelectedProductCardViewModel = _viewModel.ProductInfos.First();
+            if (_viewModel.ProductInfos.Count>0)
+            {
+                _viewModel.SelectedProductCardViewModel = _viewModel.ProductInfos.First();
+            }
         }
 
         private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)
@@ -78,11 +81,13 @@ namespace EyeOfSauron
             count += 100;
             //_viewModel.SelectProductInfo = new KeyValuePair<ProductInfo, int>(productInfos.ToArray()[1], count);
             _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfos.ToArray()[1], count)));
+            Window window = new MainWindow();
+            window.ShowDialog();
         }
 
         private void SetSelectProductInfo(object sender, RoutedEventArgs e)
         {
-            ProductCardViewModel viewModel = (sender as Button).DataContext as ProductCardViewModel;
+            ProductCardViewModel viewModel = ((Button)sender).DataContext as ProductCardViewModel;
             _viewModel.SelectedProductCardViewModel = viewModel;
         }
     }

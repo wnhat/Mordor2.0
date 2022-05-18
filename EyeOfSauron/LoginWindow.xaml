@@ -34,18 +34,24 @@
                     Padding="0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
+                    materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
                     materialDesign:ShadowAssist.ShadowDepth="Depth1"
                     Background="{x:Null}"
                     BorderBrush="{x:Null}"
-                    IsEnabled="False">
-                    <Viewbox Width="30" Height="30">
+                    Content="{materialDesign:PackIcon Kind=Account,
+                                                      Size=30}"
+                    Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
+                    IsEnabled="False"
+                    Style="{StaticResource MaterialDesignToolButton}">
+
+                    <!--<Viewbox Width="30" Height="30">
                         <Canvas Width="24" Height="24">
                             <Path
                                 Data="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
                                 Fill="#FF00838F"
                                 RenderTransformOrigin="0.475,0.469" />
                         </Canvas>
-                    </Viewbox>
+                    </Viewbox>-->
                 </Button>
                 <TextBox
                     x:Name="userNameTextBox"
@@ -70,15 +76,20 @@
                     Padding="0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
+                    materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
                     materialDesign:ShadowAssist.ShadowDepth="Depth1"
                     Background="{x:Null}"
                     BorderBrush="{x:Null}"
-                    IsEnabled="False">
-                    <Viewbox Width="30" Height="30">
+                    Content="{materialDesign:PackIcon Kind=Key,
+                                                      Size=30}"
+                    Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
+                    IsEnabled="False"
+                    Style="{StaticResource MaterialDesignToolButton}">
+                    <!--<Viewbox Width="30" Height="30">
                         <Canvas Width="24" Height="24">
                             <Path Data="M7 14C5.9 14 5 13.1 5 12S5.9 10 7 10 9 10.9 9 12 8.1 14 7 14M12.6 10C11.8 7.7 9.6 6 7 6C3.7 6 1 8.7 1 12S3.7 18 7 18C9.6 18 11.8 16.3 12.6 14H16V18H20V14H23V10H12.6Z" Fill="#FF00838F" />
                         </Canvas>
-                    </Viewbox>
+                    </Viewbox>-->
                 </Button>
                 <PasswordBox
                     x:Name="passwordTextBox"
@@ -97,91 +108,14 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
             materialDesign:ButtonAssist.CornerRadius="5"
-            Background="#FFB2EBF2"
+            materialDesign:ShadowAssist.ShadowDepth="Depth2"
+            Background="{DynamicResource PrimaryHueMidBrush}"
             Click="LoginButtonClick"
             Content="LOGIN"
             FontFamily="Tahoma"
             FontSize="12"
             FontStyle="Normal"
             FontWeight="Bold"
-            Style="{StaticResource MaterialDesignRaisedLightButton}" />
-        <!--<StackPanel>
-            <Grid Width="400">
-                <StackPanel Orientation="Horizontal">
-                    <Button
-                    Grid.Column="0"
-                    Width="30"
-                    Height="30"
-                    Padding="0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    materialDesign:ShadowAssist.ShadowDepth="Depth1"
-                    Background="{x:Null}"
-                    BorderBrush="{x:Null}"
-                    IsEnabled="False">
-                        <Viewbox Width="30" Height="30">
-                            <Canvas Width="24" Height="24">
-                                <Path
-                                Data="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
-                                Fill="#FF00838F"
-                                RenderTransformOrigin="0.475,0.469" />
-                            </Canvas>
-                        </Viewbox>
-                    </Button>
-                    <TextBox
-                    x:Name="userNameTextBox"
-                    Grid.Column="1"
-                    Width="300"
-                    VerticalAlignment="Top"
-                    materialDesign:HintAssist.Hint="Account"
-                    AcceptsReturn="True"
-                    Style="{StaticResource MaterialDesignFilledTextBox}"
-                    TextWrapping="Wrap" />
-                </StackPanel>
-            </Grid>
-            <Grid Margin="0,30,0,0" Width="400">
-                <StackPanel Orientation="Horizontal">
-                    <Button
-                    Grid.Column="0"
-                    Width="30"
-                    Height="30"
-                    Padding="0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    materialDesign:ShadowAssist.ShadowDepth="Depth1"
-                    Background="{x:Null}"
-                    BorderBrush="{x:Null}"
-                    IsEnabled="False">
-                        <Viewbox Width="30" Height="30">
-                            <Canvas Width="24" Height="24">
-                                <Path Data="M7 14C5.9 14 5 13.1 5 12S5.9 10 7 10 9 10.9 9 12 8.1 14 7 14M12.6 10C11.8 7.7 9.6 6 7 6C3.7 6 1 8.7 1 12S3.7 18 7 18C9.6 18 11.8 16.3 12.6 14H16V18H20V14H23V10H12.6Z" Fill="#FF00838F" />
-                            </Canvas>
-                        </Viewbox>
-                    </Button>
-                    <PasswordBox
-                    x:Name="passwordTextBox"
-                    Grid.Column="1"
-                    Width="300"
-                    VerticalAlignment="Top"
-                    materialDesign:HintAssist.Hint="Password"
-                    Style="{StaticResource MaterialDesignFilledPasswordBox}" />
-                </StackPanel>
-            </Grid>
-            <Button
-                Width="80"
-                Height="40"
-                Margin="0,50,0,0"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                materialDesign:ButtonAssist.CornerRadius="5"
-                Background="#FFB2EBF2"
-                Click="LoginButtonClick"
-                Content="LOGIN"
-                FontFamily="Tahoma"
-                FontSize="12"
-                FontStyle="Normal"
-                FontWeight="Bold"
-                Foreground="{DynamicResource PrimaryHueLightForegroundBrush}" />
-        </StackPanel>-->
+            Foreground="{DynamicResource PrimaryHueMidForegroundBrush}" />
     </Grid>
 </Window>

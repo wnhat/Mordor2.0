@@ -23,6 +23,7 @@
     WindowStartupLocation="CenterScreen"
     WindowState="Maximized"
     WindowStyle="ThreeDBorderWindow"
+    Background="{DynamicResource MaterialDesignPaper}"
     mc:Ignorable="d">
     <Window.Resources>
         <Converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />

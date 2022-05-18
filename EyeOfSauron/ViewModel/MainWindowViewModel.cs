@@ -16,15 +16,33 @@ namespace EyeOfSauron.ViewModel
     {
         public MainWindowViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
-            DemoItems = new ObservableCollection<DemoItem>();
+            DemoItems = new ObservableCollection<DemoItem>(new[]
+            {
+                new DemoItem("Color Tool",
+                typeof(ColorTool),
+                new[]
+                {
+                    DocumentationLink.WikiLink("Brush-Names", "Brushes"),
+                    DocumentationLink.WikiLink("Custom-Palette-Hues", "Custom Palettes"),
+                    DocumentationLink.WikiLink("Swatches-and-Recommended-Colors", "Swatches"),
+                    DocumentationLink.DemoPageLink<ColorTool>("Demo View"),
+                    DocumentationLink.DemoPageLink<ColorToolViewModel>("Demo View Model"),
+                    DocumentationLink.ApiLink<PaletteHelper>()
+                } )
+            });
+
 
             foreach (var item in GenerateDemoItems(snackbarMessageQueue).OrderBy(i => i.Name))
             {
                 DemoItems.Add(item);
             }
-
+            
+            SelectedIndex = 0;
+            
             _demoItemsView = CollectionViewSource.GetDefaultView(DemoItems);
             _demoItemsView.Filter = DemoItemsFilter;
+
+            MyUserControl = new ProductSelectWindow(new UserInfoViewModel());
 
             HomeCommand = new CommandImplementation(
                 _ =>
@@ -59,6 +77,14 @@ namespace EyeOfSauron.ViewModel
         private int _selectedIndex;
         private string? _searchKeyword;
         private bool _controlsEnabled = true;
+        private ProductSelectWindow myUserControl;
+
+
+        public ProductSelectWindow MyUserControl
+        {
+            get => myUserControl;
+            set => SetProperty(ref myUserControl, value);
+        }
 
         public string? SearchKeyword
         {
@@ -101,6 +127,19 @@ namespace EyeOfSauron.ViewModel
             if (snackbarMessageQueue is null)
                 throw new ArgumentNullException(nameof(snackbarMessageQueue));
 
+            yield return new DemoItem(
+                "Color Tool",
+                typeof(ColorTool),
+                new[]
+                {
+                    DocumentationLink.WikiLink("Brush-Names", "Brushes"),
+                    DocumentationLink.WikiLink("Custom-Palette-Hues", "Custom Palettes"),
+                    DocumentationLink.WikiLink("Swatches-and-Recommended-Colors", "Swatches"),
+                    DocumentationLink.DemoPageLink<ColorTool>("Demo View"),
+                    DocumentationLink.DemoPageLink<ColorToolViewModel>("Demo View Model"),
+                    DocumentationLink.ApiLink<PaletteHelper>()
+                });
+            
             yield return new DemoItem(
                 "Color Tool",
                 typeof(ColorTool),

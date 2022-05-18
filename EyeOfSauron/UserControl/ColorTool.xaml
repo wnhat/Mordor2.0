@@ -125,7 +125,7 @@
     </UserControl.Resources>
 
     <DockPanel>
-        <!--<local:ThemeSettings Margin="8" DockPanel.Dock="Top" />-->
+        <local:ThemeSettings Margin="8" DockPanel.Dock="Top" />
 
         <DockPanel>
             <!--  Selection controls  -->
