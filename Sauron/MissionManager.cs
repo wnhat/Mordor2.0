@@ -13,8 +13,6 @@ namespace Sauron
     public class MissionManager
     {
 
-        static IMongoCollection<ProductInfo> ProductInfoCollection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
-
         public void FinishMission(OperatorJudge judge, InspectMission mission)
         {
             if (mission.Type == MissionType.MesMission)
@@ -27,9 +25,67 @@ namespace Sauron
             }
         }
         /// <summary>
+        /// 向任务集中添加抽检任务;
+        /// </summary>
+        public void AddCheckMission()
+        {
+
+        }
+        /// <summary>
+        /// 生成测试任务不进行mes通信；通过mongodb 近时段产生的结果生成随机lot；
+        /// </summary>
+        public void AddMissionTest()
+        {
+            var builder = Builders<AETresult>.Filter;
+            // get top 12 panel from mongodb collection "AETresult", order by time;
+            var result = AETresult.AETresultCollection.Find(new BsonDocument()).SortByDescending(x => x.history.InspDate).Limit(120).ToList();
+
+            int ii = 0;
+            
+            for (int i = 0; i < 10; i++)
+            {
+                string[] panels = new string[12];
+                for (int s = 0; s < 12; s++)
+                {
+                    panels[s] = result[ii].PanelId;
+                    ii++;
+                }
+                MesLot newmissionlot = new MesLot("TESTLOT" + i + 1, panels, "", CoreClass.DICSEnum.ProductType.Production, ProductInfo.GetProductInfo());
+                MesLot.Insert(newmissionlot);
+            }
+            
+            MesMissionStorage.InitialMesMission();
+        }
+    }
+    public static class MesMissionStorage
+    {
+        // 键为 lotid
+        public static Dictionary<ObjectId, MesLot> LotContainer = new Dictionary<ObjectId, MesLot>();
+        public static IMongoCollection<MesLot> LotCollection = DBconnector.DICSDB.GetCollection<MesLot>("MesLot");
+        static IMongoCollection<ProductInfo> ProductInfoCollection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
+
+        static MesMissionStorage()
+        {
+            //初始化lot信息；
+            var filter = new BsonDocument{{ "Added", true },{ "Update2MES", false }};
+            var addlots = LotCollection.Find(filter).ToEnumerable();
+            foreach (var lot in addlots)
+            {
+                try
+                {
+                    LotContainer.Add(lot.ID, lot);
+                }
+                catch (Exception e)
+                {
+                    Log.Logger.Error(e, "初始化lot时发生了未经处理的异常；");
+                }
+            }
+        }
+        
+        /// <summary>
         /// 自动循环向Mes搜索待检查E级任务，直到该型号没有待添加任务跳出循环；
         /// </summary>
-        public void AddAutoMission()
+        public static void AddAutoMission()
         {
             // TODO:Delay时间使用数据库更新内容；Now default value is 120 min;
             TimeSpan AddTimeDelay = TimeSpan.FromMinutes(120);
@@ -72,7 +128,8 @@ namespace Sauron
                 }
             }
         }
-        public void InitialMesMission()
+        
+        public static void InitialMesMission()
         {
             var builder = Builders<MesLot>.Filter;
             var filter = builder.Eq(x => x.Added, false);
@@ -81,64 +138,22 @@ namespace Sauron
             {
                 try
                 {
-                    MesMissionStorage.InitialLot(lot);
+                    InitialLot(lot);
                 }
                 catch (Exception e)
                 {
                     Log.Logger.Error(e, "初始化lot时发生了未经处理的异常；");
                 }
-
             }
         }
-        /// <summary>
-        /// 向任务集中添加抽检任务;
-        /// </summary>
-        public void AddCheckMission()
-        {
-
-        }
-        /// <summary>
-        /// 生成测试任务不进行mes通信；通过mongodb 近时段产生的结果生成随机lot；
-        /// </summary>
-        public void AddMissionTest()
-        {
-            var builder = Builders<AETresult>.Filter;
-            // get top 12 panel from mongodb collection "AETresult", order by time;
-            var result = AETresult.AETresultCollection.Find(new BsonDocument()).SortByDescending(x => x.history.InspDate).Limit(120).ToList();
-
-            int ii = 0;
-            
-            for (int i = 0; i < 10; i++)
-            {
-                string[] panels = new string[12];
-                for (int s = 0; s < 12; s++)
-                {
-                    panels[s] = result[ii].PanelId;
-                    ii++;
-                }
-                MesLot newmissionlot = new MesLot("TESTLOT" + i + 1, panels, "", CoreClass.DICSEnum.ProductType.Production, ProductInfo.GetProductInfo());
-                MesLot.Insert(newmissionlot);
-            }
-            
-            InitialMesMission();
-        }
-    }
-    public static class MesMissionStorage
-    {
-        // 键为 lotid
-        public static Dictionary<ObjectId, MesLot> LotContainer = new Dictionary<ObjectId, MesLot>();
-
-        static MesMissionStorage()
-        {
-
-        }
+        
         public static void InitialLot(MesLot lot)
         {
             string[] panels = lot.Panels;
             // 为lot初始化每个panel的任务；
             foreach (var panel in panels)
-            {
-                MesMission newmission = CreateMesMission(panel, lot.ProductInfo, lot.ID);
+            {       
+                MesMission newmission = CreateMesMission(panel, lot.ProductId, lot.ID);
                 if (!newmission.Finished)
                 {
                     // 为初始化完成但为自动判定的任务创建检查数据；
@@ -149,8 +164,10 @@ namespace Sauron
             var filter = Builders<MesLot>.Filter.Eq(x => x.ID, lot.ID);
             var update = Builders<MesLot>.Update.Set(x => x.missions, lot.missions).Set(x => x.Added, true);
             MesLot.LotCollection.UpdateOneAsync(filter, update);
+            LotContainer.Add(lot.ID, lot);
         }
-        public static MesMission CreateMesMission(string panelid, ProductInfo info, ObjectId lotid)
+        
+        public static MesMission CreateMesMission(string panelid, ObjectId ProductId, ObjectId lotid)
         {
             PanelInspectHistory history = PanelInspectHistory.Get(panelid);
             // 根据historyid 查找对应的检查结果文件；
@@ -161,21 +178,30 @@ namespace Sauron
             }
             else
             {
-                InspectMission mission = new InspectMission(panelid, MissionType.MesMission, history.ID, result.Id, info, lotid);
+                InspectMission mission = new InspectMission(panelid, MissionType.MesMission, history.ID, result.Id, ProductId, lotid);
                 return new MesMission(panelid, mission, history);
             }
         }
+        
         public static void AddJudge(OperatorJudge judge, InspectMission Inspectmission)
         {
             var lotid = Inspectmission.MesLotId;
             var mission = InspectMission.GetMission(Inspectmission.ID);
-            if (LotContainer.ContainsKey(lotid) && Inspectmission.LastRequestTime == mission.LastRequestTime && mission != null)
+            if (mission == null)
             {
-                LotContainer[lotid].AddJudge(judge, Inspectmission);
+                Log.Logger.Information("未找到相关的panel信息，客户端发回的检查结果被抛弃{@Judge}", judge);
+            }
+            else if (!LotContainer.ContainsKey(lotid))
+            {
+                Log.Logger.Information("Mesmission Storage 未找到相关panel，客户端发回的检查结果被抛弃{@Judge}", judge);
+            }
+            else if (Inspectmission.LastRequestTime != mission.LastRequestTime)
+            {
+                Log.Logger.Information("panel信息请求时间不匹配，客户端发回的检查结果被抛弃{@Judge}", judge);
             }
             else
             {
-                Log.Logger.Information("客户端发回的检查结果被抛弃{@Judge}", judge);
+                LotContainer[lotid].AddJudge(judge, Inspectmission);
             }
         }
     }

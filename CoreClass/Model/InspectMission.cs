@@ -19,7 +19,7 @@ namespace CoreClass.Model
         public MissionType Type;
         public ObjectId HistoryID;
         public ObjectId ResultContainerId;
-        public ProductInfo Info;
+        public ObjectId Info;
         public ObjectId MesLotId;
 
         public bool Requested = false;
@@ -27,13 +27,13 @@ namespace CoreClass.Model
         public DateTime LastRequestTime = DateTime.Now;
         public DateTime CreateTime = DateTime.Now;
 
-        public InspectMission(string panelId, MissionType type, ObjectId historyID, ObjectId resultContainerId, ProductInfo info, ObjectId mesLotId)
+        public InspectMission(string panelId, MissionType type, ObjectId historyID, ObjectId resultContainerId, ObjectId productid, ObjectId mesLotId)
         {
             PanelID = panelId;
             this.Type = type;
             HistoryID = historyID;
             ResultContainerId = resultContainerId;
-            Info = info;
+            Info = productid;
             MesLotId = mesLotId;
         }
 
@@ -63,11 +63,26 @@ namespace CoreClass.Model
         public static InspectMission GetMission(ProductInfo info)
         {
             var filter = Builders<InspectMission>.Filter.And(
-                Builders<InspectMission>.Filter.Eq(x => x.Info.Id, info.Id),
+                Builders<InspectMission>.Filter.Eq(x => x.Info, info.Id),
                 Builders<InspectMission>.Filter.Eq(x => x.Requested, false));
             var update = Builders<InspectMission>.Update.Set(x => x.LastRequestTime, DateTime.Now).Set(x => x.Requested, true);
             InspectMission mission = Collection.FindOneAndUpdate(filter, update);
             return mission;
+        }
+        public static InspectMission GetMission()
+        {
+            var filter = Builders<InspectMission>.Filter.And(
+                Builders<InspectMission>.Filter.Eq(x => x.Requested, false));
+            var update = Builders<InspectMission>.Update.Set(x => x.LastRequestTime, DateTime.Now).Set(x => x.Requested, true);
+            InspectMission mission = Collection.FindOneAndUpdate(filter, update);
+            if (mission == null)
+            {
+                return null;
+            }
+            else
+            {
+                return GetMission(mission.ID);
+            }
         }
         /// <summary>
         /// 用于查询特定inspectmission；
@@ -76,7 +91,7 @@ namespace CoreClass.Model
         /// <returns></returns>
         public static InspectMission GetMission(ObjectId id)
         {
-            var fileter = Builders<InspectMission>.Filter.Eq(x => x.Info.Id, id);
+            var fileter = Builders<InspectMission>.Filter.Eq(x => x.ID, id);
             var mission = Collection.Find(fileter).FirstOrDefault();
             return mission;
         }

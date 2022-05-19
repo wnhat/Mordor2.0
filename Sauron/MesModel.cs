@@ -25,7 +25,9 @@ namespace Sauron
         public bool Added = false;
         public bool Update2MES = false;
         public DateTime CreateTime = DateTime.Now;
-        public ProductInfo ProductInfo;
+        public ObjectId ProductId { get; set; }
+        public string FGcode { get; set; }
+        public string ModelId { get; set; }
         public ProductType ProductType;
         public List<MesMission> missions = new List<MesMission>();
         public List<string> LogEvent = new List<string>();
@@ -35,7 +37,9 @@ namespace Sauron
             Panels = panels;
             Xmlstring = xmlstring;
             this.ProductType = productType;
-            this.ProductInfo = productInfo;
+            ProductId = productInfo.Id;
+            FGcode = productInfo.FGcode;
+            ModelId = productInfo.ModelId;
             // 对ID进行排序方便校对重复添加的任务；
             Array.Sort(Panels);
         }
@@ -79,16 +83,24 @@ namespace Sauron
 
                 // update judge to meslot;
                 var filter = Builders<MesLot>.Filter.Eq(x => x.ID, this.ID);
-                var arrayFilters = new List<ArrayFilterDefinition> { new BsonDocumentArrayFilterDefinition<MesMission>(new BsonDocument("MesMission.PanelId", inspectMission.PanelID)) };
+                var arrayFilters = new List<ArrayFilterDefinition> {};
                 var option = new UpdateOptions { ArrayFilters = arrayFilters };
-                var set = Builders<MesLot>.Update.Set("MesMission.$[MesMission].Judge", mission.Judge);
+                var set = Builders<MesLot>.Update.Set("missions.$[mesmission].Judge", mission.Judge);
+
+                ArrayFilterDefinition<BsonDocument> optionsFilter = new BsonDocument("mesmission.PanelId", new BsonDocument("$eq", inspectMission.PanelID));
+
+                arrayFilters.Add(optionsFilter);
                 LotCollection.UpdateOneAsync(filter, set, option);
 
                 // 当任务需要匹配多人检查结果时，更新inspectmission 数据库信息；
                 if (finished)
                 {
+                    if (mission.Judge.judges.Count>1)
+                    {
+                        Log.Testlogger.Information("多次判定：{@panel}", mission);
+                    }
                     InspectMission.SetFinishedMission(inspectMission);
-                    
+
                     // check if all missions are finished;
                     FinishLot();
                 }
@@ -143,13 +155,23 @@ namespace Sauron
             {
                 try
                 {
-                    MesConnector.FinishInspect(this);
+                    //MesConnector.FinishInspect(this);
+                    Log.Testlogger.Information("测试：完成lot {0}", this.CoverTrayId);
                     SetMeslotFinished();
                 }
                 catch (System.Exception e)
                 {
+                    this.AddEvent("上传MES信息时发生错误，请调查错误原因；");
                     this.AddEvent(e.Message);
-                    throw;
+                }
+                try
+                {
+                    OldDBconnector.AddLog(this);
+                }
+                catch (Exception e)
+                {
+                    this.AddEvent("记录生产履历时发生错误，请调查错误原因；");
+                    this.AddEvent(e.Message);
                 }
             }
         }
@@ -160,6 +182,7 @@ namespace Sauron
             var builder = Builders<MesLot>.Filter;
             var filter = builder.And(builder.Eq(x => x.ID, this.ID));
             var update = Builders<MesLot>.Update.Push("LogEvent", log);
+            LotCollection.UpdateOneAsync(filter,update);
         }
         public void SetMeslotFinished()
         {
@@ -178,6 +201,7 @@ namespace Sauron
         public PanelInspectHistory history;
         public JudgeCore Judge = new JudgeCore();
         public string PanelId;
+        public DateTime CreateTime = DateTime.Now;
         public MesMission(string panelid, InspectMission mission, PanelInspectHistory history)
         {
             this.mission = mission;
@@ -371,9 +395,19 @@ namespace Sauron
                 }
                 else
                 {
-                    // finish and set to F grade;
-                    FinishJudge(JudgeGrade.F, judges[0].Defect, judges[0].Account, judges[0].UserName);
-                    return finished;
+                    int Randomscore = GradeRandom.Next(0, 100);
+                    if (Randomscore < Parameter.FgradeSimplingRatio)
+                    {
+                        // keep unfinished;
+                        return finished;
+                    }
+                    else
+                    {
+                        // finish and set to F grade;
+                        FinishJudge(JudgeGrade.F, judges[0].Defect, judges[0].Account, judges[0].UserName);
+                        return finished;
+                    }
+
                 }
             }
             // if have two judge , reinspect;
@@ -432,17 +466,20 @@ namespace Sauron
         public void AddHistoryNotFoundDefect()
         {
             OperatorJudge judge = new OperatorJudge(Defect.HistoryNotFound, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, null,0);
-            AddJudge(judge);
+            judges.Add(judge);
+            FinishJudge(JudgeGrade.E, Defect.HistoryNotFound, User.AutoJudgeUser.Account, User.AutoJudgeUser.Username);
         }
         public void AddInspectMissionNullDefect()
         {
             OperatorJudge judge = new OperatorJudge(Defect.InspectMissionNull, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, null,0);
-            AddJudge(judge);
+            judges.Add(judge);
+            FinishJudge(JudgeGrade.E, Defect.InspectMissionNull, User.AutoJudgeUser.Account, User.AutoJudgeUser.Username);
         }
         internal void AddAETJudgeDefect()
         {
             OperatorJudge judge = new OperatorJudge(Defect.AETEjudge, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, null,0);
-            AddJudge(judge);
+            judges.Add(judge);
+            FinishJudge(JudgeGrade.E, Defect.AETEjudge, User.AutoJudgeUser.Account, User.AutoJudgeUser.Username);
         }
     }
 }

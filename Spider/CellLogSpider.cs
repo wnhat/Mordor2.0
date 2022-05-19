@@ -22,6 +22,7 @@ namespace Spider
         public Queue<PanelInspectHistory> PanelIdQueue = new Queue<PanelInspectHistory>();
         public PC mainpc;
         public LogSpiderBase spider;
+        public LogSpiderBase oldspider;
 
         public static event EventHandler<string> EInitialPanelInspectHistoryError;
 
@@ -52,36 +53,39 @@ namespace Spider
                 string logpath = String.Format(mainpc.CellLogPath, straptime(date));
                 SearchDate = date;
                 spider = new LogSpiderBase(logpath);
-                ManageSearchData();
+                ManageSearchData(spider);
             }
             else if(date.Day != SearchDate.Day)
             {
                 // 当爬虫距离上次运行时间超过一天时，刷取未记录的cell log；
                 while (date.Day != SearchDate.Day)
                 {
-                    ManageSearchData();
+                    ManageSearchData(spider);
                     // 将日期推进一天进行后更新新的logspiderbase；
                     SearchDate += TimeSpan.FromDays(1);
 
                     string logpath = String.Format(mainpc.CellLogPath, straptime(SearchDate));
-                    if (File.Exists(logpath))
-                    {
-                        spider = new LogSpiderBase(logpath);
-                    }
+                    oldspider = spider;
+                    spider = new LogSpiderBase(logpath);
                 }
                 // 当日期相等时还应刷新当日的cell log 是否有更新
-                ManageSearchData();
+                ManageSearchData(spider);
             }
             else
             {
-                ManageSearchData();
+                ManageSearchData(spider);
             }
             SearchDate = date;
+            // 当时间处于凌晨日期交界时，应搜索旧log中的信息，防止由于设备之间的时间差异造成的log丢失问题；
+            if (date - date.Date < TimeSpan.FromMinutes(15) && oldspider != null)
+            {
+                ManageSearchData(oldspider);
+            }
         }
-        void ManageSearchData()
+        void ManageSearchData(LogSpiderBase log)
         {
             // 从Cell Log中生成新的history；
-            PanelInspectHistory[] searchresult = Search();
+            PanelInspectHistory[] searchresult = Search(log);
 
             if (searchresult!= null)
             {
@@ -95,16 +99,16 @@ namespace Spider
                 PanelInspectHistory.InsertPanelHistory(searchresult);
             }
         }
-        PanelInspectHistory[] Search()
+        PanelInspectHistory[] Search(LogSpiderBase log)
         {
             string returnstring;
             try
             {
-                returnstring = spider.StartSpider();
+                returnstring = log.StartSpider();
             }
             catch (Exception e)
             {
-                Loger.Logger.Error(e, "在启动log文件爬虫的时候的过程中发生了错误 filepath:{0}", spider.FilePath);
+                Loger.Logger.Error(e, "在启动log文件爬虫的时候的过程中发生了错误 filepath:{0}", log.FilePath);
                 returnstring = null;
             }
             

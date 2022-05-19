@@ -45,10 +45,6 @@ namespace Sauron
                 System.Environment.Exit(1);
             }
         }
-        //public static MesLot RequestMissionTest(string xml)
-        //{
-        //    //TODO: addtest；
-        //}
         public static MesLot RequestMission(ProductInfo info, ProductType type)
         {
             string fgCode = info.FGcode;

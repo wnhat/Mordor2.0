@@ -26,7 +26,7 @@ namespace Sauron
                 .CreateLogger();
 
             Testlogger = new LoggerConfiguration()
-                .WriteTo.Console(restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Verbose)
+                .WriteTo.Console()
                 .CreateLogger();
         }
     }

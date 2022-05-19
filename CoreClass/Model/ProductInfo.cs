@@ -17,9 +17,7 @@ namespace CoreClass.Model
     {
         // mongodb product info collection;
         static IMongoCollection<ProductInfo> Collection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
-        static List<ProductInfo> find = Collection.Find(new BsonDocument()).ToList();
-        // random
-        static Random rnd = new Random();
+
         [BsonId]
         public ObjectId Id { get; set; }
         public string PrefixId { get; set; } //761L;
@@ -62,6 +60,9 @@ namespace CoreClass.Model
         /// <returns></returns>
         public static ProductInfo GetProductInfo()
         {
+            // random
+            Random rnd = new Random();
+            var find = Collection.Find(new BsonDocument()).ToList();
             // get the first product in mongodb;
             var count = Collection.CountDocuments(new BsonDocument());
             var randomint = rnd.Next(0, (int)count);

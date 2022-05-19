@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading;
 
 namespace Sauron
 {
@@ -12,18 +13,11 @@ namespace Sauron
     {
         static SqlConnection TheDataBase;
         static object reqlock = new object();
+        static Queue<MesLot> logs = new Queue<MesLot>();
+        
         static OldDBconnector()
         {
             TheDataBase = new SqlConnection("server=172.16.150.200;UID=sa;PWD=1qaz@WSX;Database=EDIAS_DB;Trusted_connection=False");
-        }
-        static string DateRange
-        {
-            get
-            {
-                var now = DateTime.Now;
-                var lastmonth = now - TimeSpan.FromDays(30);
-                return lastmonth.ToString("yyyyMMddHHmmss");
-            }
         }
         static string DateNow
         {
@@ -32,26 +26,36 @@ namespace Sauron
                 return DateTime.Now.ToString("yyyyMMddHHmmss");
             }
         }
-        static string IdList2String(string[] IdList)
+        static public void AddLog(MesLot lot)
         {
-            // 用于 VcrID in ({0}) 的字符串 format， 生成结果例如: VcrID in ("765H180139C4AAS03","765H180139C4AAS03") 
-            bool Fisrt = true;
-            string returnstring = "";
-            foreach (var item in IdList)
-            {
-                if (Fisrt)
-                {
-                    returnstring = returnstring + "'" + item + "'";
-                    Fisrt = false;
-                }
-                else
-                {
-                    returnstring = returnstring + ",'" + item + "'";
-                }
-            }
-            return returnstring;
+            logs.Enqueue(lot);
         }
-        static public List<string> AddInspectResult2DB(MesLot lot, string ModelID, string ProductType)
+        static public void MainCycle()
+        {
+            while (true)
+            {
+                while (logs.Count != 0)
+                {
+                    MesLot addlot = logs.Dequeue();
+                    try
+                    {
+                        TheDataBase.Open();
+                        AddInspectResult2DB(addlot);
+                        TheDataBase.Close();
+                    }
+                    catch (Exception e)
+                    {
+                        if (TheDataBase.State == ConnectionState.Open)
+                        {
+                            TheDataBase.Close();
+                        }
+                        addlot.AddEvent(e.Message);
+                    }
+                }
+                Thread.Sleep(10000);
+            }
+        }
+        static public void AddInspectResult2DB(MesLot lot)
         {
             string originstring = @"INSERT INTO [dbo].[TAX_PRODUCT_TEST]
            ([EqpID]
@@ -67,7 +71,7 @@ namespace Sauron
            ,[ProductType]
            ,[OperationID])
      VALUES
-           ('7CTCT33'
+           ('7CTCT34'
            ,'{0}'
            ,'{1}'
            ,'0000000'
@@ -80,54 +84,43 @@ namespace Sauron
            ,'{8}'
            ,'C52000E')";
 
-            List<string> result = new List<string>();
             foreach (var item in lot.missions)
             {
                 string commandstring = String.Format(originstring,
                 DateNow,                        // 0
-                ModelID,                        // 1
+                lot.ModelId,                    // 1
                 item.PanelId,                   // 2
                 item.Judge.FinalUsername,       // 3
                 item.Judge.FinalDefect == null ? null : item.Judge.FinalDefect.DefectCode,     // 4
                 item.FinalJudge,                // 5
                 item.Judge.FinalUserId,         // 6
                 item.Judge.FinalDefect == null ? null : item.Judge.FinalDefect.DefectName,     // 7
-                ProductType                     // 8
+                lot.ProductType.ToString()      // 8
                 );
                 SqlCommand newcommand = new SqlCommand(commandstring, TheDataBase);
                 newcommand.CommandTimeout = 60;
                 try
                 {
-                    lock (reqlock)
+                    int row = newcommand.ExecuteNonQuery();
+                    if (row == 0)
                     {
-                        TheDataBase.Open();
-                        int row = newcommand.ExecuteNonQuery();
-                        if (row == 0)
-                        {
-                            string addresult = String.Format("panel:{0} ,添加结果影响{1}行", item.PanelId, row);
-                            result.Add(addresult);
-                        }
-                        else
-                        {
-                            // 正常情况不进行记录；
-                            // string addresult = String.Format("panel:{0} ,添加结果影响{1}行",item.PanelId, row);
-                            // result.Add(addresult);
-                        }
-                        TheDataBase.Close();
+                        string addresult = String.Format("panel:{0} ,添加结果影响{1}行", item.PanelId, row);
+                        lot.AddEvent(addresult);
+                    }
+                    else
+                    {
+                        // 正常情况不进行记录；
+                        // string addresult = String.Format("panel:{0} ,添加结果影响{1}行",item.PanelId, row);
+                        // result.Add(addresult);
                     }
                 }
                 catch (System.Exception e)
                 {
                     string addresult = String.Format("panel:{0} ,添加结果发生异常{1}", item.PanelId, e.Message);
-                    result.Add(addresult);
-                    if (TheDataBase.State == ConnectionState.Open)
-                    {
-                        TheDataBase.Close();
-                    }
+                    Log.Testlogger.Information(addresult);
+                    lot.AddEvent(addresult);
                 }
             }
-
-            return result;
         }
     }
 }
