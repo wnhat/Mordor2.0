@@ -12,8 +12,17 @@
     <Compile Update="UserControl\InspWindows.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="UserControl\ProductSelectWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="UserControl\ColorTool.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="UserControl\InspWindows.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -24,6 +33,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="ProductSelectWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControl\ProductSelectWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControl\ThemeSettings.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ViewModel\DocumentationLinks.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControl\SampleMessageDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

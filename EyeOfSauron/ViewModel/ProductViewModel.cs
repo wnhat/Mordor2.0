@@ -40,7 +40,7 @@ namespace EyeOfSauron.ViewModel
 
     public class ProductCardViewModel : ViewModelBase
     {
-        private KeyValuePair<ProductInfo, int> _productInfo;
+        private KeyValuePair<ProductInfo, int> productInfo;
 
         public ProductCardViewModel(KeyValuePair<ProductInfo, int> productInfo)
         {
@@ -49,8 +49,8 @@ namespace EyeOfSauron.ViewModel
 
         public KeyValuePair<ProductInfo, int> ProductInfo
         {
-            get => _productInfo;
-            set => SetProperty(ref _productInfo, value);
+            get => productInfo;
+            set => SetProperty(ref productInfo, value);
         }
     }
 }

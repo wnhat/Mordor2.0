@@ -1,11 +1,8 @@
 ﻿using System.Linq;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using EyeOfSauron.ViewModel;
 using CoreClass.Model;
-using System.Collections.Generic;
-using System;
 
 namespace EyeOfSauron
 {
@@ -16,11 +13,12 @@ namespace EyeOfSauron
     {
         private readonly Mission mission;
 
-        private readonly MainWindowViewModel _viewModel;
+        private readonly InspMainWindowViewModel _viewModel;
         
         public InspWindow(UserInfoViewModel userInfo, Mission inspMission)
         {
-            _viewModel = new MainWindowViewModel(userInfo);
+            _viewModel = new InspMainWindowViewModel(userInfo);
+            _viewModel.MissionInfoViewModel.ProductInfo = inspMission.productInfo;
             DataContext = _viewModel;
             mission = inspMission;
             LoadOnInspPanelMission();
@@ -35,28 +33,27 @@ namespace EyeOfSauron
             //LoadOnInspPanelMission();
         }
 
-        public void LoadOnInspPanelMission()
+        public async void LoadOnInspPanelMission()
         {
             if (mission.onInspPanelMission != null)
             {
-                SetPanelInfo();
+                _viewModel.MissionInfoViewModel.RemainingCount = await mission.RemainMissionCount();
+                _viewModel.MissionInfoViewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
+                _viewModel.MissionInfoViewModel.ProductInfo = mission.onInspPanelMission.inspectMission.Info;
+                _viewModel.MissionInfoViewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
+                _viewModel.MissionInfoViewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
+                _viewModel.MissionInfoViewModel.DetailDefectList.AetDetailDefects.Clear();
+                foreach (var item in mission.onInspPanelMission.bitmapImageContainers)
+                {
+                    _viewModel.MissionInfoViewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.Name, item.Name, item.BitmapImage));
+                }
+                if (_viewModel.MissionInfoViewModel.DetailDefectList.AetDetailDefects.Count != 0)
+                {
+                    _viewModel.MissionInfoViewModel.DetailDefectList.SelectedItem = _viewModel.MissionInfoViewModel.DetailDefectList.AetDetailDefects.FirstOrDefault();
+                }
                 _viewModel.MissionInfoViewModel.InspImage.refreshPage = 0;
                 _viewModel.MissionInfoViewModel.InspImage.RefreshImageMethod();
             }
-        }
-
-        public void SetPanelInfo()
-        {
-            _viewModel.MissionInfoViewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
-            if (mission.onInspPanelMission.resultImageDataList != null)
-            {
-                _viewModel.MissionInfoViewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
-            }
-            else
-            {
-                _viewModel.MissionInfoViewModel.InspImage.resultImageDataList.Clear();
-            }
-            _viewModel.MissionInfoViewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
         }
 
         private void JudgeButtonClick(object sender, RoutedEventArgs e)
@@ -89,14 +86,40 @@ namespace EyeOfSauron
 
         private new void KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-                switch (e.Key)
+            switch (e.Key)
             {
+                case System.Windows.Input.Key.Enter:
+                case System.Windows.Input.Key.Space:
+                    e.Handled = true;
+                    break;
                 case System.Windows.Input.Key.Tab:
                     _viewModel.MissionInfoViewModel.InspImage.RefreshImageMethod();
+                    break;
+                case System.Windows.Input.Key.LeftCtrl:
+                    _viewModel.MissionInfoViewModel.InspImage.IsVisible = true;
                     break;
                 default:
                     break;
             }
+        }
+
+        private new void KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case System.Windows.Input.Key.LeftCtrl:
+                    _viewModel.MissionInfoViewModel.InspImage.IsVisible = false;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void PanelIDLableDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            string text = (sender as Label).Content.ToString();
+            Clipboard.SetDataObject(text);
+            e.Handled = true;
         }
     }
 }

@@ -96,9 +96,22 @@ namespace CoreClass.Service
             var agg = Collection.Aggregate()
                 .Match(x => x.Finished == false && x.Requested == false)
                 .Project<InspectMission>(projection)
-                .Group(group);
+                .Group(group)
+                .Sort("{ count: -1 }");
             var result = await agg.ToListAsync();
             return result;
+        }
+
+        // get specific product's mission count;
+        public static async Task<BsonDocument> GetRemainMissionCount(ObjectId id)
+        {
+            var projection = Builders<InspectMission>.Projection.Exclude("Info.Img");
+            ProjectionDefinition<InspectMission> group = "{_id : '$Info', count : {$sum : 1}}";
+            var result = Collection.Aggregate()
+                .Match(x => x.Info.Id == id && x.Finished == false && x.Requested == false)
+                .Project<InspectMission>(projection)
+                .Group(group);
+            return await result.FirstOrDefaultAsync();
         }
 
         public async Task<BsonDocument> GetMeslot(ObjectId id)

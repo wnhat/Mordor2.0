@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Globalization;
 
 namespace EyeOfSauron.Converter
 {
-    public class Int32ToStringConverter : IValueConverter
+    class BooleanToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type type, object parameter, CultureInfo culture)
         {
@@ -16,10 +17,17 @@ namespace EyeOfSauron.Converter
             {
                 throw new NotImplementedException();
             }
-            string output = "";
-            if (value is Int32)
+            Visibility output = Visibility.Visible;
+            if (value is bool)
             {
-                output = "剩余任务数量：" + value.ToString();
+                if ((bool)value)
+                {
+                    output = Visibility.Visible;
+                }
+                else
+                {
+                    output = Visibility.Hidden;
+                }
             }
             return output;
         }
