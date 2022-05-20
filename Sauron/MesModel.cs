@@ -155,7 +155,7 @@ namespace Sauron
             {
                 try
                 {
-                    //MesConnector.FinishInspect(this);
+                    MesConnector.FinishInspect(this);
                     Log.Testlogger.Information("测试：完成lot {0}", this.CoverTrayId);
                     SetMeslotFinished();
                 }
@@ -166,6 +166,7 @@ namespace Sauron
                 }
                 try
                 {
+                    Log.Testlogger.Information("测试向数据库写入检查数据 lot {0}", this.CoverTrayId);
                     OldDBconnector.AddLog(this);
                 }
                 catch (Exception e)
@@ -354,8 +355,12 @@ namespace Sauron
 
             foreach (var item in judges)
             {
+                if (item.Defect == null)
+                {
+                    PanelScore += item.Score;
+                }
                 // If has E judge defect ,then judge Panel to E grade;
-                if (item.Defect.DefectName == Defect.OperaterEjudge.DefectName ||
+                else if (item.Defect.DefectName == Defect.OperaterEjudge.DefectName ||
                  item.Defect.DefectName == Defect.HistoryNotFound.DefectName ||
                  item.Defect.DefectName == Defect.InspectMissionNull.DefectName)
                 {
@@ -365,10 +370,6 @@ namespace Sauron
                     FinalUsername = User.AutoJudgeUser.Username;
                     FinalUserId = User.AutoJudgeUser.Account;
                     return finished;
-                }
-                else if (item.Defect == null)
-                {
-                    PanelScore += item.Score;
                 }
                 else
                 {

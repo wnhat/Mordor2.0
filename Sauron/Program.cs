@@ -13,8 +13,8 @@ namespace Sauron
         static void Main(string[] args)
         {
             DBconnector.InitialDB();
-            //Sauron.Run(); //启动服务器；
-            Test();
+            Test2();
+            Sauron.Run(); //启动服务器；
         }
         static void Test()
         {
@@ -27,6 +27,11 @@ namespace Sauron
                 testmanager.AddMissionTest();
                 Thread.Sleep(300000);
             }
+        }
+        static void Test2()
+        {
+            MissionManager testmanager = new MissionManager();
+            testmanager.AddMissionTest();
         }
         static void TestClient()
         {
