@@ -14,7 +14,7 @@ namespace EyeOfSauron.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public MainWindowViewModel(ISnackbarMessageQueue snackbarMessageQueue)
+        public MainWindowViewModel(ISnackbarMessageQueue snackbarMessageQueue, UserInfoViewModel userInfoViewModel)
         {
             DemoItems = new ObservableCollection<DemoItem>(new[]
             {
@@ -42,7 +42,7 @@ namespace EyeOfSauron.ViewModel
             _demoItemsView = CollectionViewSource.GetDefaultView(DemoItems);
             _demoItemsView.Filter = DemoItemsFilter;
 
-            MyUserControl = new ProductSelectWindow(new UserInfoViewModel());
+            MyUserControl = new ProductSelectWindow(userInfoViewModel);
 
             HomeCommand = new CommandImplementation(
                 _ =>

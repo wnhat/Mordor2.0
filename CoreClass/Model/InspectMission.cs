@@ -67,7 +67,14 @@ namespace CoreClass.Model
                 Builders<InspectMission>.Filter.Eq(x => x.Requested, false));
             var update = Builders<InspectMission>.Update.Set(x => x.LastRequestTime, DateTime.Now).Set(x => x.Requested, true);
             InspectMission mission = Collection.FindOneAndUpdate(filter, update);
-            return mission;
+            if (mission == null)
+            {
+                return null;
+            }
+            else
+            {
+                return GetMission(mission.ID);
+            }
         }
         public static InspectMission GetMission()
         {

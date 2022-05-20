@@ -15,7 +15,7 @@ namespace EyeOfSauron
     public partial class MainWindow
     {
         public static Snackbar Snackbar = new();
-        public MainWindow()
+        public MainWindow(UserInfoViewModel userInfoViewModel)
         {
             InitializeComponent();
 
@@ -26,7 +26,7 @@ namespace EyeOfSauron
                 MainSnackbar.MessageQueue?.Enqueue("Welcome Login to Eye of Sauron");
             }, TaskScheduler.FromCurrentSynchronizationContext());
 
-            DataContext = new MainWindowViewModel(MainSnackbar.MessageQueue!);
+            DataContext = new MainWindowViewModel(MainSnackbar.MessageQueue!, userInfoViewModel);
 
             var paletteHelper = new PaletteHelper();
             var theme = paletteHelper.GetTheme();
@@ -101,8 +101,8 @@ namespace EyeOfSauron
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Window window = new LogininWindow();
-            window.ShowDialog();
+            //Window window = new LogininWindow();
+            //window.ShowDialog();
         }
     }
 }

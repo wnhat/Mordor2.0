@@ -114,7 +114,11 @@ namespace EyeOfSauron
         {
             // get the remaining mission quantity to set viewmodel
             var remainMissionCount = await DICSRemainInspectMissionService.GetRemainMissionCount(productInfo.Id);
-            return remainMissionCount.GetValue("count").ToInt32();
+            if (remainMissionCount != null)
+            {
+                return remainMissionCount.GetValue("count").ToInt32();
+            }
+            return 0;
         }
 
         public static bool PreJudge(ref InspectMission mission, ref PanelInspectHistory aetResult)
