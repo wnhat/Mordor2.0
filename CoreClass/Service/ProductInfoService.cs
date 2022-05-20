@@ -23,6 +23,7 @@ namespace CoreClass.Service
         Task<IEnumerable<BsonDocument>> GetOninspectProduction();
         Task UpdateOninspectProduct(string id, string[] types);
         Task DeleteProduct(string name);
+        Task<ProductInfo> GetProductInfo(ObjectId id);
     }
 
     public class ProductInfoService : IProductInfoService
@@ -35,6 +36,14 @@ namespace CoreClass.Service
                 var filter = Builders<ProductInfo>.Filter.Empty;
                 var products = _productInfo.Find(filter).ToList();
                 return products; 
+            });
+        }
+        public Task<ProductInfo> GetProductInfo(ObjectId id)
+        {
+            return Task.Run(() => {
+                var filter = Builders<ProductInfo>.Filter.Eq(x =>x.Id,id);
+                var products = _productInfo.Find(filter).FirstOrDefault();
+                return products;
             });
         }
 

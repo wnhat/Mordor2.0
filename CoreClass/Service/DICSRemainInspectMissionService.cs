@@ -108,7 +108,7 @@ namespace CoreClass.Service
             var projection = Builders<InspectMission>.Projection.Exclude("Info.Img");
             ProjectionDefinition<InspectMission> group = "{_id : '$Info', count : {$sum : 1}}";
             var result = Collection.Aggregate()
-                .Match(x => x.Info.Id == id && x.Finished == false && x.Requested == false)
+                .Match(x => x.Info == id && x.Finished == false && x.Requested == false)
                 .Project<InspectMission>(projection)
                 .Group(group);
             return await result.FirstOrDefaultAsync();

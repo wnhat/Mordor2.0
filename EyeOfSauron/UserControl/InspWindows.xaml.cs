@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using EyeOfSauron.ViewModel;
 using CoreClass.Model;
 using MongoDB.Driver;
+using CoreClass.Service;
 
 namespace EyeOfSauron.MyUserControl
 {
@@ -40,7 +41,7 @@ namespace EyeOfSauron.MyUserControl
             {
                 _viewModel.MissionInfoViewModel.RemainingCount = await mission.RemainMissionCount();
                 _viewModel.MissionInfoViewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
-                _viewModel.MissionInfoViewModel.ProductInfo = mission.onInspPanelMission.inspectMission.Info;
+                _viewModel.MissionInfoViewModel.ProductInfo = new ProductInfoService().GetProductInfo(mission.onInspPanelMission.inspectMission.Info).Result;
                 _viewModel.MissionInfoViewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
                 _viewModel.MissionInfoViewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
                 _viewModel.MissionInfoViewModel.DetailDefectList.AetDetailDefects.Clear();

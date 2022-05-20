@@ -10,6 +10,7 @@ using CoreClass.Model;
 using CoreClass.Service;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson;
+using EyeOfSauron.Exceptions;
 
 namespace EyeOfSauron
 {
@@ -40,8 +41,8 @@ namespace EyeOfSauron
             foreach (var item in remainMissionCount)
             {
                 // convert the first BsonElement in the item to ProductInfo;
-                var buffer = item.GetValue("_id").ToBsonDocument();
-                var productInfo = BsonSerializer.Deserialize<ProductInfo>(buffer);
+                var buffer = item.GetValue("_id").AsObjectId;
+                var productInfo = new ProductInfoService().GetProductInfo(buffer).Result;
                 int count = item.GetValue("count").ToInt32();
                 _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfo, count)));
             }
@@ -81,7 +82,7 @@ namespace EyeOfSauron
             count += 100;
             //_viewModel.SelectProductInfo = new KeyValuePair<ProductInfo, int>(productInfos.ToArray()[1], count);
             _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfos.ToArray()[1], count)));
-            Window window = new MainWindow();
+            Window window = new MainWindow(new UserInfoViewModel());
             window.ShowDialog();
         }
 
