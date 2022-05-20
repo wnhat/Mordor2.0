@@ -32,17 +32,19 @@ namespace EyeOfSauron.ViewModel
             });
 
 
-            foreach (var item in GenerateDemoItems(snackbarMessageQueue).OrderBy(i => i.Name))
-            {
-                DemoItems.Add(item);
-            }
+            //foreach (var item in GenerateDemoItems(snackbarMessageQueue).OrderBy(i => i.Name))
+            //{
+            //    DemoItems.Add(item);
+            //}
             
             SelectedIndex = 0;
             
             _demoItemsView = CollectionViewSource.GetDefaultView(DemoItems);
             _demoItemsView.Filter = DemoItemsFilter;
+            
+            MyUserControl = new ProductSelectWindow();
+            DemoItems.Add(new DemoItem("ProductSelectWindow", typeof(ProductSelectWindow), null));
 
-            MyUserControl = new ProductSelectWindow(userInfoViewModel);
 
             HomeCommand = new CommandImplementation(
                 _ =>
@@ -79,7 +81,7 @@ namespace EyeOfSauron.ViewModel
         private bool _controlsEnabled = true;
         private ProductSelectWindow myUserControl;
 
-
+        
         public ProductSelectWindow MyUserControl
         {
             get => myUserControl;

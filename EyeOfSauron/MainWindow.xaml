@@ -15,13 +15,11 @@
     MinHeight="500"
     MaxWidth="3840"
     MaxHeight="2560"
-    
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        Background="{DynamicResource MaterialDesignPaper}"
-    
     d:DataContext="{d:DesignInstance domain:MainWindowViewModel}"
     AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource Self}}"
+    Background="{DynamicResource MaterialDesignPaper}"
     Style="{StaticResource MaterialDesignWindow}"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     WindowStartupLocation="CenterScreen"
     WindowState="Maximized"
     mc:Ignorable="d">
@@ -75,7 +73,7 @@
                         <ContentControl
                             Margin="{Binding MarginRequirement, FallbackValue=16}"
                             Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"
-                            DataContext="{Binding DemoItems[0]}"/>
+                            DataContext="{Binding DemoItems[0]}" />
                     </Grid>
                 </DockPanel>
             </materialDesign:DrawerHost.RightDrawerContent>
@@ -214,7 +212,7 @@
                         <ContentControl
                             Margin="{Binding MarginRequirement, FallbackValue=16}"
                             Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"
-                            DataContext="{Binding MyUserControl}"
+                            DataContext="{Binding DemoItems[1]}"
                             DataContextChanged="OnSelectedItemChanged" />
                     </ScrollViewer>
 

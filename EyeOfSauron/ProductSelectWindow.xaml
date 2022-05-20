@@ -108,7 +108,7 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Click="Button_Click"
-                    Content="{Binding SelectedProductCardViewModel.ProductInfo.Key.Name}" />
+                    Content="{Binding UserInfoViewModel.User.Username}" />
                 <Button
                     Width="300"
                     Height="450"

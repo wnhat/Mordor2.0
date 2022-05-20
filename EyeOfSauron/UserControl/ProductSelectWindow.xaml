@@ -100,7 +100,7 @@
                 </ItemsControl>
                 <Button
                     Margin="83,475,0,0"
-                    HorizontalAlignment="Left"
+                    HorizontalAlignment="Right"
                     VerticalAlignment="Top"
                     Click="Button_Click"
                     Content="{Binding SelectedProductCardViewModel.ProductInfo.Key.Name}" />
