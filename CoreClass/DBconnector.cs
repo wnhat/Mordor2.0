@@ -58,38 +58,36 @@ namespace CoreClass
         }
         public static void InitialDB()
         {
+            InitialInspectMission();
+            InitialMeslot();
+        }
+
+        private static void InitialInspectMission()
+        {
+            var collectionList = DICSDB.ListCollections().ToList();
+            // initial InspectMission collection;
+            if (collectionList.Any(x => x.GetValue("name") == "InspectMission"))
+            {
+                DICSDB.DropCollection("InspectMission");
+            }
+            DICSDB.CreateCollection("InspectMission");
+            DICSDB.GetCollection<BsonDocument>("InspectMission").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Descending("CreateTime")));
+            DICSDB.GetCollection<BsonDocument>("InspectMission").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Ascending("Requested")));
+            DICSDB.GetCollection<BsonDocument>("InspectMission").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Ascending("Finished")));
+            DICSDB.GetCollection<BsonDocument>("InspectMission").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Ascending("MesLotId")));
+        }
+
+        private static void InitialMeslot()
+        {
             var collectionList = DICSDB.ListCollections().ToList();
 
             // initial Meslot collection;
             if (collectionList.Any(x => x.GetValue("name") == "MesLot"))
             {
                 DICSDB.DropCollection("MesLot");
-                DICSDB.CreateCollection("MesLot");
-                DICSDB.GetCollection<BsonDocument>("MesLot").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Descending("CreateTime")));
             }
-            else
-            {
-                DICSDB.CreateCollection("MesLot");
-                DICSDB.GetCollection<BsonDocument>("MesLot").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Descending("CreateTime")));
-            }
-            // initial InspectMission collection;
-            if (collectionList.Any(x => x.GetValue("name") == "InspectMission"))
-            {
-                DICSDB.DropCollection("InspectMission");
-                DICSDB.CreateCollection("InspectMission");
-                DICSDB.GetCollection<BsonDocument>("InspectMission").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Descending("CreateTime")));
-                DICSDB.GetCollection<BsonDocument>("InspectMission").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Ascending("Requested")));
-                DICSDB.GetCollection<BsonDocument>("InspectMission").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Ascending("Finished")));
-                DICSDB.GetCollection<BsonDocument>("InspectMission").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Ascending("MesLotId")));
-            }
-            else
-            {
-                DICSDB.CreateCollection("InspectMission");
-                DICSDB.GetCollection<BsonDocument>("InspectMission").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Descending("CreateTime")));
-                DICSDB.GetCollection<BsonDocument>("InspectMission").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Ascending("Requested")));
-                DICSDB.GetCollection<BsonDocument>("InspectMission").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Ascending("Finished")));
-                DICSDB.GetCollection<BsonDocument>("InspectMission").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Ascending("MesLotId")));
-            }
+            DICSDB.CreateCollection("MesLot");
+            DICSDB.GetCollection<BsonDocument>("MesLot").Indexes.CreateOne(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Descending("CreateTime")));
         }
     }
 }

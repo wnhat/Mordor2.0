@@ -18,7 +18,6 @@ namespace Sauron
         static RouterSocket routerSocket = new RouterSocket("@tcp://172.16.210.22:5555");
         static NetMQPoller poller = new NetMQPoller { routerSocket, MissionTimer, DefectTimer };
         static MissionManager manager = new MissionManager();
-
         static Sauron()
         {
             // 为poller绑定触发事件；
@@ -29,10 +28,10 @@ namespace Sauron
         }
         public static void Run()
         {
-            Log.Testlogger.Information("测试：服务器启动");
-            poller.RunAsync();
             Log.Testlogger.Information("测试：sql server服务器启动；");
             Task.Run(OldDBconnector.MainCycle);
+            Log.Testlogger.Information("测试：服务器启动");
+            poller.Run();
         }
         static void MissionAdd(object sender, NetMQTimerEventArgs eventArgs)
         {
@@ -42,6 +41,13 @@ namespace Sauron
         {
             /* 对客户端发送的事件进行分Type响应（按照Message首位）*/
             NetMQMessage messageIn = eventArgs.Socket.ReceiveMultipartMessage();
+            
+            // 向客户端发送消息确认连接；
+            NetMQMessage ReturnMessage = new NetMQMessage();
+            ReturnMessage.Append(messageIn.First);
+            ReturnMessage.Append(0);
+            eventArgs.Socket.SendMultipartMessage(ReturnMessage);
+            
             Log.Testlogger.Information("测试：收到judge");
             // 转换为自定义Message类型;
             BaseMessage switchmessage = new BaseMessage(messageIn);
@@ -70,10 +76,6 @@ namespace Sauron
                     }
                 }
             );
-        }
-        public static void serverTest()
-        {
-            
         }
     }
 }

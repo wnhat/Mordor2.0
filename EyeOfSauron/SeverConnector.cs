@@ -25,7 +25,7 @@ namespace EyeOfSauron
         {
             OperatorJudgeMessage ResultMessage = new(operatorJudge, mission);
             //Request.SendMultipartMessage(ResultMessage);
-            //_ = Request.ReceiveSignal();
+            Request.ReceiveSignal();
         }
     }
 }
