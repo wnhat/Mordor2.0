@@ -25,9 +25,9 @@ namespace EyeOfSauron
 
         static readonly DICSRemainInspectMissionService RemainService = new();
 
-        public ProductSelectWindow(UserInfoViewModel userInfo)
+        public ProductSelectWindow()
         {
-            _viewModel = new ProductViewModel(userInfo);
+            _viewModel = new ProductViewModel();
             DataContext = _viewModel;
             GetMissions();
             InitializeComponent();
@@ -59,7 +59,7 @@ namespace EyeOfSauron
             try
             {
                 Mission mission = new(_viewModel.SelectedProductCardViewModel.ProductInfo.Key);
-                InspWindow inspWindow = new(_viewModel._userInfo, mission);
+                InspWindow inspWindow = new(_viewModel.UserInfoViewModel, mission);
                 inspWindow.ShowDialog();
             }
             catch (Exception ex)
@@ -82,7 +82,7 @@ namespace EyeOfSauron
             count += 100;
             //_viewModel.SelectProductInfo = new KeyValuePair<ProductInfo, int>(productInfos.ToArray()[1], count);
             _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfos.ToArray()[1], count)));
-            Window window = new MainWindow(new UserInfoViewModel());
+            MainWindow window = new MainWindow(new UserInfoViewModel());
             window.ShowDialog();
         }
 

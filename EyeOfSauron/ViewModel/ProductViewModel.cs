@@ -14,7 +14,7 @@ namespace EyeOfSauron.ViewModel
     
     public class ProductViewModel : ViewModelBase
     {
-        public readonly UserInfoViewModel _userInfo;
+        public UserInfoViewModel userInfoViewModel = new();
 
         private ObservableCollection<ProductCardViewModel> productCardViewModels = new();
 
@@ -22,7 +22,19 @@ namespace EyeOfSauron.ViewModel
 
         public ProductViewModel(UserInfoViewModel userInfo)
         {
-            _userInfo = userInfo;
+            this.userInfoViewModel = userInfo;
+        }
+        
+        public ProductViewModel() { }
+        
+        public UserInfoViewModel UserInfoViewModel
+        {
+            get => this.userInfoViewModel;
+            set
+            {
+                this.userInfoViewModel = value;
+                this.OnPropertyChanged();
+            }
         }
 
         public ProductCardViewModel SelectedProductCardViewModel
