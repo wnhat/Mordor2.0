@@ -47,28 +47,6 @@ namespace Mordor2._0
         }
         static void Test()
         {
-            var service = new DICSRemainInspectMissionService();
-            var result = service.GetRemainDetail(new ObjectId( "61cbf0b213b23dec5a9a0709")).Result;
-            
-        }
-        static void Test2()
-        {
-            //, { "grade", "$LastJudge" }
-            var aggregate = Result.Aggregate()
-                .Group(new BsonDocument { { "_id", new BsonDocument {
-                    {"StageID", "$StageID" },
-                    {"EqpID", "$EqpID" }
-                } },
-                    { "count", new BsonDocument{ { "$sum", 1 } } },
-                    { "IdList",new BsonDocument{ {"$push", "$PanelId" } }} })
-                .Group(new BsonDocument { { "_id", "$_id.EqpID" }, { "StageCount",new BsonDocument{ { "$push",new BsonDocument{ { "Stage", "$_id.StageID" },{"count" , "$count" },{"IDlist", "$IdList" } }
-            } } } });
-            //.Group(new BsonDocument { { "Stage", "$StageID" }, { "count", new BsonDocument("$sum", "$PanelId") } });
-            var result = aggregate.ToList();
-            foreach (var item in result)
-            {
-                Testlogger.Information(item.ToJson());
-            }
         }
     }
 }
