@@ -14,7 +14,7 @@ namespace CoreClass
         static int cellX = 1500;
         static int cellY = 600;
         
-        public Bitmap defectMap = new Bitmap(cellX, cellY);
+        Bitmap defectMap = new Bitmap(cellX, cellY);
         Graphics graphics;
         public DetailDefectContours(params string[] data)
         {
@@ -98,6 +98,16 @@ namespace CoreClass
             {
                 graphics.DrawPolygon(defectDrawPen, pointList);
             }
+        }
+        public byte[] SaveImageToByte()
+        {
+            MemoryStream buffer = new MemoryStream();
+            defectMap.Save(buffer, System.Drawing.Imaging.ImageFormat.Jpeg);
+            return buffer.ToArray();
+        }
+        public Bitmap GetBitmap()
+        {
+            return defectMap;
         }
     }
 }
