@@ -19,32 +19,17 @@ namespace EyeOfSauron.ViewModel
             DemoItems = new ObservableCollection<DemoItem>(new[]
             {
                 new DemoItem("Color Tool",
-                typeof(ColorTool),
-                new[]
-                {
-                    DocumentationLink.WikiLink("Brush-Names", "Brushes"),
-                    DocumentationLink.WikiLink("Custom-Palette-Hues", "Custom Palettes"),
-                    DocumentationLink.WikiLink("Swatches-and-Recommended-Colors", "Swatches"),
-                    DocumentationLink.DemoPageLink<ColorTool>("Demo View"),
-                    DocumentationLink.DemoPageLink<ColorToolViewModel>("Demo View Model"),
-                    DocumentationLink.ApiLink<PaletteHelper>()
-                } )
+                typeof(ColorTool) )
             });
-
-
-            //foreach (var item in GenerateDemoItems(snackbarMessageQueue).OrderBy(i => i.Name))
-            //{
-            //    DemoItems.Add(item);
-            //}
-            
+            UserInfo = userInfoViewModel;
             SelectedIndex = 0;
             
             _demoItemsView = CollectionViewSource.GetDefaultView(DemoItems);
             _demoItemsView.Filter = DemoItemsFilter;
-            
-            MyUserControl = new ProductSelectWindow();
-            DemoItems.Add(new DemoItem("ProductSelectWindow", typeof(ProductSelectWindow), null));
 
+
+            DemoItems.Add(new("ProductSelectWindow", typeof(MyUserControl.ProductSelectWindow)));
+            SelectedItem = DemoItems[1];
 
             HomeCommand = new CommandImplementation(
                 _ =>
@@ -75,18 +60,11 @@ namespace EyeOfSauron.ViewModel
         }
 
         private readonly ICollectionView _demoItemsView;
+        private UserInfoViewModel userInfo;
         private DemoItem? _selectedItem;
         private int _selectedIndex;
         private string? _searchKeyword;
         private bool _controlsEnabled = true;
-        private ProductSelectWindow myUserControl;
-
-        
-        public ProductSelectWindow MyUserControl
-        {
-            get => myUserControl;
-            set => SetProperty(ref myUserControl, value);
-        }
 
         public string? SearchKeyword
         {
@@ -101,6 +79,12 @@ namespace EyeOfSauron.ViewModel
         }
 
         public ObservableCollection<DemoItem> DemoItems { get; }
+
+        public UserInfoViewModel UserInfo
+        {
+            get => userInfo;
+            set => SetProperty(ref userInfo, value);
+        }
 
         public DemoItem? SelectedItem
         {

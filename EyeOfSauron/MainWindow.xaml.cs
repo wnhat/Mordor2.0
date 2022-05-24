@@ -12,9 +12,10 @@ using EyeOfSauron.MyUserControl;
 
 namespace EyeOfSauron
 {
-    public partial class MainWindow
+    public partial class MainWindow : Window
     {
         public static Snackbar Snackbar = new();
+        private readonly MainWindowViewModel _viewModel;
         public MainWindow(UserInfoViewModel userInfoViewModel)
         {
             InitializeComponent();
@@ -26,9 +27,12 @@ namespace EyeOfSauron
                 MainSnackbar.MessageQueue?.Enqueue("Welcome Login to Eye of Sauron");
             }, TaskScheduler.FromCurrentSynchronizationContext());
 
-            DataContext = new MainWindowViewModel(MainSnackbar.MessageQueue!, userInfoViewModel);
+            _viewModel = new(MainSnackbar.MessageQueue!, userInfoViewModel);
+
+            DataContext = _viewModel;
 
             var paletteHelper = new PaletteHelper();
+
             var theme = paletteHelper.GetTheme();
 
             DarkModeToggleButton.IsChecked = theme.GetBaseTheme() == BaseTheme.Dark;
@@ -101,6 +105,9 @@ namespace EyeOfSauron
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            Mission mission = new(_viewModel.DemoItems[1].SelectedProductCardViewModel.ProductInfo.Key);
+            _viewModel.DemoItems.Add(new("InspWindow", typeof(MyUserControl.InspWindow)));
+
             //Window window = new LogininWindow();
             //window.ShowDialog();
         }

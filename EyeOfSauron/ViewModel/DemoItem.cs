@@ -15,19 +15,18 @@ namespace EyeOfSauron.ViewModel
         private ScrollBarVisibility _verticalScrollBarVisibilityRequirement = ScrollBarVisibility.Auto;
         private Thickness _marginRequirement = new(16);
 
-        public DemoItem(string name, Type contentType, IEnumerable<DocumentationLink> documentation, object? dataContext = null)
+        public DemoItem(string name, Type contentType, object? dataContext = null, object?[]? args = null)
         {
             Name = name;
             _contentType = contentType;
             _dataContext = dataContext;
-            Documentation = documentation;
+            this.args = args ?? Array.Empty<object>();
         }
 
         public string Name { get; }
 
-        public IEnumerable<DocumentationLink> Documentation { get; }
-
-        public object? Content => _content ??= CreateContent();
+        readonly object?[]? args;
+        public object? Content => _content ??= CreateContent(args);
 
         public ScrollBarVisibility HorizontalScrollBarVisibilityRequirement
         {
@@ -47,9 +46,9 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref _marginRequirement, value);
         }
 
-        private object? CreateContent()
+        private object? CreateContent(object?[]? args)
         {
-            var content = Activator.CreateInstance(_contentType);
+            var content = Activator.CreateInstance(_contentType,args);
             if (_dataContext != null && content is FrameworkElement element)
             {
                 element.DataContext = _dataContext;

@@ -2,12 +2,10 @@
 {
     public class InspMainWindowViewModel : ViewModelBase
     {
-        public UserInfoViewModel UserInfo { get; }
         public MissionInfoViewModel MissionInfoViewModel { get; }
         public DefectJudgeViewModel DefectJudge { get; }
-        public InspMainWindowViewModel(UserInfoViewModel userInfo)
+        public InspMainWindowViewModel()
         {
-            UserInfo = userInfo;
             DefectJudge = new();
             MissionInfoViewModel = new();
         }

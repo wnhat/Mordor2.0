@@ -50,7 +50,9 @@ namespace EyeOfSauron.ViewModel
 
         public bool isVisible = false;
 
-        private BitmapImage _defaultImage = new();
+        private BitmapImage defaultImage = new();
+
+        private BitmapImage defectMapImage;
 
         static readonly Uri _defaultImageUri = new(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
 
@@ -82,10 +84,10 @@ namespace EyeOfSauron.ViewModel
 
         public InspImageViewModel()
         {
-            _defaultImage.BeginInit();
-            _defaultImage.UriSource = _defaultImageUri;
-            _defaultImage.EndInit();
-            _defaultImage.Freeze();
+            defaultImage.BeginInit();
+            defaultImage.UriSource = _defaultImageUri;
+            defaultImage.EndInit();
+            defaultImage.Freeze();
             inspImages = new ObservableCollection<BitmapImageContainer>
             {
                 new BitmapImageContainer(new ImageContainer()),
@@ -99,8 +101,8 @@ namespace EyeOfSauron.ViewModel
 
         public BitmapImage DefaultImage
         {
-            get => _defaultImage;
-            set => SetProperty(ref _defaultImage, value);
+            get => defaultImage;
+            set => SetProperty(ref defaultImage, value);
         }
 
         public CommandImplementation RefreshImageCommand { get; }

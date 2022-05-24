@@ -22,11 +22,11 @@ namespace EyeOfSauron.MyUserControl
 
         public readonly ProductViewModel _viewModel;
 
-        static readonly DICSRemainInspectMissionService _RemainService = new();
+        static readonly DICSRemainInspectMissionService RemainService = new();
 
-        public ProductSelectWindow(UserInfoViewModel userInfo)
+        public ProductSelectWindow()
         {
-            _viewModel = new ProductViewModel(userInfo);
+            _viewModel = new ProductViewModel();
             DataContext = _viewModel;
             GetMissions();
             InitializeComponent();
@@ -36,7 +36,7 @@ namespace EyeOfSauron.MyUserControl
         {
             // get the remain mission count to set viewmodel
             _viewModel.ProductInfos.Clear();
-            var remainMissionCount = await _RemainService.GetRemainMissionCount();
+            var remainMissionCount = await RemainService.GetRemainMissionCount();
             foreach (var item in remainMissionCount)
             {
                 // convert the first BsonElement in the item to ProductInfo;
@@ -54,22 +54,21 @@ namespace EyeOfSauron.MyUserControl
         private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)
         {
             SetSelectProductInfo(sender, e);
-            //Hide();
-            try
-            {
-                Mission mission = new(_viewModel.SelectedProductCardViewModel.ProductInfo.Key);
-                //InspWindow inspWindow = new(_viewModel._userInfo, mission);
-                ///inspWindow.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                GetMissions();
-                //ShowDialog();
-            }
+            //try
+            //{
+            //    Mission mission = new(_viewModel.SelectedProductCardViewModel.ProductInfo.Key);
+            //    InspWindow inspWindow = new(_viewModel.UserInfoViewModel, mission);
+            //    //inspWindow.ShowDialog();
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
+            //finally
+            //{
+            //    GetMissions();
+            //    //ShowDialog();
+            //}
         }
 
         //for test, will be removed later;
@@ -81,8 +80,8 @@ namespace EyeOfSauron.MyUserControl
             count += 100;
             //_viewModel.SelectProductInfo = new KeyValuePair<ProductInfo, int>(productInfos.ToArray()[1], count);
             _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfos.ToArray()[1], count)));
-            Window window = new MainWindow(new UserInfoViewModel());
-            window.ShowDialog();
+            //MainWindow window = new(new UserInfoViewModel());
+            //window.ShowDialog();
         }
 
         private void SetSelectProductInfo(object sender, RoutedEventArgs e)

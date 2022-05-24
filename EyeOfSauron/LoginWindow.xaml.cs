@@ -33,9 +33,9 @@ namespace EyeOfSauron
             try
             {
             _viewModel.Authenticate(userNameTextBox.Text, passwordTextBox.Password);
-            ProductSelectWindow window = new ProductSelectWindow();
+            ProductSelectWindow window = new();
             window._viewModel.UserInfoViewModel = _viewModel;
-            //Window window = new MainWindow(_viewModel);
+            //MainWindow window = new(_viewModel);
             Hide();
             window.ShowDialog();
             Show();

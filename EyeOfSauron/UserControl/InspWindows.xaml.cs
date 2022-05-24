@@ -13,18 +13,15 @@ namespace EyeOfSauron.MyUserControl
     /// </summary>
     public partial class InspWindow: UserControl
     {
-        private readonly Mission mission;
+        private Mission mission;
 
         private readonly InspMainWindowViewModel _viewModel;
 
-        public InspWindow(UserInfoViewModel userInfo, Mission inspMission)
+        public InspWindow(Mission inspMission)
         {
-            _viewModel = new InspMainWindowViewModel(userInfo);
-            _viewModel.MissionInfoViewModel.ProductInfo = inspMission.productInfo;
+            _viewModel = new InspMainWindowViewModel();
             DataContext = _viewModel;
-            mission = inspMission;
-            LoadOnInspPanelMission();
-            mission.FillPreDownloadMissionQueue();
+            SetMission(inspMission);
             InitializeComponent();
         }
 
@@ -33,6 +30,14 @@ namespace EyeOfSauron.MyUserControl
         {
             //mission.NextMission();
             //LoadOnInspPanelMission();
+        }
+
+        public void SetMission(Mission inspMission)
+        {
+            _viewModel.MissionInfoViewModel.ProductInfo = inspMission.productInfo;
+            mission = inspMission;
+            LoadOnInspPanelMission();
+            mission.FillPreDownloadMissionQueue();
         }
 
         public async void LoadOnInspPanelMission()
