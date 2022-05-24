@@ -5,16 +5,17 @@ using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using System.Drawing;
+using CoreClass.Model;
 
 namespace CoreClass
 {
-    class DetailDefectContours
+    public class DetailDefectContours
     {
         // 生成图片尺寸；
         static int cellX = 1500;
         static int cellY = 600;
         
-        public Bitmap defectMap = new Bitmap(cellX, cellY);
+        Bitmap defectMap = new Bitmap(cellX, cellY);
         Graphics graphics;
         public DetailDefectContours(params string[] data)
         {
@@ -98,6 +99,21 @@ namespace CoreClass
             {
                 graphics.DrawPolygon(defectDrawPen, pointList);
             }
+        }
+        public byte[] GetByte()
+        {
+            MemoryStream buffer = new MemoryStream();
+            defectMap.Save(buffer, System.Drawing.Imaging.ImageFormat.Jpeg);
+            return buffer.ToArray();
+        }
+        public Bitmap GetBitmap()
+        {
+            return defectMap;
+        }
+        public ImageContainer GetImageContainer()
+        {
+            ImageContainer imageContainer = new ImageContainer("Contours", GetByte());
+            return imageContainer;
         }
     }
 }

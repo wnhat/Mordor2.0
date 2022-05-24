@@ -143,6 +143,8 @@ namespace EyeOfSauron
 
         public List<BitmapImageContainer> bitmapImageContainers = new();
 
+        public BitmapImageContainer ContoursImageContainer;
+
         public InspectMission inspectMission;
 
         public AETresult aetResult;
@@ -153,6 +155,13 @@ namespace EyeOfSauron
             aetResult = AETresult.Get(inspectMission.HistoryID);
             IniResultImageDataList(aetResult.ResultImages);
             IniDefectImageDataList(aetResult.DefectImages);
+            InitialContoursImage();
+        }
+
+        private void InitialContoursImage()
+        {
+            DetailDefectContours defect = new DetailDefectContours(aetResult.AviContours, aetResult.SviContours);
+            ContoursImageContainer = new(defect.GetImageContainer());
         }
 
         public PanelMission(InspectMission mission, AETresult result)
@@ -161,6 +170,7 @@ namespace EyeOfSauron
             aetResult = result;
             IniResultImageDataList(aetResult.ResultImages);
             IniDefectImageDataList(aetResult.DefectImages);
+            InitialContoursImage();
         }
 
         public void IniResultImageDataList(ImageContainer[] ResultImages)
