@@ -13,9 +13,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spider", "Spider\Spider.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EyeOfSauron", "EyeOfSauron\EyeOfSauron.csproj", "{FE6BA2F0-AAA7-4BFA-9949-5152C76E930E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{F87BF573-48C0-4748-92AB-0AA0C3B7CE9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{F87BF573-48C0-4748-92AB-0AA0C3B7CE9E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{209870B3-9C77-45E5-9C9A-8815B5C0662E} = {209870B3-9C77-45E5-9C9A-8815B5C0662E}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F0B8FB80-B36E-4DD6-87E4-3E78EDCA09E9}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
 Global

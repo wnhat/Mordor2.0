@@ -28,6 +28,7 @@ namespace CoreClass
             // data 中的每一项都是contours文件中所有的数据；
             foreach (var item in data)
             {
+                if (item == null) continue;
                 GetDefectContours(item.Split('\n'));
             }
         }

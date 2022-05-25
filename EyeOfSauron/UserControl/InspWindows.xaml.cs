@@ -13,15 +13,14 @@ namespace EyeOfSauron.MyUserControl
     /// </summary>
     public partial class InspWindow: UserControl
     {
-        private Mission mission;
+        private Mission? mission;
 
         private readonly InspMainWindowViewModel _viewModel;
 
-        public InspWindow(Mission inspMission)
+        public InspWindow()
         {
             _viewModel = new InspMainWindowViewModel();
             DataContext = _viewModel;
-            SetMission(inspMission);
             InitializeComponent();
         }
 
@@ -78,7 +77,7 @@ namespace EyeOfSauron.MyUserControl
             {
                 defect = (sender as Button).DataContext as Defect;
             }
-            SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, _viewModel.UserInfo.User.Username, _viewModel.UserInfo.User.Account, _viewModel.UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
+            //SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, _viewModel.UserInfo.User.Username, _viewModel.UserInfo.User.Account, _viewModel.UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
             mission.FillPreDownloadMissionQueue();
             if (!mission.NextMission())
             {

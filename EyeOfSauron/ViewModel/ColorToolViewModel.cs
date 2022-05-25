@@ -9,7 +9,7 @@ namespace EyeOfSauron.ViewModel
 {
     internal class ColorToolViewModel : ViewModelBase
     {
-        private readonly PaletteHelper _paletteHelper = new PaletteHelper();
+        private readonly PaletteHelper _paletteHelper = new();
 
         private ColorScheme _activeScheme;
         public ColorScheme ActiveScheme

@@ -143,7 +143,7 @@ namespace EyeOfSauron
 
         public List<BitmapImageContainer> bitmapImageContainers = new();
 
-        public BitmapImageContainer ContoursImageContainer;
+        public BitmapImageContainer? ContoursImageContainer;
 
         public InspectMission inspectMission;
 

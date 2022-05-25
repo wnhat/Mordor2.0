@@ -11,7 +11,7 @@ namespace EyeOfSauron.ViewModel
     {
         private string panelId = "";
 
-        private ProductInfo productInfo;
+        private ProductInfo? productInfo;
 
         private int remainingCount;
 
@@ -52,7 +52,7 @@ namespace EyeOfSauron.ViewModel
 
         private BitmapImage defaultImage = new();
 
-        private BitmapImage defectMapImage;
+        private BitmapImage? defectMapImage;
 
         static readonly Uri _defaultImageUri = new(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
 

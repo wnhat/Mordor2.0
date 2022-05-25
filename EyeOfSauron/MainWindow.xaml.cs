@@ -27,7 +27,7 @@ namespace EyeOfSauron
                 MainSnackbar.MessageQueue?.Enqueue("Welcome Login to Eye of Sauron");
             }, TaskScheduler.FromCurrentSynchronizationContext());
 
-            _viewModel = new(MainSnackbar.MessageQueue!, userInfoViewModel);
+            _viewModel = new(userInfoViewModel);
 
             DataContext = _viewModel;
 
@@ -100,16 +100,12 @@ namespace EyeOfSauron
             paletteHelper.SetTheme(theme);
         }
 
-        private void OnSelectedItemChanged(object sender, DependencyPropertyChangedEventArgs e)
-            => MainScrollViewer.ScrollToHome();
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void StartInspButtunClick(object sender, RoutedEventArgs e)
         {
-            Mission mission = new(_viewModel.DemoItems[1].SelectedProductCardViewModel.ProductInfo.Key);
-            _viewModel.DemoItems.Add(new("InspWindow", typeof(MyUserControl.InspWindow)));
-
-            //Window window = new LogininWindow();
-            //window.ShowDialog();
+            _viewModel.IniInspWindow();
+            var productInfo = _viewModel.ProductSelectWindow._viewModel.SelectedProductCardViewModel.ProductInfo.Key;
+            Mission mission = new(productInfo);
+            _viewModel.InspWindow.SetMission(mission);
         }
     }
 }

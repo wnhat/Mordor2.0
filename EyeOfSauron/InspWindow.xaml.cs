@@ -18,7 +18,7 @@ namespace EyeOfSauron
         
         public InspWindow(UserInfoViewModel userInfo, Mission inspMission)
         {
-            _viewModel = new InspMainWindowViewModel(userInfo);
+            _viewModel = new InspMainWindowViewModel();
             _viewModel.MissionInfoViewModel.ProductInfo = inspMission.productInfo;
             DataContext = _viewModel;
             mission = inspMission;
@@ -72,7 +72,7 @@ namespace EyeOfSauron
             {
                 defect = (sender as Button).DataContext as Defect;
             }
-            SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, _viewModel.UserInfo.User.Username, _viewModel.UserInfo.User.Account, _viewModel.UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
+            //SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, _viewModel.UserInfo.User.Username, _viewModel.UserInfo.User.Account, _viewModel.UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
             mission.FillPreDownloadMissionQueue();
             if (!mission.NextMission())
             {

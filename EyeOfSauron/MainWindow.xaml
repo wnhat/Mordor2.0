@@ -7,6 +7,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:uc="clr-namespace:EyeOfSauron.MyUserControl"
     xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
     Title="Material Design in XAML"
     Width="1400"
@@ -73,7 +74,7 @@
                         <ContentControl
                             Margin="{Binding MarginRequirement, FallbackValue=16}"
                             Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"
-                            DataContext="{Binding DemoItems[0]}" />
+                            DataContext="{Binding ColorToolView}" />
                     </Grid>
                 </DockPanel>
             </materialDesign:DrawerHost.RightDrawerContent>
@@ -139,41 +140,37 @@
                             </materialDesign:PopupBox>
 
                             <Button
-                                Margin="24,0,0,0"
-                                materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
-                                Command="{Binding MovePrevCommand}"
-                                Content="{materialDesign:PackIcon Kind=ArrowLeft,
-                                                                  Size=24}"
-                                Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
-                                Style="{StaticResource MaterialDesignToolButton}"
-                                ToolTip="Previous Item" />
-
-                            <Button
                                 Margin="16,0,0,0"
                                 materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
-                                Command="{Binding MoveNextCommand}"
-                                Content="{materialDesign:PackIcon Kind=ArrowRight,
-                                                                  Size=24}"
-                                Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
-                                Style="{StaticResource MaterialDesignToolButton}"
-                                ToolTip="Next Item" />
-
-                            <Button
-                                Margin="16,0,0,0"
-                                materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
-                                Command="{Binding HomeCommand}"
+                                Command="{Binding SetInspViewCommand}"
                                 Content="{materialDesign:PackIcon Kind=Home,
                                                                   Size=24}"
                                 Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
                                 Style="{StaticResource MaterialDesignToolButton}"
                                 ToolTip="Home" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding ProductSelectWindow.DataContext.SelectedProductCardViewModel.ProductInfo.Key.Name}" />
 
-                            
+                            <Label
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Center"
+                                Content="{Binding InspWindow.DataContext.MissionInfoViewModel.PanelId}"
+                                FontSize="16" />
+                            <Label
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Center"
+                                FontSize="16">
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}RemainingMissionQuantity:{0}">
+                                            <Binding Path="InspWindow.DataContext.MissionInfoViewModel.RemainingCount" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Label>
                         </StackPanel>
-
-
-                        
-
                         <ToggleButton
                             x:Name="MenuToggleButton"
                             AutomationProperties.Name="HamburgerToggleButton"
@@ -181,50 +178,47 @@
                             DockPanel.Dock="Right"
                             IsChecked="False"
                             Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
-
                         <Button
+                            Margin="16,0,0,0"
+                            materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
+                            Click="StartInspButtunClick"
+                            Content="Start Insp"
                             DockPanel.Dock="Right"
-                                Margin="16,0,0,0"
-                                materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
-                                Click="Button_Click"
-                                Content="¿ªÊ¼¼ì²é"
-                                Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
-                                Style="{StaticResource MaterialDesignToolButton}"
-                                ToolTip="Home" />
-
-                        <TextBlock
-                            Margin="-152,0,0,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            AutomationProperties.Name="Material Design In XAML Toolkit"
-                            FontSize="22"
-                            Text="" />
+                            Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
+                            Style="{StaticResource MaterialDesignToolButton}"
+                            ToolTip="Start Insp" />
+                        <TextBlock Text="" />
                     </DockPanel>
                 </materialDesign:ColorZone>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <ScrollViewer
-                        x:Name="MainScrollViewer"
-                        materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True"
-                        HorizontalScrollBarVisibility="{Binding SelectedItem.HorizontalScrollBarVisibilityRequirement, FallbackValue=Disabled}"
-                        VerticalScrollBarVisibility="{Binding SelectedItem.VerticalScrollBarVisibilityRequirement, FallbackValue=Disabled}">
-                        <ContentControl
+                    <ScrollViewer x:Name="MainScrollViewer" materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True">
+                        <!--<ContentControl
                             Margin="{Binding MarginRequirement, FallbackValue=16}"
                             Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"
-                            DataContext="{Binding SelectedItem}"
-                            DataContextChanged="OnSelectedItemChanged" />
+                            DataContext="{Binding ProductSelectWindow}"
+                            DataContextChanged="OnSelectedItemChanged" />-->
+                        <ContentPresenter Content="{Binding UserControlContent}" />
                     </ScrollViewer>
+
+                    <!--<ScrollViewer
+                        x:Name="MainScrollViewer"
+                        materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True">
+                        <uc:ProductSelectWindow x:Name="ProductSelectUserControl"/>
+                    </ScrollViewer>-->
 
                     <materialDesign:Snackbar
                         x:Name="MainSnackbar"
-                        MessageQueue="{materialDesign:MessageQueue}" Margin="0,716,0,0" VerticalAlignment="Bottom" />
+                        Margin="0,716,0,0"
+                        VerticalAlignment="Bottom"
+                        MessageQueue="{materialDesign:MessageQueue}" />
                 </Grid>
             </DockPanel>
         </materialDesign:DrawerHost>
