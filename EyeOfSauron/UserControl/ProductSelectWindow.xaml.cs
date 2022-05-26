@@ -16,7 +16,7 @@ namespace EyeOfSauron.MyUserControl
     /// <summary>
     /// Interaction logic for ProductSelectWindow.xaml
     /// </summary>
-    public partial class ProductSelectWindow : UserControl
+    public partial class ProductSelectView : UserControl
     {
         int count = 0;
 
@@ -24,7 +24,7 @@ namespace EyeOfSauron.MyUserControl
 
         static readonly DICSRemainInspectMissionService RemainService = new();
 
-        public ProductSelectWindow()
+        public ProductSelectView()
         {
             _viewModel = new ProductViewModel();
             DataContext = _viewModel;
@@ -32,7 +32,7 @@ namespace EyeOfSauron.MyUserControl
             InitializeComponent();
         }
 
-        private async void GetMissions()
+        public async void GetMissions()
         {
             // get the remain mission count to set viewmodel
             _viewModel.ProductInfos.Clear();
@@ -54,34 +54,12 @@ namespace EyeOfSauron.MyUserControl
         private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)
         {
             SetSelectProductInfo(sender, e);
-            //try
-            //{
-            //    Mission mission = new(_viewModel.SelectedProductCardViewModel.ProductInfo.Key);
-            //    InspWindow inspWindow = new(_viewModel.UserInfoViewModel, mission);
-            //    //inspWindow.ShowDialog();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message);
-            //}
-            //finally
-            //{
-            //    GetMissions();
-            //    //ShowDialog();
-            //}
         }
 
         //for test, will be removed later;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var collection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
-            var filter = Builders<ProductInfo>.Filter.Empty;
-            List<ProductInfo> productInfos = collection.Find(filter).ToList();
-            count += 100;
-            //_viewModel.SelectProductInfo = new KeyValuePair<ProductInfo, int>(productInfos.ToArray()[1], count);
-            _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfos.ToArray()[1], count)));
-            //MainWindow window = new(new UserInfoViewModel());
-            //window.ShowDialog();
+            GetMissions();
         }
 
         private void SetSelectProductInfo(object sender, RoutedEventArgs e)

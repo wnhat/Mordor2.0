@@ -26,7 +26,7 @@
     Background="{DynamicResource MaterialDesignPaper}"
     mc:Ignorable="d">
     <Window.Resources>
-        <Converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Converter:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
     <Viewbox KeyDown="KeyDown" KeyUp="KeyUp">
         <Grid>

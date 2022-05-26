@@ -26,7 +26,6 @@
     <Window.Resources>
         <Converter:BoolToEnumConverter x:Key="BoolToEnumConverter" />
         <Converter:Int32ToDoubleConverter x:Key="Int32ToDoubleConverter" />
-        <Converter:Int32ToStringConverter x:Key="Int32ToStringConverter" />
     </Window.Resources>
     <Grid>
         <ScrollViewer

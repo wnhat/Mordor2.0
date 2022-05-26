@@ -11,13 +11,13 @@ namespace EyeOfSauron.MyUserControl
     /// <summary>
     /// Interaction logic for InspWindows.xaml
     /// </summary>
-    public partial class InspWindow: UserControl
+    public partial class InspImageView: UserControl
     {
         private Mission? mission;
 
         private readonly InspMainWindowViewModel _viewModel;
 
-        public InspWindow()
+        public InspImageView()
         {
             _viewModel = new InspMainWindowViewModel();
             DataContext = _viewModel;
@@ -48,6 +48,7 @@ namespace EyeOfSauron.MyUserControl
                 _viewModel.MissionInfoViewModel.ProductInfo = new ProductInfoService().GetProductInfo(mission.onInspPanelMission.inspectMission.Info).Result;
                 _viewModel.MissionInfoViewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
                 _viewModel.MissionInfoViewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
+                _viewModel.MissionInfoViewModel.InspImage.DefectMapImage = mission.onInspPanelMission.ContoursImageContainer;
                 _viewModel.MissionInfoViewModel.DetailDefectList.AetDetailDefects.Clear();
                 foreach (var item in mission.onInspPanelMission.bitmapImageContainers)
                 {
@@ -119,13 +120,6 @@ namespace EyeOfSauron.MyUserControl
                 default:
                     break;
             }
-        }
-
-        private void PanelIDLableDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            string text = (sender as Label).Content.ToString();
-            Clipboard.SetDataObject(text);
-            e.Handled = true;
         }
     }
 }

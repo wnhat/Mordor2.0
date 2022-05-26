@@ -5,18 +5,29 @@ namespace EyeOfSauron.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        
         public MainWindowViewModel(UserInfoViewModel userInfoViewModel)
         {
             UserInfo = userInfoViewModel;
             ColorToolView = new DemoItem("Color Tool", typeof(ColorTool));
-            ProductSelectWindow = new();
-            UserControlContent = ProductSelectWindow;
+            //ColorToolView = new ();
+            ProductSelectView = new();
+            InspImageView = new();
+            UserControlContent = ProductSelectView;
         }
+        
         private UserInfoViewModel? userInfo;
         private DemoItem? colorToolView;
-        private MyUserControl.ProductSelectWindow? productSelectWindow;
-        private MyUserControl.InspWindow? inspWindow;
+        private ProductSelectView? productSelectView;
+        private InspImageView? inspImageView;
         private UserControl? userControlContent;
+        private ViewName onShowView;
+
+        public ViewName OnShowView
+        {
+            get => onShowView;
+            set => SetProperty(ref onShowView, value);
+        }
 
         public UserControl UserControlContent
         {
@@ -24,16 +35,16 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref userControlContent, value);
         }
 
-        public MyUserControl.ProductSelectWindow ProductSelectWindow
+        public ProductSelectView ProductSelectView
         {
-            get => productSelectWindow;
-            set => SetProperty(ref productSelectWindow, value);
+            get => productSelectView;
+            set => SetProperty(ref productSelectView, value);
         }
 
-        public MyUserControl.InspWindow InspWindow
+        public InspImageView InspImageView
         {
-            get => inspWindow;
-            set => SetProperty(ref inspWindow, value);
+            get => inspImageView;
+            set => SetProperty(ref inspImageView, value);
         }
 
         public UserInfoViewModel UserInfo
@@ -48,10 +59,21 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref colorToolView, value);
         }
 
-        public void IniInspWindow()
+        public void SetInspView()
         {
-            InspWindow = new MyUserControl.InspWindow();
-            UserControlContent = InspWindow;
+            UserControlContent = InspImageView;
+            OnShowView = ViewName.InspImageView;
         }
+
+        public void SetProductSelectView()
+        {
+            UserControlContent = ProductSelectView;
+            OnShowView = ViewName.ProductSelectView;
+        }
+    }
+    public enum ViewName
+    {
+        InspImageView,
+        ProductSelectView
     }
 }

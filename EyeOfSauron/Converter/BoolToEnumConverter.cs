@@ -32,16 +32,9 @@ namespace EyeOfSauron.Converter
                 }
                 return output;
             }
-            if (value is Int32)
-            {
-                output = Visibility.Visible;
-            }
-            else
-            {
-                output = Visibility.Hidden;
-            }
             return output;
         }
+        
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();

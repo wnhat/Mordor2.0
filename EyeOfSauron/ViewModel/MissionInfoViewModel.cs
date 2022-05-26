@@ -52,7 +52,7 @@ namespace EyeOfSauron.ViewModel
 
         private BitmapImage defaultImage = new();
 
-        private BitmapImage? defectMapImage;
+        private BitmapImageContainer? defectMapImage;
 
         static readonly Uri _defaultImageUri = new(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
 
@@ -103,6 +103,12 @@ namespace EyeOfSauron.ViewModel
         {
             get => defaultImage;
             set => SetProperty(ref defaultImage, value);
+        }
+
+        public BitmapImageContainer DefectMapImage
+        {
+            get => defectMapImage;
+            set => SetProperty(ref defectMapImage, value);
         }
 
         public CommandImplementation RefreshImageCommand { get; }

@@ -9,7 +9,7 @@ using System.Globalization;
 
 namespace EyeOfSauron.Converter
 {
-    class BooleanToVisibilityConverter : IValueConverter
+    public class BoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type type, object parameter, CultureInfo culture)
         {

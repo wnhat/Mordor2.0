@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Controls;
 using EyeOfSauron.MyUserControl;
 
 namespace EyeOfSauron
@@ -102,10 +103,23 @@ namespace EyeOfSauron
 
         private void StartInspButtunClick(object sender, RoutedEventArgs e)
         {
-            _viewModel.IniInspWindow();
-            var productInfo = _viewModel.ProductSelectWindow._viewModel.SelectedProductCardViewModel.ProductInfo.Key;
+            _viewModel.SetInspView();
+            var productInfo = _viewModel.ProductSelectView._viewModel.SelectedProductCardViewModel.ProductInfo.Key;
             Mission mission = new(productInfo);
-            _viewModel.InspWindow.SetMission(mission);
+            _viewModel.InspImageView.SetMission(mission);
+        }
+
+        private void PanelidLableMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            string text = (sender as Label).Content.ToString();
+            Clipboard.SetDataObject(text);
+            e.Handled = true;
+        }
+
+        private void EndInspButtonClick(object sender, RoutedEventArgs e)
+        {
+            _viewModel.ProductSelectView.GetMissions();
+            _viewModel.SetProductSelectView();
         }
     }
 }
