@@ -10,7 +10,7 @@ using EyeOfSauron.ViewModel;
 
 namespace EyeOfSauron.Converter
 {
-    public class EnumToBool : IValueConverter
+    public class EnumToBoolConberter : IValueConverter
     {
         public object Convert(object value, Type type, object parameter, CultureInfo culture)
         {

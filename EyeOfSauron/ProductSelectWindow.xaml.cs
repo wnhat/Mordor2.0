@@ -82,8 +82,8 @@ namespace EyeOfSauron
             count += 100;
             //_viewModel.SelectProductInfo = new KeyValuePair<ProductInfo, int>(productInfos.ToArray()[1], count);
             _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfos.ToArray()[1], count)));
-            MainWindow window = new (new UserInfoViewModel());
-            window.ShowDialog();
+            //MainWindow window = new (new UserInfoViewModel());
+            //window.ShowDialog();
         }
 
         private void SetSelectProductInfo(object sender, RoutedEventArgs e)

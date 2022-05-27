@@ -51,7 +51,7 @@
                         Grid.Row="0"
                         Grid.Column="0"
                         Margin="5,5,5,5">
-                        <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                        <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1" >
                             <Image
                                 x:Name="ImageBox1"
                                 Width="1600"
@@ -71,7 +71,7 @@
                         Grid.Row="0"
                         Grid.Column="1"
                         Margin="5,5,5,5">
-                        <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                        <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1" >
                             <Image
                                 x:Name="ImageBox2"
                                 Width="1600"
@@ -91,7 +91,7 @@
                         Grid.Row="1"
                         Grid.Column="0"
                         Margin="5,5,5,5">
-                        <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                        <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1" >
                             <Image
                                 x:Name="ImageBox3"
                                 Width="1600"
@@ -116,14 +116,14 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Column="0">
-                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1" >
                                 <Image
                                     Width="790"
                                     Height="495"
                                     Source="{Binding MissionInfoViewModel.InspImage.DefectMapImage.BitmapImage}"
                                     Stretch="Fill" />
                             </materialDesign:Card>
-                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1" >
                                 <Image
                                     Width="790"
                                     Height="495"
@@ -137,7 +137,7 @@
                                 Height="495"
                                 Margin="5,5,5,5"
                                 HorizontalAlignment="Stretch"
-                                materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                                materialDesign:ShadowAssist.ShadowDepth="Depth1" >
                                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                                     <ListView
                                         d:ItemsSource="{d:SampleData ItemCount=5}"
@@ -154,7 +154,7 @@
                                     </ListView>
                                 </ScrollViewer>
                             </materialDesign:Card>
-                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1" >
                                 <Image
                                     Width="790"
                                     Height="495"
@@ -175,7 +175,7 @@
                                 Content="S"
                                 FontSize="20"
                                 FontWeight="Bold"
-                                Style="{StaticResource MaterialDesignRaisedLightButton}" />
+                                Style="{StaticResource MaterialDesignRaisedLightButton}"  />
                             <Button
                                 Width="200"
                                 Height="180"
@@ -184,8 +184,8 @@
                                 Click="JudgeButtonClick"
                                 Content="E"
                                 FontSize="20"
-                                FontWeight="Bold" />
-                            <ItemsControl ItemsSource="{Binding DefectJudge.DefectJudgeList}">
+                                FontWeight="Bold"  />
+                            <ItemsControl ItemsSource="{Binding DefectJudge.DefectJudgeList}" >
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <UniformGrid Columns="1" />
@@ -201,7 +201,7 @@
                                             Click="JudgeButtonClick"
                                             Content="{Binding DefectName}"
                                             FontSize="20"
-                                            FontWeight="Bold" />
+                                            FontWeight="Bold"  />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

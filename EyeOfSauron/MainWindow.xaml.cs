@@ -10,27 +10,27 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Controls;
 using EyeOfSauron.MyUserControl;
+using EyeOfSauron.ViewModel;
 
 namespace EyeOfSauron
 {
     public partial class MainWindow : Window
     {
         public static Snackbar Snackbar = new();
-        private readonly MainWindowViewModel _viewModel;
-        public MainWindow(UserInfoViewModel userInfoViewModel)
+        private MainWindowViewModel? viewModel;
+        private readonly LogininWindow logininWindow = new();
+        public MainWindow()
         {
+
+
             InitializeComponent();
 
-            Task.Factory.StartNew(() => Thread.Sleep(2500)).ContinueWith(t =>
+            Task.Factory.StartNew(() => Thread.Sleep(1000)).ContinueWith(t =>
             {
                 //note you can use the message queue from any thread, but just for the demo here we 
                 //need to get the message queue from the snackbar, so need to be on the dispatcher
                 MainSnackbar.MessageQueue?.Enqueue("Welcome Login to Eye of Sauron");
             }, TaskScheduler.FromCurrentSynchronizationContext());
-
-            _viewModel = new(userInfoViewModel);
-
-            DataContext = _viewModel;
 
             var paletteHelper = new PaletteHelper();
 
@@ -47,18 +47,28 @@ namespace EyeOfSauron
             Snackbar = MainSnackbar;
         }
 
-        private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+
+
+        private void AccountAuthenticate(object sender, AccountAuthenticateEventArgs arges)
         {
-            //until we had a StaysOpen glag to Drawer, this will help with scroll bars
-            var dependencyObject = Mouse.Captured as DependencyObject;
-
-            while (dependencyObject != null)
+            switch (arges.Result)
             {
-                if (dependencyObject is ScrollBar) return;
-                dependencyObject = VisualTreeHelper.GetParent(dependencyObject);
+                case AuthenticateResult.Success:
+                    viewModel = new(arges.UserInfoViewModel);
+                    DataContext = viewModel;
+                    logininWindow.Hide();
+                    break;
+                case AuthenticateResult.EmptyInput:
+                    break;
+                case AuthenticateResult.AccountNotExist:
+                    MessageBox.Show("Account does not exist");
+                    break;
+                case AuthenticateResult.PasswordError:
+                    MessageBox.Show("Invalid password");
+                    break;
+                default:
+                    break;
             }
-
-            MenuToggleButton.IsChecked = false;
         }
 
         private async void MenuPopupButton_OnClick(object sender, RoutedEventArgs e)
@@ -103,10 +113,10 @@ namespace EyeOfSauron
 
         private void StartInspButtunClick(object sender, RoutedEventArgs e)
         {
-            _viewModel.SetInspView();
-            var productInfo = _viewModel.ProductSelectView._viewModel.SelectedProductCardViewModel.ProductInfo.Key;
+            viewModel.SetInspView();
+            var productInfo = viewModel.ProductSelectView._viewModel.SelectedProductCardViewModel.ProductInfo.Key;
             Mission mission = new(productInfo);
-            _viewModel.InspImageView.SetMission(mission);
+            viewModel.InspImageView.SetMission(mission);
         }
 
         private void PanelidLableMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -118,8 +128,14 @@ namespace EyeOfSauron
 
         private void EndInspButtonClick(object sender, RoutedEventArgs e)
         {
-            _viewModel.ProductSelectView.GetMissions();
-            _viewModel.SetProductSelectView();
+            viewModel.ProductSelectView.GetMissions();
+            viewModel.SetProductSelectView();
+        }
+
+        private void LoginButtonClick(object sender, RoutedEventArgs e)
+        {
+            logininWindow.AccountAuthenticateEvent += new LogininWindow.AccountAuthenticateHandler(AccountAuthenticate);
+            logininWindow.ShowDialog();
         }
     }
 }

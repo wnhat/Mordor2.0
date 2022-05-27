@@ -15,41 +15,45 @@ namespace EyeOfSauron.ViewModel
 {
     public class UserInfoViewModel : ViewModelBase
     {
-        private User _user;
+        private User user;
 
         public UserInfoViewModel()
         {
-            _user = new User();
+            user = new User();
         }
 
         public User User
         {
-            get => _user;
-            set => SetProperty(ref _user, value);
+            get => user;
+            set => SetProperty(ref user, value);
         }
 
-        public void Authenticate(string account, string password)
+        public AuthenticateResult Authenticate(string account, string password)
         {
             if (string.IsNullOrEmpty(account) || string.IsNullOrEmpty(password))
             {
-                throw new Exception("Empty input");
+                return AuthenticateResult.EmptyInput;
             }
             var collection = DBconnector.DICSDB.GetCollection<User>("User");
             var filter = Builders<User>.Filter.Eq("Account", account);
-            _user = collection.Find(filter).FirstOrDefault();
-            if (_user == null)
+            User = collection.Find(filter).FirstOrDefault();
+            if (User == null)
             {
-                throw new Exception("Account not exist");
+                return AuthenticateResult.AccountNotExist;
             }
-            else if (!_user.VerifyPasswordHash(password))
+            else if (!User.VerifyPasswordHash(password))
             {
-                throw new Exception("Password error");
+                return AuthenticateResult.PasswordError;
+            }
+            else
+            {
+                return AuthenticateResult.Success;
             }
         }
 
         public bool UserExist()
         {
-            if (_user != null)
+            if (user != null)
             {
                 return true;
             }
@@ -83,5 +87,13 @@ namespace EyeOfSauron.ViewModel
                 return Enumerable.SequenceEqual(computedHash, storedHash);
             }
         }
+    }
+
+    public enum AuthenticateResult
+    {
+        EmptyInput,
+        AccountNotExist,
+        PasswordError,
+        Success
     }
 }

@@ -14,6 +14,7 @@ namespace EyeOfSauron.ViewModel
             ProductSelectView = new();
             InspImageView = new();
             UserControlContent = ProductSelectView;
+            OnShowView = ViewName.ProductSelectView;
         }
         
         private UserInfoViewModel? userInfo;
