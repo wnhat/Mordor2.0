@@ -19,8 +19,6 @@
         <DockPanel Grid.Row="0" HorizontalAlignment="Right">
             <Button
                 Style="{StaticResource MaterialDesignFlatLightButton}"
-                Width="40"
-                Height="40"
                 Background="White"
                 Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
                 <materialDesign:PackIcon Kind="Close" />
@@ -33,8 +31,6 @@
             FontSize="18" />
         <ProgressBar
             Grid.Row="2"
-            Width="40"
-            Height="40"
             IsIndeterminate="True"
             Style="{StaticResource MaterialDesignCircularProgressBar}"
             Value="0" />

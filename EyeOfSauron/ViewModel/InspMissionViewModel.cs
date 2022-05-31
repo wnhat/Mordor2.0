@@ -1,10 +1,10 @@
 ﻿namespace EyeOfSauron.ViewModel
 {
-    public class InspMainWindowViewModel : ViewModelBase
+    public class InspMissionViewModel : ViewModelBase
     {
         public MissionInfoViewModel MissionInfoViewModel { get; }
         public DefectJudgeViewModel DefectJudge { get; }
-        public InspMainWindowViewModel()
+        public InspMissionViewModel()
         {
             DefectJudge = new();
             MissionInfoViewModel = new();

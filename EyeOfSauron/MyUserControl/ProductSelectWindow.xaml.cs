@@ -18,20 +18,21 @@ namespace EyeOfSauron.MyUserControl
     /// </summary>
     public partial class ProductSelectView : UserControl
     {
-        int count = 0;
-
         public readonly ProductViewModel _viewModel;
 
         static readonly DICSRemainInspectMissionService RemainService = new();
 
         public ProductSelectView()
         {
-            _viewModel = new ProductViewModel();
+            _viewModel = new();
             DataContext = _viewModel;
             GetMissions();
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Get all missions to set viewmodel from database
+        /// </summary>
         public async void GetMissions()
         {
             // get the remain mission count to set viewmodel
@@ -57,7 +58,7 @@ namespace EyeOfSauron.MyUserControl
         }
 
         //for test, will be removed later;
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             GetMissions();
         }

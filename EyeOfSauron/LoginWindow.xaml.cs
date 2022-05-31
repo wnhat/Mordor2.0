@@ -10,46 +10,30 @@ namespace EyeOfSauron
     /// </summary>
     public partial class LogininWindow : Window
     {
-        public delegate void AccountAuthenticateHandler(object sender, AccountAuthenticateEventArgs e);
-        public event AccountAuthenticateHandler? AccountAuthenticateEvent ;
+        public delegate void ValuePassHandler(object sender, AccountAuthenticateEventArgs e);
+        public event ValuePassHandler? AccountAuthenticateEvent ;
 
         private readonly UserInfoViewModel _viewModel;
-        
+        public bool IsClosed { get; set; }
+
         public LogininWindow()
         {
             _viewModel = new UserInfoViewModel();
             DataContext = _viewModel;
+            InitializeComponent();
+            IsClosed = false;
         }
         
         private void LoginButtonClick(object sender, RoutedEventArgs e)
         {
             AuthenticateResult authenticateResult = _viewModel.Authenticate(userNameTextBox.Text, passwordTextBox.Password);
             AccountAuthenticateEventArgs arges = new(authenticateResult, _viewModel);
-            AccountAuthenticateEvent(this, arges);
-            //switch (authenticateResult)
-            //{
-            //    case AuthenticateResult.Success:
-            //        MainWindow window = new(_viewModel);
-            //        Hide();
-            //        window.ShowDialog();
-            //        Show();
-            //        break;
-            //    case AuthenticateResult.EmptyInput:
-            //        break;
-            //    case AuthenticateResult.AccountNotExist:
-            //        MessageBox.Show("Account does not exist");
-            //        break;
-            //    case AuthenticateResult.PasswordError:
-            //        MessageBox.Show("Invalid password");
-            //        break;
-            //    default:
-            //        break;
-            //} 
+            AccountAuthenticateEvent?.Invoke(this, arges);
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void LoginWindow_Closed(object sender, EventArgs e)
         {
-            Application.Current.Shutdown();
+            IsClosed = true;
         }
     }
 
@@ -64,6 +48,4 @@ namespace EyeOfSauron
         public AuthenticateResult Result { get; set; }
         public UserInfoViewModel UserInfoViewModel { get; set; }
     }
-
-
 }

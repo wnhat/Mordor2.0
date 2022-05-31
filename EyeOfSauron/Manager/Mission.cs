@@ -15,9 +15,7 @@ namespace EyeOfSauron
     public class Mission
     {
         //TODO: 区分任务类型
-        private Queue<PanelMission> PreDownloadedPanelMissionQueue = new();
-
-        static readonly DICSRemainInspectMissionService dicsRemainInspectMissionService = new();
+        private readonly Queue<PanelMission> PreDownloadedPanelMissionQueue = new();
 
         public PanelMission onInspPanelMission;
 
@@ -115,24 +113,24 @@ namespace EyeOfSauron
             return 0;
         }
 
-        public static bool PreJudge(ref InspectMission mission, ref PanelInspectHistory aetResult)
-        {
-            Defect defect = new("defactName", "defectCode");
-            if (true)
-            {
-                return false;
-            }
-            else
-            {
-                SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, User.AutoJudgeUser.Id, 1), mission);
-                return true;
-            }
-        }
+        //public static bool PreJudge(ref InspectMission mission, ref PanelInspectHistory aetResult)
+        //{
+        //    Defect defect = new("defactName", "defectCode");
+        //    if (true)
+        //    {
+        //        return false;
+        //    }
+        //    else
+        //    {
+        //        SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, User.AutoJudgeUser.Id, 1), mission);
+        //        return true;
+        //    }
+        //}
 
-        public static void SendOpJudgeResult(Defect defect, User user, int score, InspectMission inspectMission)
-        {
-            SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, user.Username, user.Account, user.Id, score), inspectMission);
-        }
+        //public static void SendOpJudgeResult(Defect defect, User user, int score, InspectMission inspectMission)
+        //{
+        //    SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, user.Username, user.Account, user.Id, score), inspectMission);
+        //}
     }
 
     public class PanelMission

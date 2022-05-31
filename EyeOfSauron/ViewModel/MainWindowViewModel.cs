@@ -1,28 +1,46 @@
 ﻿using System.Windows.Controls;
 using EyeOfSauron.MyUserControl;
+using CoreClass.Model;
+using System;
+using System.Windows;
 
 namespace EyeOfSauron.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase
     {
         
-        public MainWindowViewModel(UserInfoViewModel userInfoViewModel)
+        public MainWindowViewModel(UserInfoViewModel userInfoViewModel):this()
         {
             UserInfo = userInfoViewModel;
-            ColorToolView = new DemoItem("Color Tool", typeof(ColorTool));
-            //ColorToolView = new ();
             ProductSelectView = new();
             InspImageView = new();
-            UserControlContent = ProductSelectView;
-            OnShowView = ViewName.ProductSelectView;
+            MainContent = ProductSelectView;
+            OnShowView = ViewName.ProductSelectView;      
         }
         
+        public MainWindowViewModel()
+        {
+            ColorToolView = new DemoItem("Color Tool", typeof(ColorTool));
+            DefectJudgeView = new();
+            MainContent = new();
+            ColorTool = new();
+            OnShowView = ViewName.Null;
+            DefectJudgeView.DefectJudgeEvent += new DefectJudgeView.ValuePassHandler(DefectJudge);
+            StartInspCommand = new CommandImplementation(StartInsp);
+            EndInspCommand = new CommandImplementation(_ => EndInsp());
+        }
+
         private UserInfoViewModel? userInfo;
         private DemoItem? colorToolView;
         private ProductSelectView? productSelectView;
         private InspImageView? inspImageView;
-        private UserControl? userControlContent;
+        private DefectJudgeView? defectJudgeView;
+        private UserControl? mainContent;
+        private ColorTool? colorTool;
+        
         private ViewName onShowView;
+        public CommandImplementation StartInspCommand { get; }
+        public CommandImplementation EndInspCommand { get; }
 
         public ViewName OnShowView
         {
@@ -30,10 +48,22 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref onShowView, value);
         }
 
-        public UserControl UserControlContent
+        public DefectJudgeView DefectJudgeView
         {
-            get => userControlContent;
-            set => SetProperty(ref userControlContent, value);
+            get => defectJudgeView;
+            set => SetProperty(ref defectJudgeView, value);
+        }
+
+        public ColorTool? ColorTool
+        {
+            get => colorTool;
+            set => SetProperty(ref colorTool, value);
+        }
+
+        public UserControl MainContent
+        {
+            get => mainContent;
+            set => SetProperty(ref mainContent, value);
         }
 
         public ProductSelectView ProductSelectView
@@ -62,18 +92,51 @@ namespace EyeOfSauron.ViewModel
 
         public void SetInspView()
         {
-            UserControlContent = InspImageView;
+            MainContent = InspImageView;
             OnShowView = ViewName.InspImageView;
         }
 
         public void SetProductSelectView()
         {
-            UserControlContent = ProductSelectView;
+            MainContent = ProductSelectView;
             OnShowView = ViewName.ProductSelectView;
+        }
+
+        private void StartInsp(object o)
+        {
+            if(o is ProductInfo)
+            {
+                SetInspView();
+                var productInfo = o as ProductInfo;
+                try
+                {
+                    Mission mission = new(productInfo);
+                    InspImageView.SetMission(mission);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    ProductSelectView.GetMissions();
+                    SetProductSelectView();
+                }
+            }
+        }
+        
+        private void EndInsp()
+        {
+            ProductSelectView.GetMissions();
+            SetProductSelectView();
+        }
+
+        private void DefectJudge(object sender, DefectJudgeArgs e)
+        {
+            Defect defect = e.Defect;
+            InspImageView.DefectJudge(defect, UserInfo.User);
         }
     }
     public enum ViewName
     {
+        Null,
         InspImageView,
         ProductSelectView
     }

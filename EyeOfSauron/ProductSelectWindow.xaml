@@ -24,8 +24,6 @@
     WindowStyle="ThreeDBorderWindow"
     mc:Ignorable="d">
     <Window.Resources>
-        <Converter:BoolToEnumConverter x:Key="BoolToEnumConverter" />
-        <Converter:Int32ToDoubleConverter x:Key="Int32ToDoubleConverter" />
     </Window.Resources>
     <Grid>
         <ScrollViewer
@@ -106,7 +104,7 @@
                     Margin="83,475,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    Click="Button_Click"
+                    Click="TestButton_Click"
                     Content="{Binding UserInfoViewModel.User.Username}" />
                 <Button
                     Width="300"

@@ -74,7 +74,7 @@ namespace EyeOfSauron
         }
 
         //for test, will be removed later;
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void TestButton_Click(object sender, RoutedEventArgs e)
         {
             var collection = DBconnector.DICSDB.GetCollection<ProductInfo>("ProductInfo");
             var filter = Builders<ProductInfo>.Filter.Empty;

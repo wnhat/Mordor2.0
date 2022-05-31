@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
+using CoreClass.Model;
 using System.Windows.Controls;
 using EyeOfSauron.MyUserControl;
 using EyeOfSauron.ViewModel;
@@ -16,38 +16,36 @@ namespace EyeOfSauron
 {
     public partial class MainWindow : Window
     {
-        public static Snackbar Snackbar = new();
-        private MainWindowViewModel? viewModel;
-        private readonly LogininWindow logininWindow = new();
+        public static Snackbar Snackbar = new();        
+        
+        private MainWindowViewModel viewModel;
+
+        public LogininWindow loginWindow = new();
         public MainWindow()
         {
-
-
             InitializeComponent();
-
+            viewModel = new();
+            DataContext = viewModel;
             Task.Factory.StartNew(() => Thread.Sleep(1000)).ContinueWith(t =>
             {
                 //note you can use the message queue from any thread, but just for the demo here we 
                 //need to get the message queue from the snackbar, so need to be on the dispatcher
                 MainSnackbar.MessageQueue?.Enqueue("Welcome Login to Eye of Sauron");
             }, TaskScheduler.FromCurrentSynchronizationContext());
-
             var paletteHelper = new PaletteHelper();
-
             var theme = paletteHelper.GetTheme();
-
             DarkModeToggleButton.IsChecked = theme.GetBaseTheme() == BaseTheme.Dark;
-
             if (paletteHelper.GetThemeManager() is { } themeManager)
             {
                 themeManager.ThemeChanged += (_, e)
                     => DarkModeToggleButton.IsChecked = e.NewTheme?.GetBaseTheme() == BaseTheme.Dark;
             }
-
             Snackbar = MainSnackbar;
+            loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
+            StartInspButton.Visibility = Visibility.Collapsed;
+            EndInspButton.Visibility = Visibility.Collapsed;
+            DefectJudgeViewbox.Visibility = Visibility.Collapsed;
         }
-
-
 
         private void AccountAuthenticate(object sender, AccountAuthenticateEventArgs arges)
         {
@@ -56,7 +54,7 @@ namespace EyeOfSauron
                 case AuthenticateResult.Success:
                     viewModel = new(arges.UserInfoViewModel);
                     DataContext = viewModel;
-                    logininWindow.Hide();
+                    loginWindow.Close();
                     break;
                 case AuthenticateResult.EmptyInput:
                     break;
@@ -111,14 +109,6 @@ namespace EyeOfSauron
             paletteHelper.SetTheme(theme);
         }
 
-        private void StartInspButtunClick(object sender, RoutedEventArgs e)
-        {
-            viewModel.SetInspView();
-            var productInfo = viewModel.ProductSelectView._viewModel.SelectedProductCardViewModel.ProductInfo.Key;
-            Mission mission = new(productInfo);
-            viewModel.InspImageView.SetMission(mission);
-        }
-
         private void PanelidLableMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             string text = (sender as Label).Content.ToString();
@@ -134,8 +124,34 @@ namespace EyeOfSauron
 
         private void LoginButtonClick(object sender, RoutedEventArgs e)
         {
-            logininWindow.AccountAuthenticateEvent += new LogininWindow.AccountAuthenticateHandler(AccountAuthenticate);
-            logininWindow.ShowDialog();
+            if (!loginWindow.IsClosed)
+            {
+                loginWindow.ShowDialog();
+            }
+            else
+            {
+                loginWindow = new();
+                loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
+                loginWindow.ShowDialog();
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (MessageBox.Show("确认退出", "退出", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                Environment.Exit(0);
+            }
+            else
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void DefectJudge(object sender, DefectJudgeArgs e)
+        {
+            Defect defect = e.Defect;
+            viewModel.InspImageView.DefectJudge(defect, viewModel.UserInfo.User);
         }
     }
 }

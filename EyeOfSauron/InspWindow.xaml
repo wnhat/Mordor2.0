@@ -16,7 +16,7 @@
     MinHeight="500"
     MaxWidth="3840"
     MaxHeight="2500"
-    d:DataContext="{d:DesignInstance Type=viewModel:InspMainWindowViewModel}"
+    d:DataContext="{d:DesignInstance Type=viewModel:InspMissionViewModel}"
     gif:ImageBehavior.AnimateInDesignMode="True"
     ResizeMode="CanResize"
     SizeToContent="Manual"
@@ -26,7 +26,6 @@
     Background="{DynamicResource MaterialDesignPaper}"
     mc:Ignorable="d">
     <Window.Resources>
-        <Converter:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
     <Viewbox KeyDown="KeyDown" KeyUp="KeyUp">
         <Grid>

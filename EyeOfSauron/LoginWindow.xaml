@@ -22,8 +22,12 @@
     WindowStartupLocation="CenterScreen"
     WindowState="Normal"
     WindowStyle="ThreeDBorderWindow"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Closed="LoginWindow_Closed">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <StackPanel Margin="60,100,60,130">
             <StackPanel Width="350" Orientation="Horizontal">
                 <Button

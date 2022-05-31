@@ -9,21 +9,24 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="UserControl\InspWindows.xaml.cs">
+    <Compile Update="MyUserControl\InspWindows.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="UserControl\ProductSelectWindow.xaml.cs">
+    <Compile Update="MyUserControl\DefectJudgeView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="MyUserControl\ProductSelectWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="UserControl\ColorTool.xaml">
+    <Page Update="MyUserControl\ColorTool.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="UserControl\InspWindows.xaml">
+    <Page Update="MyUserControl\InspWindows.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="InspWindow.xaml">
@@ -35,16 +38,19 @@
     <Page Update="ProductSelectWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="UserControl\ProductSelectWindow.xaml">
+    <Page Update="MyUserControl\DefectJudgeView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="UserControl\ThemeSettings.xaml">
+    <Page Update="MyUserControl\ProductSelectWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MyUserControl\ThemeSettings.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="ViewModel\DocumentationLinks.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="UserControl\SampleMessageDialog.xaml">
+    <Page Update="MyUserControl\SampleMessageDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

@@ -9,11 +9,10 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
-    d:DataContext="{d:DesignInstance Type=viewModel:InspMainWindowViewModel}"
+    d:DataContext="{d:DesignInstance Type=viewModel:InspMissionViewModel}"
     gif:ImageBehavior.AnimateInDesignMode="True"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <Converter:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
     <Viewbox KeyDown="KeyDown" KeyUp="KeyUp">
         <Grid>
@@ -163,7 +162,7 @@
                         </StackPanel>
                     </Grid>
                 </Grid>
-                <Grid DockPanel.Dock="Right">
+                <!--<Grid DockPanel.Dock="Right">
                     <Grid MinWidth="220" VerticalAlignment="Top">
                         <StackPanel>
                             <Button
@@ -207,7 +206,7 @@
                             </ItemsControl>
                         </StackPanel>
                     </Grid>
-                </Grid>
+                </Grid>-->
             </DockPanel>
         </Grid>
     </Viewbox>

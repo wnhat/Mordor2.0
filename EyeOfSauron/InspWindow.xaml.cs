@@ -14,11 +14,11 @@ namespace EyeOfSauron
     {
         private readonly Mission mission;
 
-        private readonly InspMainWindowViewModel _viewModel;
+        private readonly InspMissionViewModel _viewModel;
         
         public InspWindow(UserInfoViewModel userInfo, Mission inspMission)
         {
-            _viewModel = new InspMainWindowViewModel();
+            _viewModel = new InspMissionViewModel();
             _viewModel.MissionInfoViewModel.ProductInfo = inspMission.productInfo;
             DataContext = _viewModel;
             mission = inspMission;

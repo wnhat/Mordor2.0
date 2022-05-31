@@ -11,24 +11,17 @@ namespace EyeOfSauron.MyUserControl
     /// <summary>
     /// Interaction logic for InspWindows.xaml
     /// </summary>
-    public partial class InspImageView: UserControl
+    public partial class InspImageView : UserControl
     {
-        private Mission? mission;
+        public Mission? mission;
 
-        private readonly InspMainWindowViewModel _viewModel;
+        private readonly InspMissionViewModel _viewModel;
 
         public InspImageView()
         {
-            _viewModel = new InspMainWindowViewModel();
+            _viewModel = new InspMissionViewModel();
             DataContext = _viewModel;
             InitializeComponent();
-        }
-
-        //for test, will be removed later;
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            //mission.NextMission();
-            //LoadOnInspPanelMission();
         }
 
         public void SetMission(Mission inspMission)
@@ -63,27 +56,13 @@ namespace EyeOfSauron.MyUserControl
             }
         }
 
-        private void JudgeButtonClick(object sender, RoutedEventArgs e)
+        public void DefectJudge(Defect defect,User user)
         {
-            Defect defect;
-            if ((sender as Button).Content == "S")
-            {
-                defect = null;
-            }
-            else if ((sender as Button).Content == "E")
-            {
-                defect = Defect.OperaterEjudge;
-            }
-            else
-            {
-                defect = (sender as Button).DataContext as Defect;
-            }
-            //SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, _viewModel.UserInfo.User.Username, _viewModel.UserInfo.User.Account, _viewModel.UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
+            SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, user.Username, user.Account, user.Id, 1), mission.onInspPanelMission.inspectMission);
             mission.FillPreDownloadMissionQueue();
             if (!mission.NextMission())
             {
                 MessageBox.Show("There is no mission left.");
-                //this.Close();
             }
             else
             {
