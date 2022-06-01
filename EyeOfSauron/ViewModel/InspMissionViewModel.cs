@@ -3,10 +3,10 @@
     public class InspMissionViewModel : ViewModelBase
     {
         public MissionInfoViewModel MissionInfoViewModel { get; }
-        public DefectJudgeViewModel DefectJudge { get; }
+        //public DefectJudgeViewModel DefectJudge { get; }
         public InspMissionViewModel()
         {
-            DefectJudge = new();
+            //DefectJudge = new();
             MissionInfoViewModel = new();
         }
     }

@@ -9,12 +9,14 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
-    d:DataContext="{d:DesignInstance Type=viewModel:InspMissionViewModel}"
+    d:DataContext="{d:DesignInstance Type=viewModel:MissionInfoViewModel}"
     gif:ImageBehavior.AnimateInDesignMode="True"
     mc:Ignorable="d">
-    <UserControl.Resources>
-    </UserControl.Resources>
-    <Viewbox KeyDown="KeyDown" KeyUp="KeyUp">
+    <UserControl.Resources />
+    <UserControl.InputBindings>
+        <KeyBinding Key="Tab" Command="{Binding InspImage.RefreshImageCommand}" />
+    </UserControl.InputBindings>
+    <Viewbox KeyDown="UserControl_KeyDown" KeyUp="UserControl_KeyUp">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -50,61 +52,61 @@
                         Grid.Row="0"
                         Grid.Column="0"
                         Margin="5,5,5,5">
-                        <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1" >
+                        <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1">
                             <Image
                                 x:Name="ImageBox1"
                                 Width="1600"
                                 Height="1000"
-                                Source="{Binding MissionInfoViewModel.InspImage.InspImages[0].BitmapImage}"
+                                Source="{Binding InspImage.InspImages[0].BitmapImage}"
                                 Stretch="Fill" />
                         </materialDesign:Card>
                         <Label
                             Height="30"
                             Margin="0,970,0,0"
                             Background="White"
-                            Content="{Binding MissionInfoViewModel.InspImage.InspImages[0].Name}"
+                            Content="{Binding InspImage.InspImages[0].Name}"
                             FontSize="16"
-                            Visibility="{Binding MissionInfoViewModel.InspImage.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            Visibility="{Binding InspImage.ImageLableIsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     </Grid>
                     <Grid
                         Grid.Row="0"
                         Grid.Column="1"
                         Margin="5,5,5,5">
-                        <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1" >
+                        <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1">
                             <Image
                                 x:Name="ImageBox2"
                                 Width="1600"
                                 Height="1000"
-                                Source="{Binding MissionInfoViewModel.InspImage.InspImages[1].BitmapImage}"
+                                Source="{Binding InspImage.InspImages[1].BitmapImage}"
                                 Stretch="Fill" />
                         </materialDesign:Card>
                         <Label
                             Height="30"
                             Margin="0,970,0,0"
                             Background="White"
-                            Content="{Binding MissionInfoViewModel.InspImage.InspImages[1].Name}"
+                            Content="{Binding InspImage.InspImages[1].Name}"
                             FontSize="16"
-                            Visibility="{Binding MissionInfoViewModel.InspImage.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            Visibility="{Binding InspImage.ImageLableIsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     </Grid>
                     <Grid
                         Grid.Row="1"
                         Grid.Column="0"
                         Margin="5,5,5,5">
-                        <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1" >
+                        <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1">
                             <Image
                                 x:Name="ImageBox3"
                                 Width="1600"
                                 Height="1000"
-                                Source="{Binding MissionInfoViewModel.InspImage.InspImages[2].BitmapImage}"
+                                Source="{Binding InspImage.InspImages[2].BitmapImage}"
                                 Stretch="Fill" />
                         </materialDesign:Card>
                         <Label
                             Height="30"
                             Margin="0,970,0,0"
                             Background="White"
-                            Content="{Binding MissionInfoViewModel.InspImage.InspImages[2].Name}"
+                            Content="{Binding InspImage.InspImages[2].Name}"
                             FontSize="16"
-                            Visibility="{Binding MissionInfoViewModel.InspImage.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            Visibility="{Binding InspImage.ImageLableIsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     </Grid>
                     <Grid Grid.Row="1" Grid.Column="1">
                         <Grid.ColumnDefinitions>
@@ -115,18 +117,18 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Column="0">
-                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1" >
+                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
                                 <Image
                                     Width="790"
                                     Height="495"
-                                    Source="{Binding MissionInfoViewModel.InspImage.DefectMapImage.BitmapImage}"
+                                    Source="{Binding InspImage.DefectMapImage.BitmapImage}"
                                     Stretch="Fill" />
                             </materialDesign:Card>
-                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1" >
+                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
                                 <Image
                                     Width="790"
                                     Height="495"
-                                    Source="{Binding MissionInfoViewModel.DetailDefectList.SelectedItem.DetailDefectImage}"
+                                    Source="{Binding DetailDefectList.SelectedItem.DetailDefectImage}"
                                     Stretch="Uniform" />
                             </materialDesign:Card>
                         </StackPanel>
@@ -136,13 +138,13 @@
                                 Height="495"
                                 Margin="5,5,5,5"
                                 HorizontalAlignment="Stretch"
-                                materialDesign:ShadowAssist.ShadowDepth="Depth1" >
+                                materialDesign:ShadowAssist.ShadowDepth="Depth1">
                                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                                     <ListView
                                         d:ItemsSource="{d:SampleData ItemCount=5}"
                                         FontSize="16"
-                                        ItemsSource="{Binding MissionInfoViewModel.DetailDefectList.AetDetailDefects}"
-                                        SelectedItem="{Binding MissionInfoViewModel.DetailDefectList.SelectedItem, Mode=TwoWay}">
+                                        ItemsSource="{Binding DetailDefectList.AetDetailDefects}"
+                                        SelectedItem="{Binding DetailDefectList.SelectedItem, Mode=TwoWay}">
                                         <ListView.View>
                                             <GridView>
                                                 <GridViewColumn DisplayMemberBinding="{Binding DefectNo}" Header="DEFECT_NO" />
@@ -153,7 +155,7 @@
                                     </ListView>
                                 </ScrollViewer>
                             </materialDesign:Card>
-                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1" >
+                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
                                 <Image
                                     Width="790"
                                     Height="495"
@@ -162,51 +164,6 @@
                         </StackPanel>
                     </Grid>
                 </Grid>
-                <!--<Grid DockPanel.Dock="Right">
-                    <Grid MinWidth="220" VerticalAlignment="Top">
-                        <StackPanel>
-                            <Button
-                                Width="200"
-                                Height="180"
-                                Margin="5,5,5,5"
-                                materialDesign:ButtonAssist.CornerRadius="5"
-                                Click="JudgeButtonClick"
-                                Content="S"
-                                FontSize="20"
-                                FontWeight="Bold"
-                                Style="{StaticResource MaterialDesignRaisedLightButton}"  />
-                            <Button
-                                Width="200"
-                                Height="180"
-                                Margin="5,5,5,5"
-                                materialDesign:ButtonAssist.CornerRadius="5"
-                                Click="JudgeButtonClick"
-                                Content="E"
-                                FontSize="20"
-                                FontWeight="Bold"  />
-                            <ItemsControl ItemsSource="{Binding DefectJudge.DefectJudgeList}" >
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <UniformGrid Columns="1" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Button
-                                            Width="200"
-                                            Height="80"
-                                            Margin="5,5,5,5"
-                                            materialDesign:ButtonAssist.CornerRadius="5"
-                                            Click="JudgeButtonClick"
-                                            Content="{Binding DefectName}"
-                                            FontSize="20"
-                                            FontWeight="Bold"  />
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </Grid>
-                </Grid>-->
             </DockPanel>
         </Grid>
     </Viewbox>

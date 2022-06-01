@@ -15,18 +15,18 @@ namespace EyeOfSauron.MyUserControl
     {
         public Mission? mission;
 
-        private readonly InspMissionViewModel _viewModel;
+        private readonly MissionInfoViewModel _viewModel;
 
         public InspImageView()
         {
-            _viewModel = new InspMissionViewModel();
+            _viewModel = new MissionInfoViewModel();
             DataContext = _viewModel;
             InitializeComponent();
         }
 
         public void SetMission(Mission inspMission)
         {
-            _viewModel.MissionInfoViewModel.ProductInfo = inspMission.productInfo;
+            _viewModel.ProductInfo = inspMission.productInfo;
             mission = inspMission;
             LoadOnInspPanelMission();
             mission.FillPreDownloadMissionQueue();
@@ -36,23 +36,23 @@ namespace EyeOfSauron.MyUserControl
         {
             if (mission.onInspPanelMission != null)
             {
-                _viewModel.MissionInfoViewModel.RemainingCount = await mission.RemainMissionCount();
-                _viewModel.MissionInfoViewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
-                _viewModel.MissionInfoViewModel.ProductInfo = new ProductInfoService().GetProductInfo(mission.onInspPanelMission.inspectMission.Info).Result;
-                _viewModel.MissionInfoViewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
-                _viewModel.MissionInfoViewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
-                _viewModel.MissionInfoViewModel.InspImage.DefectMapImage = mission.onInspPanelMission.ContoursImageContainer;
-                _viewModel.MissionInfoViewModel.DetailDefectList.AetDetailDefects.Clear();
+                _viewModel.RemainingCount = await mission.RemainMissionCount();
+                _viewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
+                _viewModel.ProductInfo = new ProductInfoService().GetProductInfo(mission.onInspPanelMission.inspectMission.Info).Result;
+                _viewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
+                _viewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
+                _viewModel.InspImage.DefectMapImage = mission.onInspPanelMission.ContoursImageContainer;
+                _viewModel.DetailDefectList.AetDetailDefects.Clear();
                 foreach (var item in mission.onInspPanelMission.bitmapImageContainers)
                 {
-                    _viewModel.MissionInfoViewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.Name, item.Name, item.BitmapImage));
+                    _viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.Name, item.Name, item.BitmapImage));
                 }
-                if (_viewModel.MissionInfoViewModel.DetailDefectList.AetDetailDefects.Count != 0)
+                if (_viewModel.DetailDefectList.AetDetailDefects.Count != 0)
                 {
-                    _viewModel.MissionInfoViewModel.DetailDefectList.SelectedItem = _viewModel.MissionInfoViewModel.DetailDefectList.AetDetailDefects.FirstOrDefault();
+                    _viewModel.DetailDefectList.SelectedItem = _viewModel.DetailDefectList.AetDetailDefects.FirstOrDefault();
                 }
-                _viewModel.MissionInfoViewModel.InspImage.refreshPage = 0;
-                _viewModel.MissionInfoViewModel.InspImage.RefreshImageMethod();
+                _viewModel.InspImage.refreshPage = 0;
+                _viewModel.InspImage.RefreshImageMethod();
             }
         }
 
@@ -72,29 +72,36 @@ namespace EyeOfSauron.MyUserControl
 
         private new void KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+
+        }
+
+        private new void KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+
+        }
+
+        private void UserControl_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
             switch (e.Key)
             {
                 case System.Windows.Input.Key.Enter:
                 case System.Windows.Input.Key.Space:
                     e.Handled = true;
                     break;
-                case System.Windows.Input.Key.Tab:
-                    _viewModel.MissionInfoViewModel.InspImage.RefreshImageMethod();
-                    break;
                 case System.Windows.Input.Key.LeftCtrl:
-                    _viewModel.MissionInfoViewModel.InspImage.IsVisible = true;
+                    _viewModel.InspImage.ImageLableIsVisible = true;
                     break;
                 default:
                     break;
             }
         }
 
-        private new void KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        private void UserControl_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             switch (e.Key)
             {
                 case System.Windows.Input.Key.LeftCtrl:
-                    _viewModel.MissionInfoViewModel.InspImage.IsVisible = false;
+                    _viewModel.InspImage.ImageLableIsVisible = false;
                     break;
                 default:
                     break;

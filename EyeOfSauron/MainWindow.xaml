@@ -10,7 +10,7 @@
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:uc="clr-namespace:EyeOfSauron.MyUserControl"
     xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
-    Title="Material Design in XAML"
+    Title="Eye of sauron"
     Width="1400"
     Height="800"
     MinWidth="800"
@@ -25,7 +25,8 @@
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     WindowStartupLocation="CenterScreen"
     WindowState="Maximized"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    KeyDown="Window_KeyDown">
     <Window.CommandBindings>
         <CommandBinding Command="Copy" Executed="OnCopy" />
     </Window.CommandBindings>
@@ -60,76 +61,63 @@
             </materialDesign:DrawerHost.RightDrawerContent>
             <DockPanel>
                 <materialDesign:ColorZone
-                    Padding="16"
+                    Padding="12"
                     materialDesign:ShadowAssist.ShadowDepth="Depth2"
                     DockPanel.Dock="Top"
                     Mode="PrimaryMid">
                     <DockPanel>
                         <StackPanel Orientation="Horizontal">
+                            <Button
+                                Margin="16,0,0,0"
+                                materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
+                                Click="LoginButtonClick"
+                                Content="{materialDesign:PackIcon Kind=Account,
+                                                                  Size=24}"
+                                Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
+                                Style="{StaticResource MaterialDesignToolButton}"
+                                ToolTip="Login" />
+                            <materialDesign:Chip
+                                Content="{Binding UserInfo.User.Username,FallbackValue=UserName}"
+                                Click="LoginButtonClick"
+                                Icon="{Binding UserInfo.User.Account,FallbackValue=U}"
+                                IconBackground="{DynamicResource PrimaryHueLightBrush}"
+                                IconForeground="{DynamicResource PrimaryHueLightForegroundBrush}" />
                             <materialDesign:PopupBox
                                 DockPanel.Dock="Left"
                                 PlacementMode="BottomAndAlignRightEdges"
                                 StaysOpen="False">
                                 <StackPanel>
-                                    <Grid Margin="10">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                        </Grid.RowDefinitions>
-                                        <TextBlock Margin="0,0,10,0" Text="Light" />
-                                        <ToggleButton
-                                            x:Name="DarkModeToggleButton"
-                                            Grid.Column="1"
-                                            Click="MenuDarkModeButton_Click" />
-                                        <TextBlock
-                                            Grid.Column="2"
-                                            Margin="10,0,0,0"
-                                            Text="Dark" />
-                                    </Grid>
-
-                                    <Separator />
-
-                                    <Button Click="MenuPopupButton_OnClick" Content="Hello World" />
-
-                                    <Button Click="MenuPopupButton_OnClick" Content="Nice Popup" />
-
-                                    <Button Content="Can't Touch This" IsEnabled="False" />
-
-                                    <Separator />
-
-                                    <Button Click="MenuPopupButton_OnClick" Content="Goodbye" />
+                                    <Button
+                                        HorizontalAlignment="Center"
+                                        Click="LoginButtonClick"
+                                        Content="{materialDesign:PackIcon Kind=AccountCircle}"
+                                        ToolTip="User Change" />
+                                    <Button
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding EndInspCommand}"
+                                        Content="{materialDesign:PackIcon Kind=Logout}"
+                                        ToolTip="Logout" />
                                 </StackPanel>
                             </materialDesign:PopupBox>
 
-                            <Button
-                                Margin="16,0,0,0"
-                                materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
-                                Click="LoginButtonClick"
-                                Content="{materialDesign:PackIcon Kind=Home,
-                                                                  Size=24}"
-                                Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
-                                Style="{StaticResource MaterialDesignToolButton}"
-                                ToolTip="Home" />
+                            <Label
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Center"
+                                Content="{Binding InspImageView.DataContext.PanelId,FallbackValue={}}"
+                                FontSize="16"
+                                ToolTip="Double Click to Copy"
+                                MouseDoubleClick="PanelidLableMouseDoubleClick" />
 
-                            <Border>
-                                <Label
-                                    VerticalAlignment="Center"
-                                    HorizontalContentAlignment="Center"
-                                    Content="{Binding InspImageView.DataContext.MissionInfoViewModel.PanelId}"
-                                    FontSize="16"
-                                    MouseDoubleClick="PanelidLableMouseDoubleClick" />
-                            </Border>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="24"
+                                Text="{Binding DateTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" />
                         </StackPanel>
 
                         <ToggleButton
                             x:Name="MenuToggleButton"
                             AutomationProperties.Name="HamburgerToggleButton"
-                            Click="MenuToggleButton_OnClick"
+                            Click="ColorToolToggleButton_OnClick"
                             DockPanel.Dock="Right"
                             IsChecked="False"
                             Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
@@ -137,7 +125,7 @@
                         <materialDesign:Badged
                             x:Name="EndInspButton"
                             Margin="16,0,20,0"
-                            Badge="{Binding InspImageView.DataContext.MissionInfoViewModel.RemainingCount}"
+                            Badge="{Binding InspImageView.DataContext.RemainingCount,FallbackValue=0}"
                             BadgeColorZoneMode="PrimaryLight"
                             DockPanel.Dock="Right"
                             Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}">
@@ -170,7 +158,7 @@
                 </materialDesign:ColorZone>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -184,13 +172,14 @@
                     </ScrollViewer>
                     <Viewbox
                         x:Name="DefectJudgeViewbox"
-                        Grid.Column="1"
+                        Grid.Column="2"
                         Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}">
                         <ContentPresenter Content="{Binding DefectJudgeView}" />
                     </Viewbox>
                     <materialDesign:Snackbar
                         x:Name="MainSnackbar"
-                        VerticalAlignment="Top"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
                         MessageQueue="{materialDesign:MessageQueue}" />
                 </Grid>
             </DockPanel>

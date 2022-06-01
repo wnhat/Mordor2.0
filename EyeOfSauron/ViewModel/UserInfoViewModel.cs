@@ -15,11 +15,16 @@ namespace EyeOfSauron.ViewModel
 {
     public class UserInfoViewModel : ViewModelBase
     {
-        private User user;
+        private User? user;
 
         public UserInfoViewModel()
         {
-            user = new User();
+            
+        }
+        
+        public UserInfoViewModel(User user)
+        {
+            this.user = user;
         }
 
         public User User
@@ -51,16 +56,26 @@ namespace EyeOfSauron.ViewModel
             }
         }
 
-        public bool UserExist()
+        //public bool UserExist()
+        //{
+        //    if (user != null)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        public bool UserExist
         {
-            if (user != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            get => user != null;
+        }
+
+        public void Logout()
+        {
+            user = null;
         }
 
         private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)

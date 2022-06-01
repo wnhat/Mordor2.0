@@ -12,40 +12,40 @@ namespace EyeOfSauron.ViewModel
         public MainWindowViewModel(UserInfoViewModel userInfoViewModel):this()
         {
             UserInfo = userInfoViewModel;
-            ProductSelectView = new();
-            InspImageView = new();
-            MainContent = ProductSelectView;
-            OnShowView = ViewName.ProductSelectView;      
         }
         
         public MainWindowViewModel()
         {
-            ColorToolView = new DemoItem("Color Tool", typeof(ColorTool));
-            DefectJudgeView = new();
-            MainContent = new();
-            ColorTool = new();
-            OnShowView = ViewName.Null;
+            //ColorToolView = new DemoItem("Color Tool", typeof(ColorTool));
+            MainContent = ProductSelectView;
             DefectJudgeView.DefectJudgeEvent += new DefectJudgeView.ValuePassHandler(DefectJudge);
             StartInspCommand = new CommandImplementation(StartInsp);
             EndInspCommand = new CommandImplementation(_ => EndInsp());
         }
 
-        private UserInfoViewModel? userInfo;
-        private DemoItem? colorToolView;
-        private ProductSelectView? productSelectView;
-        private InspImageView? inspImageView;
-        private DefectJudgeView? defectJudgeView;
-        private UserControl? mainContent;
-        private ColorTool? colorTool;
-        
-        private ViewName onShowView;
+        private UserInfoViewModel userInfo = new();
+        //private DemoItem? colorToolView;
+        private ProductSelectView productSelectView = new ();
+        private InspImageView? inspImageView = new ();
+        private DefectJudgeView defectJudgeView = new();
+        private UserControl mainContent = new();
+        private ColorTool? colorTool = new();
+        private DateTime dateTime = DateTime.Now;
+        private ViewName onShowView = ViewName.ProductSelectView;
         public CommandImplementation StartInspCommand { get; }
+        
         public CommandImplementation EndInspCommand { get; }
 
         public ViewName OnShowView
         {
             get => onShowView;
             set => SetProperty(ref onShowView, value);
+        }
+
+        public DateTime DateTime
+        {
+            get => dateTime;
+            set => SetProperty(ref dateTime, value);
         }
 
         public DefectJudgeView DefectJudgeView
@@ -84,11 +84,11 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref userInfo, value);
         }
 
-        public DemoItem? ColorToolView
-        {
-            get => colorToolView;
-            set => SetProperty(ref colorToolView, value);
-        }
+        //public DemoItem? ColorToolView
+        //{
+        //    get => colorToolView;
+        //    set => SetProperty(ref colorToolView, value);
+        //}
 
         public void SetInspView()
         {
@@ -104,26 +104,35 @@ namespace EyeOfSauron.ViewModel
 
         private void StartInsp(object o)
         {
-            if(o is ProductInfo)
+            if (UserInfo.UserExist)
             {
-                SetInspView();
-                var productInfo = o as ProductInfo;
-                try
+                if (o is ProductInfo && o != null)
                 {
-                    Mission mission = new(productInfo);
-                    InspImageView.SetMission(mission);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    ProductSelectView.GetMissions();
-                    SetProductSelectView();
+                    SetInspView();
+                    var productInfo = o as ProductInfo;
+                    try
+                    {
+                        Mission mission = new(productInfo);
+                        InspImageView.SetMission(mission);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        ProductSelectView.GetMissions();
+                        SetProductSelectView();
+                    }
                 }
             }
+            else
+            {
+                MessageBox.Show("Please login first!");
+            }
+            
         }
         
         private void EndInsp()
         {
+            UserInfo.Logout();
             ProductSelectView.GetMissions();
             SetProductSelectView();
         }

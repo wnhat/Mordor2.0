@@ -22,8 +22,7 @@
     WindowStartupLocation="CenterScreen"
     WindowState="Normal"
     WindowStyle="ThreeDBorderWindow"
-    mc:Ignorable="d"
-    Closed="LoginWindow_Closed">
+    mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>

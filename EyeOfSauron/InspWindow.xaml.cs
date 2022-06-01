@@ -97,7 +97,7 @@ namespace EyeOfSauron
                     _viewModel.MissionInfoViewModel.InspImage.RefreshImageMethod();
                     break;
                 case System.Windows.Input.Key.LeftCtrl:
-                    _viewModel.MissionInfoViewModel.InspImage.IsVisible = true;
+                    _viewModel.MissionInfoViewModel.InspImage.ImageLableIsVisible = true;
                     break;
                 default:
                     break;
@@ -109,7 +109,7 @@ namespace EyeOfSauron
             switch (e.Key)
             {
                 case System.Windows.Input.Key.LeftCtrl:
-                    _viewModel.MissionInfoViewModel.InspImage.IsVisible = false;
+                    _viewModel.MissionInfoViewModel.InspImage.ImageLableIsVisible = false;
                     break;
                 default:
                     break;

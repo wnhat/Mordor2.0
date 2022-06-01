@@ -9,7 +9,7 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="MyUserControl\InspWindows.xaml.cs">
+    <Compile Update="MyUserControl\InspImageView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="MyUserControl\DefectJudgeView.xaml.cs">
@@ -26,7 +26,7 @@
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="MyUserControl\InspWindows.xaml">
+    <Page Update="MyUserControl\InspImageView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="InspWindow.xaml">

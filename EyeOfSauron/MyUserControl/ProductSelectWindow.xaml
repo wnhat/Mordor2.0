@@ -8,7 +8,6 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
-
     d:DataContext="{d:DesignInstance Type=viewModel:ProductViewModel}"
     Background="{DynamicResource MaterialDesignPaper}"
     mc:Ignorable="d">
@@ -92,7 +91,9 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="RefreshButton_Click"
-            Content="{Binding SelectedProductCardViewModel.ProductInfo.Key.Name}" />
+            Style="{StaticResource MaterialDesignRaisedLightButton}" 
+            ToolTip="Refresh Mission"
+            Content="{materialDesign:PackIcon Kind=DatabaseRefreshOutline,Size=120 }" />
     </WrapPanel>
 
 </UserControl>

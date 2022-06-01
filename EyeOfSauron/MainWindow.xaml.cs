@@ -32,19 +32,16 @@ namespace EyeOfSauron
                 //need to get the message queue from the snackbar, so need to be on the dispatcher
                 MainSnackbar.MessageQueue?.Enqueue("Welcome Login to Eye of Sauron");
             }, TaskScheduler.FromCurrentSynchronizationContext());
-            var paletteHelper = new PaletteHelper();
-            var theme = paletteHelper.GetTheme();
-            DarkModeToggleButton.IsChecked = theme.GetBaseTheme() == BaseTheme.Dark;
-            if (paletteHelper.GetThemeManager() is { } themeManager)
-            {
-                themeManager.ThemeChanged += (_, e)
-                    => DarkModeToggleButton.IsChecked = e.NewTheme?.GetBaseTheme() == BaseTheme.Dark;
-            }
+            //var paletteHelper = new PaletteHelper();
+            //var theme = paletteHelper.GetTheme();
+            //DarkModeToggleButton.IsChecked = theme.GetBaseTheme() == BaseTheme.Dark;
+            //if (paletteHelper.GetThemeManager() is { } themeManager)
+            //{
+            //    themeManager.ThemeChanged += (_, e)
+            //        => DarkModeToggleButton.IsChecked = e.NewTheme?.GetBaseTheme() == BaseTheme.Dark;
+            //}
             Snackbar = MainSnackbar;
             loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
-            StartInspButton.Visibility = Visibility.Collapsed;
-            EndInspButton.Visibility = Visibility.Collapsed;
-            DefectJudgeViewbox.Visibility = Visibility.Collapsed;
         }
 
         private void AccountAuthenticate(object sender, AccountAuthenticateEventArgs arges)
@@ -52,8 +49,7 @@ namespace EyeOfSauron
             switch (arges.Result)
             {
                 case AuthenticateResult.Success:
-                    viewModel = new(arges.UserInfoViewModel);
-                    DataContext = viewModel;
+                    viewModel.UserInfo.User = arges.User;
                     loginWindow.Close();
                     break;
                 case AuthenticateResult.EmptyInput:
@@ -94,11 +90,11 @@ namespace EyeOfSauron
             }
         }
 
-        private void MenuToggleButton_OnClick(object sender, RoutedEventArgs e) 
+        private void ColorToolToggleButton_OnClick(object sender, RoutedEventArgs e) 
             => MainScrollViewer.Focus();
 
-        private void MenuDarkModeButton_Click(object sender, RoutedEventArgs e) 
-            => ModifyTheme(DarkModeToggleButton.IsChecked == true);
+        //private void MenuDarkModeButton_Click(object sender, RoutedEventArgs e) 
+        //    => ModifyTheme(DarkModeToggleButton.IsChecked == true);
 
         private static void ModifyTheme(bool isDarkTheme)
         {
@@ -116,19 +112,9 @@ namespace EyeOfSauron
             e.Handled = true;
         }
 
-        private void EndInspButtonClick(object sender, RoutedEventArgs e)
-        {
-            viewModel.ProductSelectView.GetMissions();
-            viewModel.SetProductSelectView();
-        }
-
         private void LoginButtonClick(object sender, RoutedEventArgs e)
         {
-            if (!loginWindow.IsClosed)
-            {
-                loginWindow.ShowDialog();
-            }
-            else
+            if (!viewModel.UserInfo.UserExist)
             {
                 loginWindow = new();
                 loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
@@ -152,6 +138,19 @@ namespace EyeOfSauron
         {
             Defect defect = e.Defect;
             viewModel.InspImageView.DefectJudge(defect, viewModel.UserInfo.User);
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Enter:
+                case Key.Space:
+                    e.Handled = true;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
