@@ -23,31 +23,38 @@
     WindowState="Normal"
     WindowStyle="ThreeDBorderWindow"
     mc:Ignorable="d">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <StackPanel Margin="60,100,60,130">
-            <StackPanel Width="350" Orientation="Horizontal">
-                <Button
-                    Grid.Column="0"
-                    Width="30"
-                    Height="30"
-                    Margin="0,0,5,0"
-                    Padding="0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
-                    materialDesign:ShadowAssist.ShadowDepth="Depth1"
-                    Background="{x:Null}"
-                    BorderBrush="{x:Null}"
-                    Content="{materialDesign:PackIcon Kind=Account,
-                                                      Size=30}"
-                    Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
-                    IsEnabled="False"
-                    Style="{StaticResource MaterialDesignToolButton}">
+    <materialDesign:DialogHost DialogTheme="Inherit" Identifier="AnotherDialog">
+        <materialDesign:DrawerHost>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="1">
+                    <StackPanel Width="350" Orientation="Horizontal">
+                        <Button
+                            Grid.Column="0"
+                            Width="30"
+                            Height="30"
+                            Margin="0,0,5,0"
+                            Padding="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                            Background="{x:Null}"
+                            BorderBrush="{x:Null}"
+                            Content="{materialDesign:PackIcon Kind=Account,
+                                                              Size=30}"
+                            Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
+                            IsEnabled="False"
+                            Style="{StaticResource MaterialDesignToolButton}">
 
-                    <!--<Viewbox Width="30" Height="30">
+                            <!--<Viewbox Width="30" Height="30">
                         <Canvas Width="24" Height="24">
                             <Path
                                 Data="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
@@ -55,70 +62,75 @@
                                 RenderTransformOrigin="0.475,0.469" />
                         </Canvas>
                     </Viewbox>-->
-                </Button>
-                <TextBox
-                    x:Name="userNameTextBox"
-                    Grid.Column="1"
-                    Width="300"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    materialDesign:HintAssist.Hint="Account"
-                    AcceptsReturn="True"
-                    Style="{StaticResource MaterialDesignFilledTextBox}"
-                    TextWrapping="Wrap" />
-            </StackPanel>
-            <StackPanel
-                Width="350"
-                Margin="0,20,0,0"
-                Orientation="Horizontal">
+                        </Button>
+                        <TextBox
+                            x:Name="userNameTextBox"
+                            Grid.Column="1"
+                            Width="300"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            materialDesign:HintAssist.Hint="Account"
+                            Style="{StaticResource MaterialDesignFilledTextBox}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                    <StackPanel
+                        Width="350"
+                        Margin="0,20,0,0"
+                        Orientation="Horizontal">
+                        <Button
+                            Grid.Column="0"
+                            Width="30"
+                            Height="30"
+                            Margin="0,0,5,0"
+                            Padding="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                            Background="{x:Null}"
+                            BorderBrush="{x:Null}"
+                            Content="{materialDesign:PackIcon Kind=Key,
+                                                              Size=30}"
+                            Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
+                            IsEnabled="False"
+                            Style="{StaticResource MaterialDesignToolButton}" />
+                        <PasswordBox
+                            x:Name="passwordTextBox"
+                            Grid.Column="1"
+                            Width="300"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            materialDesign:HintAssist.Hint="Password"
+                            Style="{StaticResource MaterialDesignFilledPasswordBox}" />
+                    </StackPanel>
+                </StackPanel>
                 <Button
-                    Grid.Column="0"
-                    Width="30"
-                    Height="30"
-                    Margin="0,0,5,0"
-                    Padding="0"
+                    Grid.Row="2"
+                    Width="80"
+                    Height="40"
+                    Margin="0,60,0,0"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
-                    materialDesign:ShadowAssist.ShadowDepth="Depth1"
-                    Background="{x:Null}"
-                    BorderBrush="{x:Null}"
-                    Content="{materialDesign:PackIcon Kind=Key,
-                                                      Size=30}"
-                    Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
-                    IsEnabled="False"
-                    Style="{StaticResource MaterialDesignToolButton}">
-                    <!--<Viewbox Width="30" Height="30">
-                        <Canvas Width="24" Height="24">
-                            <Path Data="M7 14C5.9 14 5 13.1 5 12S5.9 10 7 10 9 10.9 9 12 8.1 14 7 14M12.6 10C11.8 7.7 9.6 6 7 6C3.7 6 1 8.7 1 12S3.7 18 7 18C9.6 18 11.8 16.3 12.6 14H16V18H20V14H23V10H12.6Z" Fill="#FF00838F" />
-                        </Canvas>
-                    </Viewbox>-->
-                </Button>
-                <PasswordBox
-                    x:Name="passwordTextBox"
-                    Grid.Column="1"
-                    Width="300"
+                    VerticalAlignment="Top"
+                    materialDesign:ButtonAssist.CornerRadius="5"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                    Background="{DynamicResource PrimaryHueMidBrush}"
+                    Click="LoginButtonClick"
+                    Content="LOGIN"
+                    Focusable="False"
+                    FontFamily="Tahoma"
+                    FontSize="12"
+                    FontStyle="Normal"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                <Button
+                    Width="80"
+                    Height="40"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    materialDesign:HintAssist.Hint="Password"
-                    Style="{StaticResource MaterialDesignFilledPasswordBox}" />
-            </StackPanel>
-        </StackPanel>
-        <Button
-            Width="80"
-            Height="40"
-            Margin="0,270,0,0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            materialDesign:ButtonAssist.CornerRadius="5"
-            materialDesign:ShadowAssist.ShadowDepth="Depth2"
-            Background="{DynamicResource PrimaryHueMidBrush}"
-            Click="LoginButtonClick"
-            Content="LOGIN"
-            FontFamily="Tahoma"
-            FontSize="12"
-            FontStyle="Normal"
-            FontWeight="Bold"
-            Foreground="{DynamicResource PrimaryHueMidForegroundBrush}" />
-    </Grid>
+                    Content="登录"
+                    IsDefault="True"
+                    Style="{StaticResource MaterialDesignFlatButton}" />
+            </Grid>
+        </materialDesign:DrawerHost>
+    </materialDesign:DialogHost>
+
 </Window>

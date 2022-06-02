@@ -1,17 +1,10 @@
-﻿using System;
-using System.Windows;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MongoDB.Driver;
-using CoreClass;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using CoreClass.Model;
 
 namespace EyeOfSauron.ViewModel
 {
-    
+
     public class ProductViewModel : ViewModelBase
     {
         public UserInfoViewModel userInfoViewModel = new();

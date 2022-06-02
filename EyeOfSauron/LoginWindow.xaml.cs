@@ -2,7 +2,8 @@
 using System.Windows;
 using EyeOfSauron.ViewModel;
 using CoreClass.Model;
-
+using MaterialDesignThemes.Wpf;
+using EyeOfSauron.MyUserControl;
 
 namespace EyeOfSauron
 {
@@ -24,20 +25,33 @@ namespace EyeOfSauron
         
         private void LoginButtonClick(object sender, RoutedEventArgs e)
         {
-            AuthenticateResult authenticateResult = _viewModel.Authenticate(userNameTextBox.Text, passwordTextBox.Password);
-            AccountAuthenticateEventArgs arges = new(authenticateResult, _viewModel.User);
-            AccountAuthenticateEvent?.Invoke(this, arges);
+            var authenticateResult = _viewModel.Authenticate(userNameTextBox.Text, passwordTextBox.Password);
+            switch (authenticateResult)
+            {
+                case AuthenticateResult.Success:
+                    AccountAuthenticateEventArgs arges = new(_viewModel.User);
+                    AccountAuthenticateEvent?.Invoke(this, arges);
+                    break;
+                case AuthenticateResult.EmptyInput:
+                    break;
+                case AuthenticateResult.AccountNotExist:
+                    DialogHost.Show(new SampleMessageDialog { Message = { Text = "用户不存在" } }, "AnotherDialog");
+                    break;
+                case AuthenticateResult.PasswordError:
+                    DialogHost.Show(new SampleMessageDialog { Message = { Text = "密码错误" } }, "AnotherDialog");
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
     public class AccountAuthenticateEventArgs : EventArgs
     {
-        public AuthenticateResult Result { get; set; }
         public User User { get; set; }
 
-        public AccountAuthenticateEventArgs(AuthenticateResult result, User user)
+        public AccountAuthenticateEventArgs(User user)
         {
-            Result = result;
             this.User = user;
         }
     }

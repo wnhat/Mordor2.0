@@ -24,4 +24,11 @@
     <ProjectReference Include="..\CoreClass\CoreClass.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Update="MyUserControl\ProgressMessageDialog.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>

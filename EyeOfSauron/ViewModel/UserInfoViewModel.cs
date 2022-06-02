@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using MongoDB.Driver;
-using MongoDB.Bson.Serialization.Attributes;
 using System.Security.Cryptography;
-using System.Drawing;
-using System.Drawing.Imaging;
 using CoreClass;
 using CoreClass.Model;
 
@@ -17,11 +12,8 @@ namespace EyeOfSauron.ViewModel
     {
         private User? user;
 
-        public UserInfoViewModel()
-        {
-            
-        }
-        
+        public UserInfoViewModel() { }
+
         public UserInfoViewModel(User user)
         {
             this.user = user;
@@ -55,18 +47,6 @@ namespace EyeOfSauron.ViewModel
                 return AuthenticateResult.Success;
             }
         }
-
-        //public bool UserExist()
-        //{
-        //    if (user != null)
-        //    {
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
 
         public bool UserExist
         {

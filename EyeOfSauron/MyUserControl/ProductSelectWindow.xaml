@@ -95,5 +95,4 @@
             ToolTip="Refresh Mission"
             Content="{materialDesign:PackIcon Kind=DatabaseRefreshOutline,Size=120 }" />
     </WrapPanel>
-
 </UserControl>

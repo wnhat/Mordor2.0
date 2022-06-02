@@ -13,6 +13,9 @@ namespace EyeOfSauron.MyUserControl
     /// </summary>
     public partial class InspImageView : UserControl
     {
+        public delegate void ValuePassHandler(object sender, DefectJudgeArgs e);
+        public event ValuePassHandler? DefectJudgeEvent;
+        
         public Mission? mission;
 
         private readonly MissionInfoViewModel _viewModel;
@@ -32,9 +35,12 @@ namespace EyeOfSauron.MyUserControl
             mission.FillPreDownloadMissionQueue();
         }
 
+        /// <summary>
+        /// Load one panelmission to InspImageViewModel and refresh the view;
+        /// </summary>
         public async void LoadOnInspPanelMission()
         {
-            if (mission.onInspPanelMission != null)
+            if (mission?.onInspPanelMission != null)
             {
                 _viewModel.RemainingCount = await mission.RemainMissionCount();
                 _viewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
@@ -56,30 +62,26 @@ namespace EyeOfSauron.MyUserControl
             }
         }
 
-        public void DefectJudge(Defect defect,User user)
+        /// <summary>
+        /// Get next mission after a mission is finished;
+        /// </summary>
+        /// <returns>
+        /// True if the mission have next panelmission, false if the mission is empty;
+        /// </returns>
+        public bool GetNextMission()
         {
-            SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, user.Username, user.Account, user.Id, 1), mission.onInspPanelMission.inspectMission);
             mission.FillPreDownloadMissionQueue();
-            if (!mission.NextMission())
+            if (mission.NextMission())
             {
-                MessageBox.Show("There is no mission left.");
+                LoadOnInspPanelMission();
+                return true;
             }
             else
             {
-                LoadOnInspPanelMission();
+                return false;
             }
         }
-
-        private new void KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-
-        }
-
-        private new void KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-
-        }
-
+        
         private void UserControl_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             switch (e.Key)

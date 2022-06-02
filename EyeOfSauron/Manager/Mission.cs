@@ -112,25 +112,6 @@ namespace EyeOfSauron
             }
             return 0;
         }
-
-        //public static bool PreJudge(ref InspectMission mission, ref PanelInspectHistory aetResult)
-        //{
-        //    Defect defect = new("defactName", "defectCode");
-        //    if (true)
-        //    {
-        //        return false;
-        //    }
-        //    else
-        //    {
-        //        SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, User.AutoJudgeUser.Id, 1), mission);
-        //        return true;
-        //    }
-        //}
-
-        //public static void SendOpJudgeResult(Defect defect, User user, int score, InspectMission inspectMission)
-        //{
-        //    SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, user.Username, user.Account, user.Id, score), inspectMission);
-        //}
     }
 
     public class PanelMission
@@ -141,7 +122,7 @@ namespace EyeOfSauron
 
         public List<BitmapImageContainer> bitmapImageContainers = new();
 
-        public BitmapImageContainer? ContoursImageContainer;
+        public BitmapImageContainer ContoursImageContainer = new(new ImageContainer());
 
         public InspectMission inspectMission;
 
@@ -156,19 +137,15 @@ namespace EyeOfSauron
             InitialContoursImage();
         }
 
-        private void InitialContoursImage()
+        public PanelMission(InspectMission mission, AETresult result) : this(mission)
         {
-            DetailDefectContours defect = new DetailDefectContours(aetResult.AviContours, aetResult.SviContours);
-            ContoursImageContainer = new(defect.GetImageContainer());
+            aetResult = result;
         }
 
-        public PanelMission(InspectMission mission, AETresult result)
+        private void InitialContoursImage()
         {
-            inspectMission = mission;
-            aetResult = result;
-            IniResultImageDataList(aetResult.ResultImages);
-            IniDefectImageDataList(aetResult.DefectImages);
-            InitialContoursImage();
+            DetailDefectContours defect = new(aetResult.AviContours, aetResult.SviContours);
+            ContoursImageContainer = new(defect.GetImageContainer());
         }
 
         public void IniResultImageDataList(ImageContainer[] ResultImages)

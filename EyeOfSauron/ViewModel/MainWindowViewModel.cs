@@ -3,6 +3,7 @@ using EyeOfSauron.MyUserControl;
 using CoreClass.Model;
 using System;
 using System.Windows;
+using MaterialDesignThemes.Wpf;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -26,14 +27,13 @@ namespace EyeOfSauron.ViewModel
         private UserInfoViewModel userInfo = new();
         //private DemoItem? colorToolView;
         private ProductSelectView productSelectView = new ();
-        private InspImageView? inspImageView = new ();
+        private InspImageView inspImageView = new ();
         private DefectJudgeView defectJudgeView = new();
         private UserControl mainContent = new();
-        private ColorTool? colorTool = new();
+        private ColorTool colorTool = new();
         private DateTime dateTime = DateTime.Now;
         private ViewName onShowView = ViewName.ProductSelectView;
         public CommandImplementation StartInspCommand { get; }
-        
         public CommandImplementation EndInspCommand { get; }
 
         public ViewName OnShowView
@@ -140,7 +140,18 @@ namespace EyeOfSauron.ViewModel
         private void DefectJudge(object sender, DefectJudgeArgs e)
         {
             Defect defect = e.Defect;
-            InspImageView.DefectJudge(defect, UserInfo.User);
+            bool SeverConnectState = SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, UserInfo.User.Username, UserInfo.User.Account, UserInfo.User.Id, 1), InspImageView.mission.onInspPanelMission.inspectMission);
+            if (SeverConnectState)
+            {
+                if (InspImageView.GetNextMission())
+                {
+                    DialogHost.Show(new SampleMessageDialog { Message = { Text = "There is no mission left" } }, "MainDialog");
+                }
+            }
+            else
+            {
+                DialogHost.Show(new ProgressMessageDialog(), "RootDialog");
+            }
         }
     }
     public enum ViewName

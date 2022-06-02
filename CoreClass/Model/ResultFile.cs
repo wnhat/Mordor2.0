@@ -271,6 +271,14 @@ namespace CoreClass.Model
             Name = name;
             Data = data;
         }
+
+        public static ImageContainer GetDefult
+        {
+            get
+            {
+                return new ImageContainer("None", Array.Empty<byte>());
+            }
+        }
     }
     public class DefectInfo
     {
