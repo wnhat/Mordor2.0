@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CoreClass.Model
 {
-    public struct Coordinate
+    public class Coordinate
     {
         public int X;
         public int Y;

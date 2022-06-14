@@ -4,20 +4,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Converter="clr-namespace:EyeOfSauron.Converter"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:domain="clr-namespace:EyeOfSauron.ViewModel"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:uc="clr-namespace:EyeOfSauron.MyUserControl"
     xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
     Title="Eye of sauron"
-    Width="1400"
-    Height="800"
+    Width="1600"
+    Height="1080"
     MinWidth="800"
     MinHeight="500"
     MaxWidth="3840"
     MaxHeight="2560"
-    d:DataContext="{d:DesignInstance domain:MainWindowViewModel}"
+    d:DataContext="{d:DesignInstance viewModel:MainWindowViewModel}"
     AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource Self}}"
     Background="{DynamicResource MaterialDesignPaper}"
     Closing="Window_Closing"
@@ -35,6 +34,7 @@
         <ResourceDictionary>
             <Converter:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
             <Converter:InverseEnumToVisibilityConverter x:Key="InverseEnumToVisibilityConverter" />
+            <Converter:EnumToStretchConverter x:Key="EnumToStretchConverter"/>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -101,17 +101,18 @@
                                 </StackPanel>
                             </materialDesign:PopupBox>
 
-                            <Label
+                            <Button
                                 VerticalAlignment="Center"
                                 HorizontalContentAlignment="Center"
                                 Content="{Binding InspImageView.DataContext.PanelId, FallbackValue={}}"
-                                FontSize="16"
                                 MouseDoubleClick="PanelidLableMouseDoubleClick"
-                                ToolTip="Double Click to Copy" />
+                                Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                                ToolTip="Double Click to Copy"
+                                Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}" />
 
                             <TextBlock
                                 VerticalAlignment="Center"
-                                FontSize="24"
+                                FontSize="14"
                                 Text="{Binding DateTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" />
                         </StackPanel>
 
@@ -126,6 +127,8 @@
                         <materialDesign:Badged
                             x:Name="EndInspButton"
                             Margin="16,0,20,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
                             Badge="{Binding InspImageView.DataContext.RemainingCount, FallbackValue=0}"
                             BadgeColorZoneMode="PrimaryLight"
                             DockPanel.Dock="Right"
@@ -139,6 +142,8 @@
                         <materialDesign:Badged
                             x:Name="StartInspButton"
                             Margin="16,0,20,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
                             Badge="{Binding ProductSelectView.DataContext.SelectedProductCardViewModel.ProductInfo.Value}"
                             DockPanel.Dock="Right"
                             Visibility="{Binding OnShowView, Converter={StaticResource EnumToVisibilityConverter}, Mode=TwoWay}">
@@ -149,11 +154,12 @@
                                 Style="{StaticResource MaterialDesignRaisedLightButton}" />
                         </materialDesign:Badged>
 
-                        <TextBlock
+                        <Button
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
+                            Content="{Binding ProductSelectView.DataContext.SelectedProductCardViewModel.ProductInfo.Key.Name}"
                             DockPanel.Dock="Right"
-                            Text="{Binding ProductSelectView.DataContext.SelectedProductCardViewModel.ProductInfo.Key.Name}" />
+                            Style="{StaticResource MaterialDesignFlatLightBgButton}" />
                         <TextBlock Text="" />
                     </DockPanel>
                 </materialDesign:ColorZone>
@@ -165,12 +171,13 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <ScrollViewer
+                    <Viewbox
+                        Stretch="{Binding OnShowView, Converter={StaticResource EnumToStretchConverter}}"
                         x:Name="MainScrollViewer"
                         Grid.Column="0"
                         materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True">
                         <ContentPresenter Content="{Binding MainContent}" />
-                    </ScrollViewer>
+                    </Viewbox>
                     <Viewbox
                         x:Name="DefectJudgeViewbox"
                         Grid.Column="2"

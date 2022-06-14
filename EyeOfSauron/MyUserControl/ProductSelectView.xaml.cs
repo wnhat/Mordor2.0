@@ -31,16 +31,16 @@ namespace EyeOfSauron.MyUserControl
         }
 
         /// <summary>
-        /// Get all missions to set viewmodel from database
+        /// Get all missions to set viewmodel from database;
         /// </summary>
         public async void GetMissions()
         {
-            // get the remain mission count to set viewmodel
+            // Get the remaining mission quantity to set viewmodel;
             _viewModel.ProductInfos.Clear();
             var remainMissionCount = await RemainService.GetRemainMissionCount();
             foreach (var item in remainMissionCount)
             {
-                // convert the first BsonElement in the item to ProductInfo;
+                // Convert the first BsonElement in the item to ProductInfo;
                 var buffer = item.GetValue("_id").AsObjectId;
                 var productInfo = new ProductInfoService().GetProductInfo(buffer).Result;
                 int count = item.GetValue("count").ToInt32();
@@ -54,19 +54,13 @@ namespace EyeOfSauron.MyUserControl
 
         private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)
         {
-            SetSelectProductInfo(sender, e);
+            ProductCardViewModel viewModel = ((Button)sender).DataContext as ProductCardViewModel;
+            _viewModel.SelectedProductCardViewModel = viewModel;
         }
 
-        //for test, will be removed later;
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             GetMissions();
-        }
-
-        private void SetSelectProductInfo(object sender, RoutedEventArgs e)
-        {
-            ProductCardViewModel viewModel = ((Button)sender).DataContext as ProductCardViewModel;
-            _viewModel.SelectedProductCardViewModel = viewModel;
         }
     }
 }

@@ -137,7 +137,6 @@ namespace EyeOfSauron.ViewModel
         }
     }
 
-    //This class shoudl be rewrite;
     public sealed class DefectListViewModel : ViewModelBase
     {
         private AetDetailDefect? selectedItem;

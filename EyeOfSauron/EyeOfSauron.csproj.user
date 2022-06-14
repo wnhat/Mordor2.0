@@ -15,7 +15,13 @@
     <Compile Update="MyUserControl\DefectJudgeView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="MyUserControl\ProductSelectWindow.xaml.cs">
+    <Compile Update="MyUserControl\PanelListView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="MyUserControl\ProductSelectView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="SampleManager.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -35,10 +41,19 @@
     <Page Update="MyUserControl\DefectJudgeView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="MyUserControl\ProductSelectWindow.xaml">
+    <Page Update="MyUserControl\PanelListView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MyUserControl\ProductSelectView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MyUserControl\ProgressMessageDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MyUserControl\AcceptCancelDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="SampleManager.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="ViewModel\DocumentationLinks.xaml">

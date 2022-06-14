@@ -14,11 +14,11 @@ namespace EyeOfSauron.MyUserControl
     public partial class InspImageView : UserControl
     {
         public delegate void ValuePassHandler(object sender, DefectJudgeArgs e);
-        public event ValuePassHandler? DefectJudgeEvent;
+        //public event ValuePassHandler? DefectJudgeEvent;
         
-        public Mission? mission;
+        //public Mission? mission;
 
-        private readonly MissionInfoViewModel _viewModel;
+        public readonly MissionInfoViewModel _viewModel;
 
         public InspImageView()
         {
@@ -27,60 +27,51 @@ namespace EyeOfSauron.MyUserControl
             InitializeComponent();
         }
 
-        public void SetMission(Mission inspMission)
-        {
-            _viewModel.ProductInfo = inspMission.productInfo;
-            mission = inspMission;
-            LoadOnInspPanelMission();
-            mission.FillPreDownloadMissionQueue();
-        }
-
-        /// <summary>
-        /// Load one panelmission to InspImageViewModel and refresh the view;
-        /// </summary>
-        public async void LoadOnInspPanelMission()
-        {
-            if (mission?.onInspPanelMission != null)
-            {
-                _viewModel.RemainingCount = await mission.RemainMissionCount();
-                _viewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
-                _viewModel.ProductInfo = new ProductInfoService().GetProductInfo(mission.onInspPanelMission.inspectMission.Info).Result;
-                _viewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
-                _viewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
-                _viewModel.InspImage.DefectMapImage = mission.onInspPanelMission.ContoursImageContainer;
-                _viewModel.DetailDefectList.AetDetailDefects.Clear();
-                foreach (var item in mission.onInspPanelMission.bitmapImageContainers)
-                {
-                    _viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.Name, item.Name, item.BitmapImage));
-                }
-                if (_viewModel.DetailDefectList.AetDetailDefects.Count != 0)
-                {
-                    _viewModel.DetailDefectList.SelectedItem = _viewModel.DetailDefectList.AetDetailDefects.FirstOrDefault();
-                }
-                _viewModel.InspImage.refreshPage = 0;
-                _viewModel.InspImage.RefreshImageMethod();
-            }
-        }
-
-        /// <summary>
-        /// Get next mission after a mission is finished;
-        /// </summary>
-        /// <returns>
-        /// True if the mission have next panelmission, false if the mission is empty;
-        /// </returns>
-        public bool GetNextMission()
-        {
-            mission.FillPreDownloadMissionQueue();
-            if (mission.NextMission())
-            {
-                LoadOnInspPanelMission();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //public void SetMission(Mission inspMission)
+        //{
+        //    _viewModel.ProductInfo = inspMission.productInfo;
+        //    mission = inspMission;
+        //    LoadOnInspPanelMission();
+        //    mission.FillPreDownloadMissionQueue();
+        //}
+        
+        //public async void LoadOnInspPanelMission()
+        //{
+        //    if (mission?.onInspPanelMission != null)
+        //    {
+        //        _viewModel.RemainingCount = await mission.RemainMissionCount();
+        //        _viewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
+        //        _viewModel.ProductInfo = new ProductInfoService().GetProductInfo(mission.onInspPanelMission.inspectMission.Info).Result;
+        //        _viewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
+        //        _viewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
+        //        _viewModel.InspImage.DefectMapImage = mission.onInspPanelMission.ContoursImageContainer;
+        //        _viewModel.DetailDefectList.AetDetailDefects.Clear();
+        //        foreach (var item in mission.onInspPanelMission.bitmapImageContainers)
+        //        {
+        //            _viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.Name, item.Name, item.BitmapImage));
+        //        }
+        //        if (_viewModel.DetailDefectList.AetDetailDefects.Count != 0)
+        //        {
+        //            _viewModel.DetailDefectList.SelectedItem = _viewModel.DetailDefectList.AetDetailDefects.FirstOrDefault();
+        //        }
+        //        _viewModel.InspImage.refreshPage = 0;
+        //        _viewModel.InspImage.RefreshImageMethod();
+        //    }
+        //}
+        
+        //public bool GetNextMission()
+        //{
+        //    mission.FillPreDownloadMissionQueue();
+        //    if (mission.NextMission())
+        //    {
+        //        LoadOnInspPanelMission();
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
         
         private void UserControl_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {

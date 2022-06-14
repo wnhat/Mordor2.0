@@ -4,6 +4,8 @@ using CoreClass.Model;
 using System;
 using System.Windows;
 using MaterialDesignThemes.Wpf;
+using System.Linq;
+using CoreClass.Service;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -17,15 +19,13 @@ namespace EyeOfSauron.ViewModel
         
         public MainWindowViewModel()
         {
-            //ColorToolView = new DemoItem("Color Tool", typeof(ColorTool));
             MainContent = ProductSelectView;
             DefectJudgeView.DefectJudgeEvent += new DefectJudgeView.ValuePassHandler(DefectJudge);
             StartInspCommand = new CommandImplementation(StartInsp);
             EndInspCommand = new CommandImplementation(_ => EndInsp());
         }
-
+        private Mission? mission;
         private UserInfoViewModel userInfo = new();
-        //private DemoItem? colorToolView;
         private ProductSelectView productSelectView = new ();
         private InspImageView inspImageView = new ();
         private DefectJudgeView defectJudgeView = new();
@@ -112,10 +112,12 @@ namespace EyeOfSauron.ViewModel
                     var productInfo = o as ProductInfo;
                     try
                     {
-                        Mission mission = new(productInfo);
-                        InspImageView.SetMission(mission);
+                        mission = new(productInfo);
+                        //InspImageView.SetMission(mission);
+                        LoadOnInspPanelMission();
+                        mission.FillPreDownloadMissionQueue();
                     }
-                    catch (Exception ex)
+                        catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message);
                         ProductSelectView.GetMissions();
@@ -129,10 +131,56 @@ namespace EyeOfSauron.ViewModel
             }
             
         }
-        
+
+        /// <summary>
+        /// Load one panelmission to InspImageViewModel and refresh the view;
+        /// </summary>
+        public async void LoadOnInspPanelMission()
+        {
+            if (mission?.onInspPanelMission != null)
+            {
+                InspImageView._viewModel.RemainingCount = await mission.RemainMissionCount();
+                InspImageView._viewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
+                InspImageView._viewModel.ProductInfo = new ProductInfoService().GetProductInfo(mission.onInspPanelMission.inspectMission.Info).Result;
+                InspImageView._viewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
+                InspImageView._viewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
+                InspImageView._viewModel.InspImage.DefectMapImage = mission.onInspPanelMission.ContoursImageContainer;
+                InspImageView._viewModel.DetailDefectList.AetDetailDefects.Clear();
+                foreach (var item in mission.onInspPanelMission.bitmapImageContainers)
+                {
+                    InspImageView._viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.Name, item.Name, item.BitmapImage));
+                }
+                if (InspImageView._viewModel.DetailDefectList.AetDetailDefects.Count != 0)
+                {
+                    InspImageView._viewModel.DetailDefectList.SelectedItem = InspImageView._viewModel.DetailDefectList.AetDetailDefects.FirstOrDefault();
+                }
+                InspImageView._viewModel.InspImage.refreshPage = 0;
+                InspImageView._viewModel.InspImage.RefreshImageMethod();
+            }
+        }
+
+        /// <summary>
+        /// Get next mission after a mission is finished;
+        /// </summary>
+        /// <returns>
+        /// True if the mission have next panelmission, false if the mission is empty;
+        /// </returns>
+        public bool GetNextMission()
+        {
+            mission.FillPreDownloadMissionQueue();
+            if (mission.NextMission())
+            {
+                LoadOnInspPanelMission();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         private void EndInsp()
         {
-            UserInfo.Logout();
             ProductSelectView.GetMissions();
             SetProductSelectView();
         }
@@ -140,10 +188,10 @@ namespace EyeOfSauron.ViewModel
         private void DefectJudge(object sender, DefectJudgeArgs e)
         {
             Defect defect = e.Defect;
-            bool SeverConnectState = SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, UserInfo.User.Username, UserInfo.User.Account, UserInfo.User.Id, 1), InspImageView.mission.onInspPanelMission.inspectMission);
-            if (SeverConnectState)
+            bool SeverConnectState = SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, UserInfo.User.Username, UserInfo.User.Account, UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
+            if (!SeverConnectState)
             {
-                if (InspImageView.GetNextMission())
+                if (GetNextMission())
                 {
                     DialogHost.Show(new SampleMessageDialog { Message = { Text = "There is no mission left" } }, "MainDialog");
                 }

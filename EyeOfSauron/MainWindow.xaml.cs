@@ -73,10 +73,9 @@ namespace EyeOfSauron
 
         private void PanelidLableMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            string? text = ((Label)sender).Content.ToString();
+            string? text = ((Button)sender).Content.ToString();
             Clipboard.SetDataObject(text);
             MainSnackbar.MessageQueue?.Enqueue("Copy Successfully");
-            e.Handled = true;
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
