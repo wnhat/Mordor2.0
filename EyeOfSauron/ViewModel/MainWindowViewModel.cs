@@ -6,6 +6,7 @@ using System.Windows;
 using MaterialDesignThemes.Wpf;
 using System.Linq;
 using CoreClass.Service;
+using System.Windows.Threading;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -23,8 +24,16 @@ namespace EyeOfSauron.ViewModel
             DefectJudgeView.DefectJudgeEvent += new DefectJudgeView.ValuePassHandler(DefectJudge);
             StartInspCommand = new CommandImplementation(StartInsp);
             EndInspCommand = new CommandImplementation(_ => EndInsp());
+            _ = new DispatcherTimer(
+                    TimeSpan.FromMilliseconds(1000),
+                    DispatcherPriority.Normal,
+                    new EventHandler((o, e) =>
+                    {
+                        DateTime = DateTime.Now;
+                    }), Dispatcher.CurrentDispatcher);
         }
         private Mission? mission;
+        public PanelMission? onInspPanelMission;
         private UserInfoViewModel userInfo = new();
         private ProductSelectView productSelectView = new ();
         private InspImageView inspImageView = new ();
@@ -109,7 +118,7 @@ namespace EyeOfSauron.ViewModel
                 if (o is ProductInfo && o != null)
                 {
                     SetInspView();
-                    var productInfo = o as ProductInfo;
+                    ProductInfo productInfo = o as ProductInfo;
                     try
                     {
                         mission = new(productInfo);
@@ -117,7 +126,7 @@ namespace EyeOfSauron.ViewModel
                         LoadOnInspPanelMission();
                         mission.FillPreDownloadMissionQueue();
                     }
-                        catch (Exception ex)
+                    catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message);
                         ProductSelectView.GetMissions();
@@ -133,7 +142,7 @@ namespace EyeOfSauron.ViewModel
         }
 
         /// <summary>
-        /// Load one panelmission to InspImageViewModel and refresh the view;
+        /// Load one PanelMission to set InspImageViewModel and refresh the view;
         /// </summary>
         public async void LoadOnInspPanelMission()
         {
@@ -162,11 +171,10 @@ namespace EyeOfSauron.ViewModel
         /// <summary>
         /// Get next mission after a mission is finished;
         /// </summary>
-        /// <returns>
-        /// True if the mission have next panelmission, false if the mission is empty;
-        /// </returns>
+        /// <returns> True if the mission have next PanelMission, false if the mission is empty;</returns>
         public bool GetNextMission()
         {
+            if (mission == null) return false;
             mission.FillPreDownloadMissionQueue();
             if (mission.NextMission())
             {

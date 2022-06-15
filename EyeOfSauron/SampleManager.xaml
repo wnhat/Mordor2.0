@@ -79,12 +79,9 @@
                     </DockPanel>
                 </materialDesign:ColorZone>
                 <Grid>
-                    <!--<Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>-->
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
+                        <!--  LastRowHeight=0 to show Snackbar  -->
                         <RowDefinition Height="0" />
                     </Grid.RowDefinitions>
                     <Grid>
@@ -92,12 +89,30 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Viewbox Stretch="Fill">
+                        <Viewbox
+                            Margin="10,10,10,10"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Stretch="None">
                             <materialDesign:Card UniformCornerRadius="6">
-                                <uc:PanelListView x:Name="ResultPanelList" />
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <uc:PanelListView x:Name="ResultPanelList" />
+                                    <Button Grid.Row="1" Content="InspWondow" Click="InspWindowButton_Click">
+                                    </Button>
+                                </Grid>
                             </materialDesign:Card>
                         </Viewbox>
-                        <Viewbox Grid.Column="1" Stretch="Fill">
+                        <Viewbox
+                            Grid.Column="1"
+                            Margin="10,10,10,10"
+                            Stretch="Fill">
                             <uc:InspImageView x:Name="ImageView" />
                             <!--<ContentPresenter Content="{Binding InspImageView}" />-->
                         </Viewbox>
@@ -106,7 +121,6 @@
                     <materialDesign:Snackbar
                         x:Name="MainSnackbar"
                         Grid.Row="2"
-                        Grid.ColumnSpan="2"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Bottom"
                         MessageQueue="{materialDesign:MessageQueue}" />

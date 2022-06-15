@@ -128,7 +128,7 @@
                     HorizontalAlignment="Center"
                     Content="登录"
                     IsDefault="True"
-                    Style="{StaticResource MaterialDesignFlatButton}" />
+                    Style="{StaticResource MaterialDesignFlatButton}" Margin="0,30,0,30" />
             </Grid>
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>

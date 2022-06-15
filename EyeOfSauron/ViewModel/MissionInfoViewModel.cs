@@ -16,7 +16,7 @@ namespace EyeOfSauron.ViewModel
         }
         
         private string panelId = "";
-
+        
         private ProductInfo? productInfo;
 
         private int remainingCount;

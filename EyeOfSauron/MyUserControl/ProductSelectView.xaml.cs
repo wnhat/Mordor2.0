@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using MongoDB.Driver;
 using EyeOfSauron.ViewModel;
-using CoreClass;
-using CoreClass.Model;
 using CoreClass.Service;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson;
+using System.Windows.Threading;
 
 namespace EyeOfSauron.MyUserControl
 {
@@ -18,6 +14,10 @@ namespace EyeOfSauron.MyUserControl
     /// </summary>
     public partial class ProductSelectView : UserControl
     {
+        private readonly DispatcherTimer dispatcherTimer = new();
+
+        DateTime progressStartTime = DateTime.Now;
+
         public readonly ProductViewModel _viewModel;
 
         static readonly DICSRemainInspectMissionService RemainService = new();
@@ -28,15 +28,18 @@ namespace EyeOfSauron.MyUserControl
             DataContext = _viewModel;
             GetMissions();
             InitializeComponent();
+            dispatcherTimer.Interval = TimeSpan.FromMilliseconds(100);
+            dispatcherTimer.Tick += new EventHandler(RefreshProgressValueUpdate);
         }
 
         /// <summary>
-        /// Get all missions to set viewmodel from database;
+        /// Get all missions from database to set viewmodel;
         /// </summary>
         public async void GetMissions()
         {
             // Get the remaining mission quantity to set viewmodel;
             _viewModel.ProductInfos.Clear();
+            //TODO: Thread will be waiting here if DICSDB no connection;
             var remainMissionCount = await RemainService.GetRemainMissionCount();
             foreach (var item in remainMissionCount)
             {
@@ -60,7 +63,27 @@ namespace EyeOfSauron.MyUserControl
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
+            _viewModel.IsMissionFreshAllowable = false;
+            dispatcherTimer.Start();
+            progressStartTime = DateTime.Now;
             GetMissions();
+        }
+
+        private void RefreshProgressValueUpdate(object sender, EventArgs e)
+        {
+            if (!_viewModel.IsMissionFreshAllowable)
+            {
+                var totalDuration = progressStartTime.AddSeconds(3).Ticks - progressStartTime.Ticks;
+                var currentDuration = DateTime.Now.Ticks - progressStartTime.Ticks;
+                var autoCountdownPercentComplete = 100.0 / totalDuration * currentDuration;
+                _viewModel.RefreshButtonProgressValue = autoCountdownPercentComplete;
+            }
+            if (_viewModel.RefreshButtonProgressValue > 100)
+            {
+                _viewModel.RefreshButtonProgressValue = 0;
+                _viewModel.IsMissionFreshAllowable = true;
+                dispatcherTimer.Stop();
+            }
         }
     }
 }

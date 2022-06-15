@@ -32,13 +32,14 @@
                     AcceptsReturn="True"
                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
                     TextWrapping="NoWrap"
+                    materialDesign:TextFieldAssist.HasClearButton="True"
                     VerticalScrollBarVisibility="Auto" />
-                <Button
+                <!--<Button
                     Click="InputTextBoxClear"
                     Style="{StaticResource MaterialDesignFlatButton}"
                     ToolTip="MaterialDesignFlatMidButton">
                     <materialDesign:PackIcon Kind="DeleteSweepOutline" />
-                </Button>
+                </Button>-->
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                     <Button
                         Margin="0,8,8,0"

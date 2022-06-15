@@ -34,7 +34,7 @@
         <ResourceDictionary>
             <Converter:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
             <Converter:InverseEnumToVisibilityConverter x:Key="InverseEnumToVisibilityConverter" />
-            <Converter:EnumToStretchConverter x:Key="EnumToStretchConverter"/>
+            <Converter:EnumToStretchConverter x:Key="EnumToStretchConverter" />
         </ResourceDictionary>
     </Window.Resources>
 
@@ -67,7 +67,7 @@
                     Mode="PrimaryMid">
                     <DockPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Button
+                            <!--<Button
                                 Margin="16,0,0,0"
                                 materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
                                 Click="LoginButton_Click"
@@ -75,17 +75,8 @@
                                                                   Size=24}"
                                 Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
                                 Style="{StaticResource MaterialDesignToolButton}"
-                                ToolTip="Login" />
-                            <materialDesign:Chip
-                                Click="LoginButton_Click"
-                                Content="{Binding UserInfo.User.Username, FallbackValue=UserName}"
-                                Icon="{Binding UserInfo.User.Account, FallbackValue=U}"
-                                IconBackground="{DynamicResource PrimaryHueLightBrush}"
-                                IconForeground="{DynamicResource PrimaryHueLightForegroundBrush}" />
-                            <materialDesign:PopupBox
-                                DockPanel.Dock="Left"
-                                PlacementMode="BottomAndAlignRightEdges"
-                                StaysOpen="False">
+                                ToolTip="Login" />-->
+                            <materialDesign:PopupBox PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
                                 <StackPanel>
                                     <Button
                                         HorizontalAlignment="Center"
@@ -100,6 +91,12 @@
                                         ToolTip="Logout" />
                                 </StackPanel>
                             </materialDesign:PopupBox>
+                            <materialDesign:Chip
+                                Click="LoginButton_Click"
+                                Content="{Binding UserInfo.User.Username, FallbackValue=UserName}"
+                                Icon="{Binding UserInfo.User.Account, FallbackValue=U}"
+                                IconBackground="{DynamicResource PrimaryHueLightBrush}"
+                                IconForeground="{DynamicResource PrimaryHueLightForegroundBrush}" />
 
                             <Button
                                 VerticalAlignment="Center"
@@ -172,22 +169,25 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Viewbox
-                        Stretch="{Binding OnShowView, Converter={StaticResource EnumToStretchConverter}}"
                         x:Name="MainScrollViewer"
                         Grid.Column="0"
-                        materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True">
+                        Margin="0,5,0,0"
+                        VerticalAlignment="Top"
+                        materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True"
+                        Stretch="{Binding OnShowView, Converter={StaticResource EnumToStretchConverter}}">
                         <ContentPresenter Content="{Binding MainContent}" />
                     </Viewbox>
                     <Viewbox
                         x:Name="DefectJudgeViewbox"
                         Grid.Column="2"
+                        Margin="0,5,0,0"
                         Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}">
                         <ContentPresenter Content="{Binding DefectJudgeView}" />
                     </Viewbox>
                     <materialDesign:Snackbar
                         x:Name="MainSnackbar"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom"
+                        Margin="0,1001,0,0"
+                        VerticalAlignment="Top"
                         MessageQueue="{materialDesign:MessageQueue}" />
                 </Grid>
             </DockPanel>

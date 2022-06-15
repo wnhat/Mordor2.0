@@ -59,13 +59,13 @@ namespace CoreClass.Model
         /// 用于客户端查询数据库中待检查的任务；
         /// </summary>
         /// <param name="info"></param>
-        /// <returns></returns>
+        /// <returns>One next InspectMission if WIP mission exist; Otherwise null;</returns>
         public static InspectMission GetMission(ProductInfo info)
         {
             var filter = Builders<InspectMission>.Filter.And(
                 Builders<InspectMission>.Filter.Eq(x => x.Info, info.Id),
-                Builders<InspectMission>.Filter.Eq(x => x.Requested, false));
-            var update = Builders<InspectMission>.Update.Set(x => x.LastRequestTime, DateTime.Now).Set(x => x.Requested, true);
+                Builders<InspectMission>.Filter.Eq(x => x.Requested, true));
+            var update = Builders<InspectMission>.Update.Set(x => x.LastRequestTime, DateTime.Now).Set(x => x.Requested, false);
             InspectMission mission = Collection.FindOneAndUpdate(filter, update);
             if (mission == null)
             {

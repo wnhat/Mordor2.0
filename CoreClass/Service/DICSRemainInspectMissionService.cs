@@ -87,10 +87,10 @@ namespace CoreClass.Service
             return result;
         }
 
-        // get all unfinished mission and group by productinfo;
+        // Get all unfinished mission and group by productinfo;
         public async Task<List<BsonDocument>> GetRemainMissionCount()
         {
-            // find unfinished and unrequested mission then aggregate by productinfo;
+            // Find unfinished and unrequested mission, then aggregate by productinfo;
             var projection = Builders<InspectMission>.Projection.Exclude("Info.Img");
             ProjectionDefinition<InspectMission> group = "{_id : '$Info', count : {$sum : 1}}";
             var agg = Collection.Aggregate()
@@ -102,7 +102,11 @@ namespace CoreClass.Service
             return result;
         }
 
-        // get specific product's mission count;
+        /// <summary>
+        /// Get specific product's mission quentity;
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static async Task<BsonDocument> GetRemainMissionCount(ObjectId id)
         {
             var projection = Builders<InspectMission>.Projection.Exclude("Info.Img");

@@ -54,36 +54,35 @@ namespace EyeOfSauron
             }
         }
 
+        /// <summary>
+        /// Enqueue one available PanelMission to PreDownloadedPanelMissionQueue Recursively;
+        /// </summary>
+        /// <returns></returns>
         public bool PreLoadOneMission()
         {
-            try
-            {
-                InspectMission inspectMission = InspectMission.GetMission(productInfo);
-                if (inspectMission == null)
-                {
-                    return false;
-                }
-                try
-                {
-                    //PanelInspectHistory history = PanelInspectHistory.Get(inspectMission.PanelID);
-                    //_ = PreJudge(ref inspectMission, ref history);  //Prejudge is unnecessary;
-                    AETresult aetResult = AETresult.Get(inspectMission.HistoryID);
-                    PanelMission panelMission = new(inspectMission, aetResult);
-                    PreDownloadedPanelMissionQueue.Enqueue(panelMission);
-                    return true;
-                }
-                catch (NullReferenceException)
-                {
-                    SeverConnector.SendPanelMissionResult(new OperatorJudge(new Defect("异显", "DE00010"), User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, User.AutoJudgeUser.Id, 1), inspectMission);
-                    return PreLoadOneMission();
-                }
-            }
-            catch (NullReferenceException)
+            InspectMission? inspectMission = InspectMission.GetMission(productInfo);
+            if (inspectMission == null)
             {
                 return false;
             }
+            AETresult? aetResult = AETresult.Get(inspectMission.HistoryID);
+            if (aetResult == null)
+            {
+                SeverConnector.SendPanelMissionResult(new OperatorJudge(new Defect("异显", "DE00010"), User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, User.AutoJudgeUser.Id, 1), inspectMission);
+                return PreLoadOneMission();
+            }
+            else
+            {
+                PanelMission panelMission = new(inspectMission, aetResult);
+                PreDownloadedPanelMissionQueue.Enqueue(panelMission);
+                return true;
+            }
         }
 
+        /// <summary>
+        /// Dequeue one PanelMission to onInspPanelMission of PreDownloadedPanelMissionQueue if where are remaining missions
+        /// </summary>
+        /// <returns>True if PreDownloadedPanelMissionQueue success; False if PreDownloadedPanelMissionQueue is empty;</returns>
         public bool NextMission()
         {
             if (PreDownloadedPanelMissionQueue.Count == 0)
@@ -97,11 +96,19 @@ namespace EyeOfSauron
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Sum of preLoaded_mission quantity and remaining quantity of the product In DICSDB;</returns>
         public async Task<int> RemainMissionCount()
         {
             return PreDownloadedPanelMissionQueue.Count + await GetRemainingQuantityOfTheProduct();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Remaining quantity of the product In DICSDB;</returns>
         private async Task<int> GetRemainingQuantityOfTheProduct()
         {
             // get the remaining mission quantity to set viewmodel
@@ -114,6 +121,9 @@ namespace EyeOfSauron
         }
     }
 
+    /// <summary>
+    ///  Initialize with InspectMission and get ResultImage,DefectImage and ContoursImage by AETresult;
+    /// </summary>
     public class PanelMission
     {
         public List<ImageContainer> resultImageDataList = new();
@@ -204,11 +214,14 @@ namespace EyeOfSauron
             }
         }
     }
-    
+
+    /// <summary>
+    /// Initialize BitmapImage with ImageContainer to show on UI;
+    /// </summary>
     public class BitmapImageContainer : ImageContainer
     {
         public BitmapImage? BitmapImage { get; set; }
-        //initialize with ImageContainer constructor
+        //Initialize with ImageContainer constructor
         public BitmapImageContainer(ImageContainer imageContainer) : base(imageContainer.Name, imageContainer.Data)
         {
             if (imageContainer == null || imageContainer.Data == null || imageContainer.Data.Length == 0)

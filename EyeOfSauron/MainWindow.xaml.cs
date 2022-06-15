@@ -11,9 +11,7 @@ using EyeOfSauron.MyUserControl;
 namespace EyeOfSauron
 {
     public partial class MainWindow : Window
-    {
-        public static Snackbar Snackbar = new();        
-        
+    {  
         private readonly MainWindowViewModel _viewModel;
 
         public LogininWindow loginWindow = new();
@@ -23,7 +21,6 @@ namespace EyeOfSauron
             InitializeComponent();
             _viewModel = new();
             DataContext = _viewModel;
-            Snackbar = MainSnackbar;
             loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
         }
 

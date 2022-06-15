@@ -13,13 +13,24 @@ namespace EyeOfSauron.ViewModel
 
         private ProductCardViewModel? selectedProductCardViewModel;
 
-        public ProductViewModel(UserInfoViewModel userInfo)
-        {
-            this.userInfoViewModel = userInfo;
-        }
-        
+        private double refreshButtonProgressValue;
+
+        private bool isMissionFreshAllowable = true;
+
         public ProductViewModel() { }
-        
+
+        public double RefreshButtonProgressValue
+        {
+            get => refreshButtonProgressValue;
+            set => SetProperty(ref refreshButtonProgressValue, value);
+        }
+
+        public bool IsMissionFreshAllowable
+        {
+            get => isMissionFreshAllowable;
+            set => SetProperty(ref isMissionFreshAllowable, value);
+        }
+
         public UserInfoViewModel UserInfoViewModel
         {
             get => this.userInfoViewModel;

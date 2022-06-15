@@ -88,9 +88,12 @@
             Margin="10,10,10,10"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
+            materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
+            materialDesign:ButtonProgressAssist.Value="{Binding RefreshButtonProgressValue,FallbackValue=0}"
             Click="RefreshButton_Click"
             Content="{materialDesign:PackIcon Kind=DatabaseRefreshOutline,
                                               Size=120}"
+            IsEnabled="{Binding IsMissionFreshAllowable}"
             Style="{StaticResource MaterialDesignRaisedLightButton}"
             ToolTip="Refresh Mission" />
     </WrapPanel>

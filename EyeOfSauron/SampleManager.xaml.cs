@@ -73,5 +73,11 @@ namespace EyeOfSauron
         {
 
         }
+
+        private void InspWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow mainWindow = new();
+            mainWindow.ShowDialog();
+        }
     }
 }
