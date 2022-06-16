@@ -111,7 +111,7 @@ namespace EyeOfSauron.ViewModel
             OnShowView = ViewName.ProductSelectView;
         }
 
-        private void StartInsp(object o)
+        private async void StartInsp(object o)
         {
             if (UserInfo.UserExist)
             {
@@ -136,9 +136,8 @@ namespace EyeOfSauron.ViewModel
             }
             else
             {
-                MessageBox.Show("Please login first!");
+                var result = await DialogHost.Show(new SampleMessageDialog { Message = { Text = "请登录后操作" } }, "MainWindowDialog");
             }
-            
         }
 
         /// <summary>
@@ -201,12 +200,12 @@ namespace EyeOfSauron.ViewModel
             {
                 if (GetNextMission())
                 {
-                    DialogHost.Show(new SampleMessageDialog { Message = { Text = "There is no mission left" } }, "MainDialog");
+                    DialogHost.Show(new SampleMessageDialog { Message = { Text = "There is no mission left" } }, "MainWindowDialog");
                 }
             }
             else
             {
-                DialogHost.Show(new ProgressMessageDialog(), "RootDialog");
+                DialogHost.Show(new ProgressMessageDialog(), "MainWindowDialog");
             }
         }
     }

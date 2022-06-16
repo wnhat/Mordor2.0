@@ -11,7 +11,7 @@ using MaterialDesignThemes.Wpf;
 
 namespace EyeOfSauron.ViewModel
 {
-    class SampleManagerViewModel:ViewModelBase
+    class SampleViewerViewModel:ViewModelBase
     {
         private ColorTool colorTool = new();
         private DateTime dateTime = DateTime.Now;
@@ -21,7 +21,7 @@ namespace EyeOfSauron.ViewModel
             get => dateTime;
             set => SetProperty(ref dateTime, value);
         }
-        public ColorTool? ColorTool
+        public ColorTool ColorTool
         {
             get => colorTool;
             set => SetProperty(ref colorTool, value);

@@ -13,13 +13,13 @@ namespace EyeOfSauron
     public partial class MainWindow : Window
     {  
         private readonly MainWindowViewModel _viewModel;
-
-        public LogininWindow loginWindow = new();
         
+        private LogininWindow loginWindow = new();
+
         public MainWindow()
         {
             InitializeComponent();
-            _viewModel = new();
+            _viewModel = new();  
             DataContext = _viewModel;
             loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
         }
@@ -28,17 +28,7 @@ namespace EyeOfSauron
         {
             _viewModel.UserInfo.User = arges.User;
             loginWindow.Close();
-            MainSnackbar.MessageQueue?.Enqueue("Welcome Login to Eye of Sauron");
-        }
-
-        private async void MenuPopupButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            var sampleMessageDialog = new SampleMessageDialog
-            {
-                Message = { Text = ((ButtonBase)sender).Content.ToString() }
-            };
-
-            await DialogHost.Show(sampleMessageDialog, "RootDialog");
+            MainSnackbar.MessageQueue?.Enqueue(string.Format("Welcome to login to Eye Of Sauron, {0}", _viewModel.UserInfo.User.Username));
         }
 
         private void OnCopy(object sender, ExecutedRoutedEventArgs e)
@@ -58,7 +48,7 @@ namespace EyeOfSauron
 
         private void ColorToolToggleButton_OnClick(object sender, RoutedEventArgs e) 
             => MainScrollViewer.Focus();
-
+        
         private static void ModifyTheme(bool isDarkTheme)
         {
             var paletteHelper = new PaletteHelper();
@@ -98,21 +88,25 @@ namespace EyeOfSauron
             }
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (MessageBox.Show("确认退出", "退出", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                Environment.Exit(0);
-            }
-            else
-            {
-                e.Cancel = true;
-            }
-        }
-
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            _viewModel.UserInfo.Logout();
+            MainSnackbar.MessageQueue?.Enqueue("logout success");
+        }
+
+        private void SampleViewButton_Click(object sender, RoutedEventArgs e)
+        {
+            SampleViewWindow sampleViewWindow = new();
+            sampleViewWindow.ShowDialog();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            foreach (Window w in App.Current.Windows)
+            {
+                if (w != this)
+                    w.Close();
+            }
         }
     }
 }

@@ -23,7 +23,7 @@
     WindowState="Normal"
     WindowStyle="ThreeDBorderWindow"
     mc:Ignorable="d">
-    <materialDesign:DialogHost DialogTheme="Inherit" Identifier="AnotherDialog">
+    <materialDesign:DialogHost DialogTheme="Inherit" Identifier="LoginWindowDialogHost">
         <materialDesign:DrawerHost>
             <Grid>
                 <Grid.ColumnDefinitions>

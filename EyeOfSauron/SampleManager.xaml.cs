@@ -22,17 +22,17 @@ namespace EyeOfSauron
     /// <summary>
     /// Interaction logic for SampleManager.xaml
     /// </summary>
-    public partial class SampleManager : Window
+    public partial class SampleViewWindow : Window
     {
-        private readonly SampleManagerViewModel _viewModel;
+        private readonly SampleViewerViewModel _viewModel;
         
-        public SampleManager()
+        public SampleViewWindow()
         {
             InitializeComponent();
             _viewModel = new();
             DataContext = _viewModel;
             ResultPanelList.PanelList.SelectionChanged += new SelectionChangedEventHandler(ListView_SelectionChanged);
-            ResultPanelList.PanelListViewDialog.DialogClosing += new DialogClosingEventHandler(AcceptCancelDialog_OnDialogClosing);
+            ResultPanelList.PanelListViewDialog.DialogClosing += new DialogClosingEventHandler(PanelListAcceptCancelDialog_OnDialogClosing);
             MainSnackbar.MessageQueue?.Enqueue("Welcome Login to Eye of Sauron");
         }
 
@@ -46,7 +46,7 @@ namespace EyeOfSauron
             MainSnackbar.MessageQueue?.Enqueue("Copy Successfully");
         }
 
-        private void AcceptCancelDialog_OnDialogClosing(object sender, DialogClosingEventArgs eventArgs)
+        private void PanelListAcceptCancelDialog_OnDialogClosing(object sender, DialogClosingEventArgs eventArgs)
         {
             if (!Equals(eventArgs.Parameter, true))
             {
@@ -74,10 +74,12 @@ namespace EyeOfSauron
 
         }
 
-        private void InspWindowButton_Click(object sender, RoutedEventArgs e)
+        private void MessageAcceptCancelDialog_OnDialogClosing(object sender, DialogClosingEventArgs eventArgs)
         {
-            MainWindow mainWindow = new();
-            mainWindow.ShowDialog();
+            if (Equals(eventArgs.Parameter, true))
+            {
+                ResultPanelList.viewModel.PanelList.Clear();
+            }
         }
     }
 }

@@ -19,10 +19,6 @@
         <materialDesign:DialogHost.DialogContent>
             <StackPanel Margin="16">
                 <TextBlock Text="Add Panel ID" />
-                <!--<TextBox
-                    x:Name="InputTextBox"
-                    Margin="0,8,0,0"
-                    HorizontalAlignment="Stretch" />-->
                 <TextBox
                     x:Name="InputTextBox"
                     Height="350"
@@ -34,12 +30,6 @@
                     TextWrapping="NoWrap"
                     materialDesign:TextFieldAssist.HasClearButton="True"
                     VerticalScrollBarVisibility="Auto" />
-                <!--<Button
-                    Click="InputTextBoxClear"
-                    Style="{StaticResource MaterialDesignFlatButton}"
-                    ToolTip="MaterialDesignFlatMidButton">
-                    <materialDesign:PackIcon Kind="DeleteSweepOutline" />
-                </Button>-->
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                     <Button
                         Margin="0,8,8,0"
