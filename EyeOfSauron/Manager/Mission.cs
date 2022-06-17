@@ -32,7 +32,7 @@ namespace EyeOfSauron
             }
             else
             {
-                throw new Exception("Mission Empty");
+                throw new MissionEmptyException("Mission Empty");
             }
         }
 
@@ -233,6 +233,12 @@ namespace EyeOfSauron
             BitmapImage.StreamSource = new MemoryStream(imageContainer.Data);
             BitmapImage.EndInit();
             BitmapImage.Freeze();
+        }
+    }
+    public class MissionEmptyException : Exception
+    {
+        public MissionEmptyException(string? message) : base(message)
+        {
         }
     }
 }

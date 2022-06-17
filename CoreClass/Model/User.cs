@@ -61,16 +61,9 @@ namespace CoreClass.Model
                 throw new ArgumentException("Invalid length of password salt (128 bytes expected).");
             }
 
-            using (var hmac = new HMACSHA512(PasswordSalt))
-            {
-                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-                for (int i = 0; i < computedHash.Length; i++)
-                {
-                    if (computedHash[i] != PasswordHash[i])
-                        return false;
-                }
-            }
-            return true;
+            using var hmac = new HMACSHA512(PasswordSalt);
+            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+            return Enumerable.SequenceEqual(computedHash, PasswordHash);
         }
 
         public void JudgeUserWeight(string Organization)
@@ -89,8 +82,24 @@ namespace CoreClass.Model
         {
             get
             {
-                return new User() {Username = "AutoJudgeUser" , Account = "10086"};
+                return new User() { Username = "AutoJudgeUser", Account = "10086" };
             }
+        }
+        [JsonIgnore]
+        public char UserIcon
+        {
+            get
+            {
+                return Username.First();
+            }
+        }
+        public override bool Equals(object obj)
+        {
+            if (obj is User user)
+            {
+                return user.Username == Username;
+            }
+            else return false;
         }
     }
 }

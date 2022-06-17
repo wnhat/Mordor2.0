@@ -19,7 +19,8 @@ namespace EyeOfSauron
         public MainWindow()
         {
             InitializeComponent();
-            _viewModel = new();  
+            _viewModel = new();
+            _viewModel.LoginRequestEvent += LoginButton_Click;
             DataContext = _viewModel;
             loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
         }
@@ -88,21 +89,40 @@ namespace EyeOfSauron
             }
         }
 
-        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            _viewModel.UserInfo.Logout();
-            MainSnackbar.MessageQueue?.Enqueue("logout success");
+            if (_viewModel.UserInfo.UserExist)
+            {
+                var result = await DialogHost.Show(new MessageAcceptCancelDialog { Message = { Text = "退出登录，将退出当前任务"} }, "MainWindowDialog");
+                if(result is bool value)
+                {
+                    if (value)
+                    {
+                        _viewModel.UserInfo.Logout();
+                        _viewModel.SetProductSelectView();
+                        MainSnackbar.MessageQueue?.Enqueue("logout success");
+                    }
+                }
+            }
         }
 
-        private void SampleViewButton_Click(object sender, RoutedEventArgs e)
+        private async void SampleViewButton_Click(object sender, RoutedEventArgs e)
         {
-            SampleViewWindow sampleViewWindow = new();
-            sampleViewWindow.ShowDialog();
+            if (_viewModel.UserInfo.UserExist)
+            {
+                SampleViewWindow sampleViewWindow = new();
+                sampleViewWindow.ShowDialog();
+            }
+            else
+            {
+                await DialogHost.Show(new MessageAcceptDialog { Message = { Text = "请登录后操作" } }, "MainWindowDialog");
+            }
+                
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            foreach (Window w in App.Current.Windows)
+            foreach (Window w in Application.Current.Windows)
             {
                 if (w != this)
                     w.Close();

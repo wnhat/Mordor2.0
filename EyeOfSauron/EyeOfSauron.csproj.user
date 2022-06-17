@@ -53,6 +53,9 @@
     <Page Update="MyUserControl\AcceptCancelDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="MyUserControl\MessageAcceptCancelDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="SampleManager.xaml">
       <SubType>Designer</SubType>
     </Page>

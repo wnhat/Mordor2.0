@@ -76,7 +76,17 @@
                                 Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
                                 Style="{StaticResource MaterialDesignToolButton}"
                                 ToolTip="Login" />-->
+                            
+                            <materialDesign:Chip
+                                Click="LoginButton_Click"
+                                Content="{Binding UserInfo.User.Username, FallbackValue=UserName}"
+                                Icon="{Binding UserInfo.User.UserIcon, FallbackValue=U}"
+                                IconBackground="{DynamicResource PrimaryHueLightBrush}"
+                                IconForeground="{DynamicResource PrimaryHueLightForegroundBrush}" />
                             <materialDesign:PopupBox PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
+                                <materialDesign:PopupBox.ToggleContent>
+                                    <materialDesign:PackIcon Kind="ChevronDown" />
+                                </materialDesign:PopupBox.ToggleContent>
                                 <StackPanel>
                                     <Button
                                         HorizontalAlignment="Center"
@@ -86,17 +96,10 @@
                                     <Button
                                         HorizontalAlignment="Center"
                                         Click="LogoutButton_Click"
-                                        Command="{Binding EndInspCommand}"
                                         Content="{materialDesign:PackIcon Kind=Logout}"
                                         ToolTip="Logout" />
                                 </StackPanel>
                             </materialDesign:PopupBox>
-                            <materialDesign:Chip
-                                Click="LoginButton_Click"
-                                Content="{Binding UserInfo.User.Username, FallbackValue=UserName}"
-                                Icon="{Binding UserInfo.User.Account, FallbackValue=U}"
-                                IconBackground="{DynamicResource PrimaryHueLightBrush}"
-                                IconForeground="{DynamicResource PrimaryHueLightForegroundBrush}" />
 
                             <Button
                                 VerticalAlignment="Center"
@@ -107,6 +110,7 @@
                                 ToolTip="Double Click to Copy"
                                 Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}" />
 
+                            <Separator Width="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
                             <TextBlock
                                 VerticalAlignment="Center"
                                 FontSize="14"
@@ -142,6 +146,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Badge="{Binding ProductSelectView.DataContext.SelectedProductCardViewModel.ProductInfo.Value}"
+                            BadgeColorZoneMode="PrimaryLight"
                             DockPanel.Dock="Right"
                             Visibility="{Binding OnShowView, Converter={StaticResource EnumToVisibilityConverter}, Mode=TwoWay}">
                             <Button
@@ -153,11 +158,12 @@
 
                         <Button
                             HorizontalAlignment="Center"
+                            Margin="10,0,10,0"
                             VerticalAlignment="Center"
                             Content="{Binding ProductSelectView.DataContext.SelectedProductCardViewModel.ProductInfo.Key.Name, FallbackValue=MODEL}"
                             DockPanel.Dock="Right"
-                            Click="Button_Click"
                             Style="{StaticResource MaterialDesignFlatLightBgButton}" />
+                        <Separator DockPanel.Dock="Right" Width="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
                         <Button
                             Margin="0,0,10,0"
                             HorizontalAlignment="Center"
@@ -165,13 +171,13 @@
                             Click="SampleViewButton_Click"
                             Content="SampleView"
                             DockPanel.Dock="Right"
-                            Style="{StaticResource MaterialDesignFlatLightBgButton}" />
+                            Style="{StaticResource MaterialDesignRaisedLightButton}" />
                         <TextBlock Text="" />
                     </DockPanel>
                 </materialDesign:ColorZone>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition />
                         <ColumnDefinition Width="0" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -188,7 +194,7 @@
                     </Viewbox>
                     <Viewbox
                         x:Name="DefectJudgeViewbox"
-                        Grid.Column="1"
+                        Grid.Column="2"
                         Margin="0,5,0,0"
                         Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}">
                         <ContentPresenter Content="{Binding DefectJudgeView}" />
@@ -196,9 +202,7 @@
                     </Viewbox>
                     <materialDesign:Snackbar
                         x:Name="MainSnackbar"
-                        Grid.Row="1"
-                        VerticalAlignment="Bottom"
-                        MessageQueue="{materialDesign:MessageQueue}" />
+                        MessageQueue="{materialDesign:MessageQueue}" Margin="0,1001,0,0" VerticalAlignment="Top" />
                 </Grid>
             </DockPanel>
         </materialDesign:DrawerHost>

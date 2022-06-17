@@ -12,7 +12,10 @@ namespace EyeOfSauron.ViewModel
     {
         private User? user;
 
-        public UserInfoViewModel() { }
+        public UserInfoViewModel()
+        {
+            
+        }
 
         public UserInfoViewModel(User user)
         {
@@ -50,37 +53,13 @@ namespace EyeOfSauron.ViewModel
 
         public bool UserExist
         {
-            get => user != null;
+            get => !(user == null || user.Equals(User.AutoJudgeUser));
         }
 
         public void Logout()
         {
-            user = null;
-        }
-
-        private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
-        {
-            if (password == null)
-            {
-                throw new ArgumentNullException(nameof(password));
-            }
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new ArgumentException("Value cannot be empty or whitespace.", nameof(password));
-            }
-            if (storedHash.Length != 64)
-            {
-                throw new ArgumentException("Invalid length of password hash (64 bytes expected).", nameof(storedHash));
-            }
-            if (storedSalt.Length != 128)
-            {
-                throw new ArgumentException("Invalid length of password salt (128 bytes expected).", nameof(storedSalt));
-            }
-            using (var hmac = new HMACSHA512(storedSalt))
-            {
-                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return Enumerable.SequenceEqual(computedHash, storedHash);
-            }
+            //Incase view binding error,show something after logedout;
+            User = User.AutoJudgeUser;
         }
     }
 

@@ -35,10 +35,10 @@ namespace EyeOfSauron
                 case AuthenticateResult.EmptyInput:
                     break;
                 case AuthenticateResult.AccountNotExist:
-                    DialogHost.Show(new SampleMessageDialog { Message = { Text = "用户不存在" } }, "LoginWindowDialogHost");
+                    DialogHost.Show(new MessageAcceptDialog { Message = { Text = "用户不存在" } }, "LoginWindowDialogHost");
                     break;
                 case AuthenticateResult.PasswordError:
-                    DialogHost.Show(new SampleMessageDialog { Message = { Text = "密码错误" } }, "LoginWindowDialogHost");
+                    DialogHost.Show(new MessageAcceptDialog { Message = { Text = "密码错误" } }, "LoginWindowDialogHost");
                     break;
                 default:
                     break;

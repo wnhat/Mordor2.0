@@ -88,8 +88,10 @@
             Margin="10,10,10,10"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
+            materialDesign:ButtonAssist.CornerRadius="10"
             materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
-            materialDesign:ButtonProgressAssist.Value="{Binding RefreshButtonProgressValue,FallbackValue=0}"
+            materialDesign:ButtonProgressAssist.Value="{Binding RefreshButtonProgressValue, FallbackValue=0}"
+            materialDesign:ShadowAssist.ShadowDepth="Depth3"
             Click="RefreshButton_Click"
             Content="{materialDesign:PackIcon Kind=DatabaseRefreshOutline,
                                               Size=120}"

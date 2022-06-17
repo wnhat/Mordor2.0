@@ -12,7 +12,8 @@ namespace EyeOfSauron.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        
+        public delegate void ValuePassHandler(object sender, RoutedEventArgs e);
+        public event ValuePassHandler? LoginRequestEvent;
         public MainWindowViewModel(UserInfoViewModel userInfoViewModel):this()
         {
             UserInfo = userInfoViewModel;
@@ -107,6 +108,7 @@ namespace EyeOfSauron.ViewModel
 
         public void SetProductSelectView()
         {
+            ProductSelectView.GetMissions();
             MainContent = ProductSelectView;
             OnShowView = ViewName.ProductSelectView;
         }
@@ -122,21 +124,20 @@ namespace EyeOfSauron.ViewModel
                     try
                     {
                         mission = new(productInfo);
-                        //InspImageView.SetMission(mission);
                         LoadOnInspPanelMission();
                         mission.FillPreDownloadMissionQueue();
                     }
-                    catch (Exception ex)
+                    catch (MissionEmptyException ex)
                     {
-                        MessageBox.Show(ex.Message);
-                        ProductSelectView.GetMissions();
+                        await DialogHost.Show(new MessageAcceptDialog { Message = { Text = ex.Message } }, "MainWindowDialog");
                         SetProductSelectView();
                     }
                 }
             }
             else
             {
-                var result = await DialogHost.Show(new SampleMessageDialog { Message = { Text = "请登录后操作" } }, "MainWindowDialog");
+                await DialogHost.Show(new MessageAcceptDialog { Message = { Text = "请登录后操作" } }, "MainWindowDialog");
+                LoginRequestEvent.Invoke(this, new RoutedEventArgs());
             }
         }
 
@@ -186,10 +187,16 @@ namespace EyeOfSauron.ViewModel
             }
         }
 
-        private void EndInsp()
+        private async void EndInsp()
         {
-            ProductSelectView.GetMissions();
-            SetProductSelectView();
+            var result = await DialogHost.Show(new MessageAcceptCancelDialog { Message = { Text = "退出当前检查任务" } }, "MainWindowDialog");
+            if (result is bool value)
+            {
+                if (value)
+                {
+                    SetProductSelectView();
+                }
+            }
         }
 
         private void DefectJudge(object sender, DefectJudgeArgs e)
@@ -200,7 +207,7 @@ namespace EyeOfSauron.ViewModel
             {
                 if (GetNextMission())
                 {
-                    DialogHost.Show(new SampleMessageDialog { Message = { Text = "There is no mission left" } }, "MainWindowDialog");
+                    DialogHost.Show(new MessageAcceptDialog { Message = { Text = "There is no mission left" } }, "MainWindowDialog");
                 }
             }
             else

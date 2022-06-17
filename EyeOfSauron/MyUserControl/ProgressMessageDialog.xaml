@@ -15,6 +15,7 @@
         <ProgressBar
             Width="30"
             Height="30"
+            Margin="20,20,20,20"
             IsIndeterminate="True"
             Style="{StaticResource MaterialDesignCircularProgressBar}"
             Value="0" />
