@@ -60,8 +60,6 @@ namespace EyeOfSauron.ViewModel
 
         private ObservableCollection<BitmapImageContainer>? inspImages;
 
-        private ImageContainer[] inspImageArray1 = new ImageContainer[3];
-
         public List<ImageContainer> resultImageDataList = new();
 
         public List<ImageContainer> defectImageDataList = new();
@@ -87,12 +85,6 @@ namespace EyeOfSauron.ViewModel
         {
             get => isVisible;
             set => SetProperty(ref isVisible, value);
-        }
-
-        public ImageContainer[] InspImageArray1
-        {
-            get => inspImageArray1;
-            set => SetProperty(ref inspImageArray1, value);
         }
 
         public ObservableCollection<BitmapImageContainer> InspImages
@@ -145,28 +137,8 @@ namespace EyeOfSauron.ViewModel
 
         public DefectListViewModel()
         {
-            AetDetailDefects = new ObservableCollection<AetDetailDefect>
-            {
-                new AetDetailDefect("InnerDefect1","0001"),
-                new AetDetailDefect("InnerDefect2","0002"),
-            };
-
+            AetDetailDefects = new ObservableCollection<AetDetailDefect>{ };
             SelectedItem = AetDetailDefects.FirstOrDefault();
-
-            SelectedItemChangedCommand = new CommandImplementation(
-                _ =>
-                {
-                    var aetDetailDefect = SelectedItem as AetDetailDefect;
-                    if (aetDetailDefect != null)
-                    {
-
-                    }
-                    else
-                    {
-
-                    }
-                },
-                _ => SelectedItem != null);
         }
 
         public AetDetailDefect? SelectedItem
@@ -180,8 +152,6 @@ namespace EyeOfSauron.ViewModel
             get => aetDetailDefects;
             set => SetProperty(ref aetDetailDefects, value);
         }
-
-        public CommandImplementation SelectedItemChangedCommand { get; }
 
     }
 

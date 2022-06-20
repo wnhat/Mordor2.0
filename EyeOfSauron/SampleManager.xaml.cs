@@ -1,21 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Diagnostics;
 using EyeOfSauron.ViewModel;
 using MaterialDesignThemes.Wpf;
-using System.Windows.Controls.Primitives;
 using EyeOfSauron.MyUserControl;
+using System.Text.RegularExpressions;
+using CoreClass.Model;
 
 namespace EyeOfSauron
 {
@@ -33,7 +24,8 @@ namespace EyeOfSauron
             DataContext = _viewModel;
             ResultPanelList.PanelList.SelectionChanged += new SelectionChangedEventHandler(ListView_SelectionChanged);
             ResultPanelList.PanelListViewDialog.DialogClosing += new DialogClosingEventHandler(PanelListAcceptCancelDialog_OnDialogClosing);
-            MainSnackbar.MessageQueue?.Enqueue("Welcome Login to Eye of Sauron");
+            ResultPanelList.PanelListBoxClearButton.Click += new RoutedEventHandler(PanelListBoxClearButton_Click);
+            MainSnackbar.MessageQueue?.Enqueue("Welcome to Eye of Sauron");
         }
 
         private void ColorToolToggleButton_OnClick(object sender, RoutedEventArgs e)
@@ -43,7 +35,7 @@ namespace EyeOfSauron
         {
             string? text = ((Label)sender).Content.ToString();
             Clipboard.SetDataObject(text);
-            MainSnackbar.MessageQueue?.Enqueue("Copy Successfully");
+            MainSnackbar.MessageQueue?.Enqueue("复制成功");
         }
 
         private void PanelListAcceptCancelDialog_OnDialogClosing(object sender, DialogClosingEventArgs eventArgs)
@@ -64,14 +56,29 @@ namespace EyeOfSauron
                 ResultPanelList.InputTextBox.Clear();
                 foreach (string item in lines)
                 {
+
                     ResultPanelList.viewModel.PanelList.Add(new PanelSampleContainer(item));
                 }
             }
         }
+        //public void setSampleView(string panelId)
+        //{
+        //    string pattern = @"^\d+$";
+        //    Regex rg = new(pattern, RegexOptions.Multiline | RegexOptions.Singleline);
+        //    _ = rg.Match(ResultPanelList.InputTextBox.Text).Value;
+        //    AETresult aETresult = AETresult.Get(panelId);
+        //    PanelMission panelMission = new(aETresult);
+        //}
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
+        }
+
+        private void PanelListBoxClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            ResultPanelList.viewModel.PanelList.Clear();
+            //await DialogHost.Show(new MessageAcceptCancelDialog { Message = { Text = "确认清除"} }, "PanelListViewDialog");
         }
 
         private void MessageAcceptCancelDialog_OnDialogClosing(object sender, DialogClosingEventArgs eventArgs)

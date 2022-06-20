@@ -19,10 +19,11 @@ namespace EyeOfSauron
         }
 
         /// <summary>
-        ///Will not get ReceiveSignal for now;
+        ///
         /// </summary>
         /// <param name="operatorJudge"></param>
         /// <param name="mission"></param>
+        /// <return>True if the message was received, otherwise false</return>
         public static bool SendPanelMissionResult(OperatorJudge operatorJudge, InspectMission mission)
         {
             OperatorJudgeMessage ResultMessage = new(operatorJudge, mission);

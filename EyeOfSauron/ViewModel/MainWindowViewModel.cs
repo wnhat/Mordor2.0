@@ -202,10 +202,11 @@ namespace EyeOfSauron.ViewModel
         private void DefectJudge(object sender, DefectJudgeArgs e)
         {
             Defect defect = e.Defect;
-            bool SeverConnectState = SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, UserInfo.User.Username, UserInfo.User.Account, UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
-            if (!SeverConnectState)
+            bool IsServerConnected = SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, UserInfo.User.Username, UserInfo.User.Account, UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
+            //Server offline;
+            if (!IsServerConnected)
             {
-                if (GetNextMission())
+                if (!GetNextMission())
                 {
                     DialogHost.Show(new MessageAcceptDialog { Message = { Text = "There is no mission left" } }, "MainWindowDialog");
                 }

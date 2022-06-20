@@ -28,7 +28,6 @@
         x:Name="SampleManagerWindowDialog"
         DialogTheme="Inherit"
         Identifier="SampleManagerWindowDialog"
-        DialogClosing="MessageAcceptCancelDialog_OnDialogClosing"
         SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
         <materialDesign:DialogHost.DialogContent>
             <StackPanel Margin="16">

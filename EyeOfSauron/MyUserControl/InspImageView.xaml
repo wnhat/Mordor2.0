@@ -119,14 +119,14 @@
                         <StackPanel Grid.Column="0">
                             <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
                                 <Image
-                                    Width="790"
+                                    Width="795"
                                     Height="495"
                                     Source="{Binding InspImage.DefectMapImage.BitmapImage}"
                                     Stretch="Fill" />
                             </materialDesign:Card>
                             <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
                                 <Image
-                                    Width="790"
+                                    Width="795"
                                     Height="495"
                                     Source="{Binding DetailDefectList.SelectedItem.DetailDefectImage}"
                                     Stretch="Uniform" />
@@ -134,7 +134,7 @@
                         </StackPanel>
                         <StackPanel Grid.Column="1">
                             <materialDesign:Card
-                                Width="790"
+                                Width="795"
                                 Height="495"
                                 Margin="5,5,5,5"
                                 HorizontalAlignment="Stretch"
@@ -157,7 +157,7 @@
                             </materialDesign:Card>
                             <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
                                 <Image
-                                    Width="790"
+                                    Width="795"
                                     Height="495"
                                     Stretch="Fill" />
                             </materialDesign:Card>

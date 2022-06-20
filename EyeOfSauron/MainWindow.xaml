@@ -76,7 +76,7 @@
                                 Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
                                 Style="{StaticResource MaterialDesignToolButton}"
                                 ToolTip="Login" />-->
-                            
+
                             <materialDesign:Chip
                                 Click="LoginButton_Click"
                                 Content="{Binding UserInfo.User.Username, FallbackValue=UserName}"
@@ -110,7 +110,7 @@
                                 ToolTip="Double Click to Copy"
                                 Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}" />
 
-                            <Separator Width="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+                            <Separator Width="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                             <TextBlock
                                 VerticalAlignment="Center"
                                 FontSize="14"
@@ -157,13 +157,16 @@
                         </materialDesign:Badged>
 
                         <Button
-                            HorizontalAlignment="Center"
                             Margin="10,0,10,0"
+                            HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Content="{Binding ProductSelectView.DataContext.SelectedProductCardViewModel.ProductInfo.Key.Name, FallbackValue=MODEL}"
                             DockPanel.Dock="Right"
                             Style="{StaticResource MaterialDesignFlatLightBgButton}" />
-                        <Separator DockPanel.Dock="Right" Width="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+                        <Separator
+                            Width="2"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                         <Button
                             Margin="0,0,10,0"
                             HorizontalAlignment="Center"
@@ -177,8 +180,8 @@
                 </materialDesign:ColorZone>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="0" />
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -194,15 +197,17 @@
                     </Viewbox>
                     <Viewbox
                         x:Name="DefectJudgeViewbox"
-                        Grid.Column="2"
+                        Grid.Column="1"
                         Margin="0,5,0,0"
                         Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}">
                         <ContentPresenter Content="{Binding DefectJudgeView}" />
-
                     </Viewbox>
                     <materialDesign:Snackbar
                         x:Name="MainSnackbar"
-                        MessageQueue="{materialDesign:MessageQueue}" Margin="0,1001,0,0" VerticalAlignment="Top" />
+                        Width="Auto"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        MessageQueue="{materialDesign:MessageQueue}" />
                 </Grid>
             </DockPanel>
         </materialDesign:DrawerHost>

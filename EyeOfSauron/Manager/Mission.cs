@@ -134,22 +134,25 @@ namespace EyeOfSauron
 
         public BitmapImageContainer ContoursImageContainer = new(new ImageContainer());
 
-        public InspectMission inspectMission;
+        public InspectMission? inspectMission;
 
         public AETresult aetResult;
 
-        public PanelMission(InspectMission mission)
+        public PanelMission(AETresult result)
         {
-            inspectMission = mission;
-            aetResult = AETresult.Get(inspectMission.HistoryID);
+            aetResult = result;
             IniResultImageDataList(aetResult.ResultImages);
             IniDefectImageDataList(aetResult.DefectImages);
             InitialContoursImage();
         }
 
-        public PanelMission(InspectMission mission, AETresult result) : this(mission)
+        public PanelMission(InspectMission mission, AETresult result) 
         {
+            inspectMission = mission;
             aetResult = result;
+            IniResultImageDataList(aetResult.ResultImages);
+            IniDefectImageDataList(aetResult.DefectImages);
+            InitialContoursImage();
         }
 
         private void InitialContoursImage()

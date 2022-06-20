@@ -11,7 +11,9 @@ using EyeOfSauron.MyUserControl;
 namespace EyeOfSauron
 {
     public partial class MainWindow : Window
-    {  
+    {
+        public static Snackbar Snackbar = new();
+
         private readonly MainWindowViewModel _viewModel;
         
         private LogininWindow loginWindow = new();
@@ -22,6 +24,7 @@ namespace EyeOfSauron
             _viewModel = new();
             _viewModel.LoginRequestEvent += LoginButton_Click;
             DataContext = _viewModel;
+            Snackbar = MainSnackbar;
             loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
         }
 
@@ -29,7 +32,7 @@ namespace EyeOfSauron
         {
             _viewModel.UserInfo.User = arges.User;
             loginWindow.Close();
-            MainSnackbar.MessageQueue?.Enqueue(string.Format("Welcome to login to Eye Of Sauron, {0}", _viewModel.UserInfo.User.Username));
+            MainSnackbar.MessageQueue?.Enqueue(string.Format("Welcome to Eye Of Sauron, {0}", _viewModel.UserInfo.User.Username));
         }
 
         private void OnCopy(object sender, ExecutedRoutedEventArgs e)
@@ -63,7 +66,7 @@ namespace EyeOfSauron
         {
             string? text = ((Button)sender).Content.ToString();
             Clipboard.SetDataObject(text);
-            MainSnackbar.MessageQueue?.Enqueue("Copy Successfully");
+            MainSnackbar.MessageQueue?.Enqueue("复制成功");
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -100,7 +103,7 @@ namespace EyeOfSauron
                     {
                         _viewModel.UserInfo.Logout();
                         _viewModel.SetProductSelectView();
-                        MainSnackbar.MessageQueue?.Enqueue("logout success");
+                        MainSnackbar.MessageQueue?.Enqueue("退出登录成功");
                     }
                 }
             }

@@ -13,11 +13,6 @@ namespace EyeOfSauron.MyUserControl
     /// </summary>
     public partial class InspImageView : UserControl
     {
-        public delegate void ValuePassHandler(object sender, DefectJudgeArgs e);
-        //public event ValuePassHandler? DefectJudgeEvent;
-        
-        //public Mission? mission;
-
         public readonly MissionInfoViewModel _viewModel;
 
         public InspImageView()

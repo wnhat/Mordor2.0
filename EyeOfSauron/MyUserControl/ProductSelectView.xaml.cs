@@ -39,7 +39,7 @@ namespace EyeOfSauron.MyUserControl
         {
             // Get the remaining mission quantity to set viewmodel;
             _viewModel.ProductInfos.Clear();
-            //TODO: Thread will be waiting here if DICSDB no connection;
+            //Issue: Thread will be waiting here if DICSDB no connection;
             var remainMissionCount = await RemainService.GetRemainMissionCount();
             foreach (var item in remainMissionCount)
             {
@@ -67,6 +67,7 @@ namespace EyeOfSauron.MyUserControl
             dispatcherTimer.Start();
             progressStartTime = DateTime.Now;
             GetMissions();
+            MainWindow.Snackbar.MessageQueue?.Enqueue("Mission Refresh Successfully");
         }
 
         private void RefreshProgressValueUpdate(object sender, EventArgs e)
