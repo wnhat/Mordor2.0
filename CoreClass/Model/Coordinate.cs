@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace CoreClass.Model
 {
-    public struct Coordinate
+    [BsonIgnoreExtraElements]
+    public class Coordinate
     {
         public int X;
         public int Y;
@@ -15,6 +17,11 @@ namespace CoreClass.Model
         {
             this.X = x;
             this.Y = y;
+        }
+        public Coordinate(decimal x, decimal y)
+        {
+            this.X = (int)x;
+            this.Y = (int)y;
         }
     }
 }

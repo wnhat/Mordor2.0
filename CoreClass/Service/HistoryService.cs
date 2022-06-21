@@ -25,7 +25,7 @@ namespace CoreClass.Service
                 { "InspDate", new BsonDocument
                 {
                     { "$gte", start },
-                    { "$lte", end }                    
+                    { "$lte", end }
                 } },
                 { "EqpID", new BsonDocument("$in", new BsonArray(eqplist)) }
             };

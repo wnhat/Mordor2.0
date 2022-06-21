@@ -28,7 +28,7 @@ namespace CoreClass.Model
         public ImageContainer[] DefectImages;
 
         // 对于检查结果文件中的 765H210002A9AAT05.txt 进行解析,填充下列字段；
-        public List<DefectInfo> DefectCollection;
+        public List<DefectInfo> DefectCollection = new List<DefectInfo>();
         public string AVIRecipeName;
         public string SVIRecipeName;
         public string LotID;
@@ -172,8 +172,8 @@ namespace CoreClass.Model
                                             DefectCode = field[(int)ResultIndexDefectData.DEFECT_CODE],
                                             PixelStart = new Coordinate(Convert.ToInt32(field[(int)ResultIndexDefectData.PIXEL_START_X]), Convert.ToInt32(field[(int)ResultIndexDefectData.PIXEL_START_Y])),
                                             PixelEnd = new Coordinate(Convert.ToInt32(field[(int)ResultIndexDefectData.PIXEL_END_X]), Convert.ToInt32(field[(int)ResultIndexDefectData.PIXEL_END_Y])),
-                                            CoordStart = new Coordinate(Convert.ToInt32(field[(int)ResultIndexDefectData.COORD_START_X]), Convert.ToInt32(field[(int)ResultIndexDefectData.COORD_START_Y])),
-                                            CoordEnd = new Coordinate(Convert.ToInt32(field[(int)ResultIndexDefectData.COORD_END_X]), Convert.ToInt32(field[(int)ResultIndexDefectData.COORD_END_Y])),
+                                            CoordStart = new Coordinate(Convert.ToDecimal(field[(int)ResultIndexDefectData.COORD_START_X]), Convert.ToDecimal(field[(int)ResultIndexDefectData.COORD_START_Y])),
+                                            CoordEnd = new Coordinate(Convert.ToDecimal(field[(int)ResultIndexDefectData.COORD_END_X]), Convert.ToDecimal(field[(int)ResultIndexDefectData.COORD_END_Y])),
                                             PsFlag = field[(int)ResultIndexDefectData.PS_FLAG],
                                             Size = Convert.ToInt32(field[(int)ResultIndexDefectData.DEF_SIZE]),
                                             DefectImageFileName = field[(int)ResultIndexDefectData.IMG_NAME],
