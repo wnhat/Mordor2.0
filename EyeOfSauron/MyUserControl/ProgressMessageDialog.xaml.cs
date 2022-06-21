@@ -5,9 +5,9 @@ namespace EyeOfSauron.MyUserControl
     /// <summary>
     /// Interaction logic for SampleMessageDialog.xaml
     /// </summary>
-    public partial class SampleMessageDialog : UserControl
+    public partial class ProgressMessageDialog : UserControl
     {
-        public SampleMessageDialog()
+        public ProgressMessageDialog()
         {
             InitializeComponent();
         }

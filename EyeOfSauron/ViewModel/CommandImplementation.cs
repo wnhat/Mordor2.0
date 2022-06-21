@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace EyeOfSauron.ViewModel
 {
+    
     public class CommandImplementation : ICommand
     {
         private readonly Action<object> _execute;

@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using EyeOfSauron.ViewModel;
-using MongoDB.Driver;
 using CoreClass;
 using CoreClass.Model;
 using System.IO;
-using NetMQ;
-using NetMQ.Sockets;
 using System.Drawing;
 using CoreClass.Service;
 using Rectangle = System.Drawing.Rectangle;
@@ -21,9 +15,7 @@ namespace EyeOfSauron
     public class Mission
     {
         //TODO: 区分任务类型
-        private Queue<PanelMission> PreDownloadedPanelMissionQueue = new();
-
-        static readonly DICSRemainInspectMissionService dicsRemainInspectMissionService = new();
+        private readonly Queue<PanelMission> PreDownloadedPanelMissionQueue = new();
 
         public PanelMission onInspPanelMission;
 
@@ -40,7 +32,7 @@ namespace EyeOfSauron
             }
             else
             {
-                throw new Exception("Mission Empty");
+                throw new MissionEmptyException("Mission Empty");
             }
         }
 
@@ -62,36 +54,35 @@ namespace EyeOfSauron
             }
         }
 
+        /// <summary>
+        /// Enqueue one available PanelMission to PreDownloadedPanelMissionQueue Recursively;
+        /// </summary>
+        /// <returns></returns>
         public bool PreLoadOneMission()
         {
-            try
-            {
-                InspectMission inspectMission = InspectMission.GetMission(productInfo);
-                if (inspectMission == null)
-                {
-                    return false;
-                }
-                try
-                {
-                    //PanelInspectHistory history = PanelInspectHistory.Get(inspectMission.PanelID);
-                    //_ = PreJudge(ref inspectMission, ref history);  //Prejudge is unnecessary;
-                    AETresult aetResult = AETresult.Get(inspectMission.HistoryID);
-                    PanelMission panelMission = new(inspectMission, aetResult);
-                    PreDownloadedPanelMissionQueue.Enqueue(panelMission);
-                    return true;
-                }
-                catch (NullReferenceException)
-                {
-                    SeverConnector.SendPanelMissionResult(new OperatorJudge(new Defect("异显", "DE00010"), User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, User.AutoJudgeUser.Id, 1), inspectMission);
-                    return PreLoadOneMission();
-                }
-            }
-            catch (NullReferenceException)
+            InspectMission? inspectMission = InspectMission.GetMission(productInfo);
+            if (inspectMission == null)
             {
                 return false;
             }
+            AETresult? aetResult = AETresult.Get(inspectMission.HistoryID);
+            if (aetResult == null)
+            {
+                SeverConnector.SendPanelMissionResult(new OperatorJudge(new Defect("异显", "DE00010"), User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, User.AutoJudgeUser.Id, 1), inspectMission);
+                return PreLoadOneMission();
+            }
+            else
+            {
+                PanelMission panelMission = new(inspectMission, aetResult);
+                PreDownloadedPanelMissionQueue.Enqueue(panelMission);
+                return true;
+            }
         }
 
+        /// <summary>
+        /// Dequeue one PanelMission to onInspPanelMission of PreDownloadedPanelMissionQueue if where are remaining missions
+        /// </summary>
+        /// <returns>True if PreDownloadedPanelMissionQueue success; False if PreDownloadedPanelMissionQueue is empty;</returns>
         public bool NextMission()
         {
             if (PreDownloadedPanelMissionQueue.Count == 0)
@@ -105,11 +96,19 @@ namespace EyeOfSauron
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Sum of preLoaded_mission quantity and remaining quantity of the product In DICSDB;</returns>
         public async Task<int> RemainMissionCount()
         {
             return PreDownloadedPanelMissionQueue.Count + await GetRemainingQuantityOfTheProduct();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Remaining quantity of the product In DICSDB;</returns>
         private async Task<int> GetRemainingQuantityOfTheProduct()
         {
             // get the remaining mission quantity to set viewmodel
@@ -120,27 +119,11 @@ namespace EyeOfSauron
             }
             return 0;
         }
-
-        public static bool PreJudge(ref InspectMission mission, ref PanelInspectHistory aetResult)
-        {
-            Defect defect = new("defactName", "defectCode");
-            if (true)
-            {
-                return false;
-            }
-            else
-            {
-                SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, User.AutoJudgeUser.Id, 1), mission);
-                return true;
-            }
-        }
-
-        public static void SendOpJudgeResult(Defect defect, User user, int score, InspectMission inspectMission)
-        {
-            SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, user.Username, user.Account, user.Id, score), inspectMission);
-        }
     }
 
+    /// <summary>
+    ///  Initialize with InspectMission and get ResultImage,DefectImage and ContoursImage by AETresult;
+    /// </summary>
     public class PanelMission
     {
         public List<ImageContainer> resultImageDataList = new();
@@ -149,16 +132,24 @@ namespace EyeOfSauron
 
         public List<BitmapImageContainer> bitmapImageContainers = new();
 
-        public BitmapImageContainer ContoursImageContainer;
+        public BitmapImageContainer ContoursImageContainer = new(new ImageContainer());
 
-        public InspectMission inspectMission;
+        public InspectMission? inspectMission;
 
         public AETresult aetResult;
 
-        public PanelMission(InspectMission mission)
+        public PanelMission(AETresult result)
+        {
+            aetResult = result;
+            IniResultImageDataList(aetResult.ResultImages);
+            IniDefectImageDataList(aetResult.DefectImages);
+            InitialContoursImage();
+        }
+
+        public PanelMission(InspectMission mission, AETresult result) 
         {
             inspectMission = mission;
-            aetResult = AETresult.Get(inspectMission.HistoryID);
+            aetResult = result;
             IniResultImageDataList(aetResult.ResultImages);
             IniDefectImageDataList(aetResult.DefectImages);
             InitialContoursImage();
@@ -166,17 +157,8 @@ namespace EyeOfSauron
 
         private void InitialContoursImage()
         {
-            DetailDefectContours defect = new DetailDefectContours(aetResult.AviContours, aetResult.SviContours);
+            DetailDefectContours defect = new(aetResult.AviContours, aetResult.SviContours);
             ContoursImageContainer = new(defect.GetImageContainer());
-        }
-
-        public PanelMission(InspectMission mission, AETresult result)
-        {
-            inspectMission = mission;
-            aetResult = result;
-            IniResultImageDataList(aetResult.ResultImages);
-            IniDefectImageDataList(aetResult.DefectImages);
-            InitialContoursImage();
         }
 
         public void IniResultImageDataList(ImageContainer[] ResultImages)
@@ -235,11 +217,14 @@ namespace EyeOfSauron
             }
         }
     }
-    
+
+    /// <summary>
+    /// Initialize BitmapImage with ImageContainer to show on UI;
+    /// </summary>
     public class BitmapImageContainer : ImageContainer
     {
         public BitmapImage? BitmapImage { get; set; }
-        //initialize with ImageContainer constructor
+        //Initialize with ImageContainer constructor
         public BitmapImageContainer(ImageContainer imageContainer) : base(imageContainer.Name, imageContainer.Data)
         {
             if (imageContainer == null || imageContainer.Data == null || imageContainer.Data.Length == 0)
@@ -251,6 +236,12 @@ namespace EyeOfSauron
             BitmapImage.StreamSource = new MemoryStream(imageContainer.Data);
             BitmapImage.EndInit();
             BitmapImage.Freeze();
+        }
+    }
+    public class MissionEmptyException : Exception
+    {
+        public MissionEmptyException(string? message) : base(message)
+        {
         }
     }
 }

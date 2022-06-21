@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Globalization;
+using EyeOfSauron.ViewModel;
+using System.Windows.Media;
+
 
 namespace EyeOfSauron.Converter
 {
-    public class Int32ToStringConverter : IValueConverter
+    public class EnumToStretchConverter : IValueConverter
     {
         public object Convert(object value, Type type, object parameter, CultureInfo culture)
         {
@@ -16,16 +16,22 @@ namespace EyeOfSauron.Converter
             {
                 throw new NotImplementedException();
             }
-            string output = "";
-            if (value is Int32)
+
+            var output = value switch
             {
-                output = "剩余任务数量：" + value.ToString();
-            }
+                ViewName.InspImageView or ViewName.Null => Stretch.Fill,
+                ViewName.ProductSelectView => Stretch.None,
+                _ => Stretch.None,
+            };
             return output;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            if (value == null)
+            {
+                throw new NotImplementedException();
+            }
+            return ViewName.Null;
         }
     }
 }

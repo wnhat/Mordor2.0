@@ -11,12 +11,10 @@ namespace CoreClass
 {
     public class DetailDefectContours
     {
-        // 生成图片尺寸；
-        static int cellX = 1500;
-        static int cellY = 600;
-        
-        Bitmap defectMap = new Bitmap(cellX, cellY);
-        Graphics graphics;
+        static readonly int cellX = 1500;
+        static readonly int cellY = 600;
+        readonly Bitmap defectMap = new(cellX, cellY);
+        readonly Graphics graphics;
         public DetailDefectContours(params string[] data)
         {
             // 绑定画布
@@ -28,6 +26,7 @@ namespace CoreClass
             // data 中的每一项都是contours文件中所有的数据；
             foreach (var item in data)
             {
+                if (item == null) continue;
                 GetDefectContours(item.Split('\n'));
             }
         }
@@ -45,7 +44,7 @@ namespace CoreClass
                     scaleX = Convert.ToDouble(cellSizeInfo[0].Substring(7)) / (double)cellX;
                     scaleY = Convert.ToDouble(cellSizeInfo[1].Substring(7)) / (double)cellY;
                 }
-                else if (s.StartsWith("No="))//
+                else if (s.StartsWith("No="))
                 {
                     string[] defectInfo = s.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                     int defectNum = Convert.ToInt32(defectInfo[0].Split(new char[] { '=' })[1]);
@@ -93,7 +92,7 @@ namespace CoreClass
         /// <param name="pointList"></param>
         private void DrawDefectMap(Point[] pointList)
         {
-            Pen defectDrawPen = new Pen(Color.White);
+            Pen defectDrawPen = new(Color.White);
             defectDrawPen.Width = (float)1.6;
             if (pointList.Length > 2)
             {
@@ -102,7 +101,7 @@ namespace CoreClass
         }
         public byte[] GetByte()
         {
-            MemoryStream buffer = new MemoryStream();
+            MemoryStream buffer = new();
             defectMap.Save(buffer, System.Drawing.Imaging.ImageFormat.Jpeg);
             return buffer.ToArray();
         }
@@ -112,7 +111,7 @@ namespace CoreClass
         }
         public ImageContainer GetImageContainer()
         {
-            ImageContainer imageContainer = new ImageContainer("Contours", GetByte());
+            ImageContainer imageContainer = new("Contours", GetByte());
             return imageContainer;
         }
     }

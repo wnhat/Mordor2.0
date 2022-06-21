@@ -1,170 +1,226 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Configuration;
-using System.Linq;
-using System.Windows.Data;
-using System.Windows.Controls;
-using MaterialDesignThemes.Wpf;
-using MaterialDesignThemes.Wpf.Transitions;
+﻿using System.Windows.Controls;
 using EyeOfSauron.MyUserControl;
+using CoreClass.Model;
+using System;
+using System.Windows;
+using MaterialDesignThemes.Wpf;
+using System.Linq;
+using CoreClass.Service;
+using System.Windows.Threading;
 
 namespace EyeOfSauron.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public MainWindowViewModel(ISnackbarMessageQueue snackbarMessageQueue, UserInfoViewModel userInfoViewModel)
+        public delegate void ValuePassHandler(object sender, RoutedEventArgs e);
+        public event ValuePassHandler? LoginRequestEvent;
+        public MainWindowViewModel(UserInfoViewModel userInfoViewModel):this()
         {
-            DemoItems = new ObservableCollection<DemoItem>(new[]
-            {
-                new DemoItem("Color Tool",
-                typeof(ColorTool),
-                new[]
-                {
-                    DocumentationLink.WikiLink("Brush-Names", "Brushes"),
-                    DocumentationLink.WikiLink("Custom-Palette-Hues", "Custom Palettes"),
-                    DocumentationLink.WikiLink("Swatches-and-Recommended-Colors", "Swatches"),
-                    DocumentationLink.DemoPageLink<ColorTool>("Demo View"),
-                    DocumentationLink.DemoPageLink<ColorToolViewModel>("Demo View Model"),
-                    DocumentationLink.ApiLink<PaletteHelper>()
-                } )
-            });
-
-
-            //foreach (var item in GenerateDemoItems(snackbarMessageQueue).OrderBy(i => i.Name))
-            //{
-            //    DemoItems.Add(item);
-            //}
-            
-            SelectedIndex = 0;
-            
-            _demoItemsView = CollectionViewSource.GetDefaultView(DemoItems);
-            _demoItemsView.Filter = DemoItemsFilter;
-            
-            MyUserControl = new ProductSelectWindow();
-            DemoItems.Add(new DemoItem("ProductSelectWindow", typeof(ProductSelectWindow), null));
-
-
-            HomeCommand = new CommandImplementation(
-                _ =>
-                {
-                    SearchKeyword = string.Empty;
-                    SelectedIndex = 0;
-                });
-
-            MovePrevCommand = new CommandImplementation(
-                _ =>
-                {
-                    if (!string.IsNullOrWhiteSpace(SearchKeyword))
-                        SearchKeyword = string.Empty;
-
-                    SelectedIndex--;
-                },
-                _ => SelectedIndex > 0);
-
-            MoveNextCommand = new CommandImplementation(
-               _ =>
-               {
-                   if (!string.IsNullOrWhiteSpace(SearchKeyword))
-                       SearchKeyword = string.Empty;
-
-                   SelectedIndex++;
-               },
-               _ => SelectedIndex < DemoItems.Count - 1);
+            UserInfo = userInfoViewModel;
         }
-
-        private readonly ICollectionView _demoItemsView;
-        private DemoItem? _selectedItem;
-        private int _selectedIndex;
-        private string? _searchKeyword;
-        private bool _controlsEnabled = true;
-        private ProductSelectWindow myUserControl;
-
         
-        public ProductSelectWindow MyUserControl
+        public MainWindowViewModel()
         {
-            get => myUserControl;
-            set => SetProperty(ref myUserControl, value);
+            MainContent = ProductSelectView;
+            DefectJudgeView.DefectJudgeEvent += new DefectJudgeView.ValuePassHandler(DefectJudge);
+            StartInspCommand = new CommandImplementation(StartInsp);
+            EndInspCommand = new CommandImplementation(_ => EndInsp());
+            _ = new DispatcherTimer(
+                    TimeSpan.FromMilliseconds(1000),
+                    DispatcherPriority.Normal,
+                    new EventHandler((o, e) =>
+                    {
+                        DateTime = DateTime.Now;
+                    }), Dispatcher.CurrentDispatcher);
+        }
+        private Mission? mission;
+        public PanelMission? onInspPanelMission;
+        private UserInfoViewModel userInfo = new();
+        private ProductSelectView productSelectView = new ();
+        private InspImageView inspImageView = new ();
+        private DefectJudgeView defectJudgeView = new();
+        private UserControl mainContent = new();
+        private ColorTool colorTool = new();
+        private DateTime dateTime = DateTime.Now;
+        private ViewName onShowView = ViewName.ProductSelectView;
+        public CommandImplementation StartInspCommand { get; }
+        public CommandImplementation EndInspCommand { get; }
+
+        public ViewName OnShowView
+        {
+            get => onShowView;
+            set => SetProperty(ref onShowView, value);
         }
 
-        public string? SearchKeyword
+        public DateTime DateTime
         {
-            get => _searchKeyword;
-            set
+            get => dateTime;
+            set => SetProperty(ref dateTime, value);
+        }
+
+        public DefectJudgeView DefectJudgeView
+        {
+            get => defectJudgeView;
+            set => SetProperty(ref defectJudgeView, value);
+        }
+
+        public ColorTool? ColorTool
+        {
+            get => colorTool;
+            set => SetProperty(ref colorTool, value);
+        }
+
+        public UserControl MainContent
+        {
+            get => mainContent;
+            set => SetProperty(ref mainContent, value);
+        }
+
+        public ProductSelectView ProductSelectView
+        {
+            get => productSelectView;
+            set => SetProperty(ref productSelectView, value);
+        }
+
+        public InspImageView InspImageView
+        {
+            get => inspImageView;
+            set => SetProperty(ref inspImageView, value);
+        }
+
+        public UserInfoViewModel UserInfo
+        {
+            get => userInfo;
+            set => SetProperty(ref userInfo, value);
+        }
+
+        //public DemoItem? ColorToolView
+        //{
+        //    get => colorToolView;
+        //    set => SetProperty(ref colorToolView, value);
+        //}
+
+        public void SetInspView()
+        {
+            MainContent = InspImageView;
+            OnShowView = ViewName.InspImageView;
+        }
+
+        public void SetProductSelectView()
+        {
+            ProductSelectView.GetMissions();
+            MainContent = ProductSelectView;
+            OnShowView = ViewName.ProductSelectView;
+        }
+
+        private async void StartInsp(object o)
+        {
+            if (UserInfo.UserExist)
             {
-                if (SetProperty(ref _searchKeyword, value))
+                if (o is ProductInfo && o != null)
                 {
-                    _demoItemsView.Refresh();
+                    SetInspView();
+                    ProductInfo productInfo = o as ProductInfo;
+                    try
+                    {
+                        mission = new(productInfo);
+                        LoadOnInspPanelMission();
+                        mission.FillPreDownloadMissionQueue();
+                    }
+                    catch (MissionEmptyException ex)
+                    {
+                        await DialogHost.Show(new MessageAcceptDialog { Message = { Text = ex.Message } }, "MainWindowDialog");
+                        SetProductSelectView();
+                    }
+                }
+            }
+            else
+            {
+                await DialogHost.Show(new MessageAcceptDialog { Message = { Text = "请登录后操作" } }, "MainWindowDialog");
+                LoginRequestEvent.Invoke(this, new RoutedEventArgs());
+            }
+        }
+
+        /// <summary>
+        /// Load one PanelMission to set InspImageViewModel and refresh the view;
+        /// </summary>
+        public async void LoadOnInspPanelMission()
+        {
+            if (mission?.onInspPanelMission != null)
+            {
+                InspImageView._viewModel.RemainingCount = await mission.RemainMissionCount();
+                InspImageView._viewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
+                InspImageView._viewModel.ProductInfo = new ProductInfoService().GetProductInfo(mission.onInspPanelMission.inspectMission.Info).Result;
+                InspImageView._viewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
+                InspImageView._viewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
+                InspImageView._viewModel.InspImage.DefectMapImage = mission.onInspPanelMission.ContoursImageContainer;
+                InspImageView._viewModel.DetailDefectList.AetDetailDefects.Clear();
+                foreach (var item in mission.onInspPanelMission.bitmapImageContainers)
+                {
+                    InspImageView._viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.Name, item.Name, item.BitmapImage));
+                }
+                if (InspImageView._viewModel.DetailDefectList.AetDetailDefects.Count != 0)
+                {
+                    InspImageView._viewModel.DetailDefectList.SelectedItem = InspImageView._viewModel.DetailDefectList.AetDetailDefects.FirstOrDefault();
+                }
+                InspImageView._viewModel.InspImage.refreshPage = 0;
+                InspImageView._viewModel.InspImage.RefreshImageMethod();
+            }
+        }
+
+        /// <summary>
+        /// Get next mission after a mission is finished;
+        /// </summary>
+        /// <returns> True if the mission have next PanelMission, false if the mission is empty;</returns>
+        public bool GetNextMission()
+        {
+            if (mission == null) return false;
+            mission.FillPreDownloadMissionQueue();
+            if (mission.NextMission())
+            {
+                LoadOnInspPanelMission();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private async void EndInsp()
+        {
+            var result = await DialogHost.Show(new MessageAcceptCancelDialog { Message = { Text = "退出当前检查任务" } }, "MainWindowDialog");
+            if (result is bool value)
+            {
+                if (value)
+                {
+                    SetProductSelectView();
                 }
             }
         }
 
-        public ObservableCollection<DemoItem> DemoItems { get; }
-
-        public DemoItem? SelectedItem
+        private void DefectJudge(object sender, DefectJudgeArgs e)
         {
-            get => _selectedItem;
-            set => SetProperty(ref _selectedItem, value);
-        }
-
-        public int SelectedIndex
-        {
-            get => _selectedIndex;
-            set => SetProperty(ref _selectedIndex, value);
-        }
-
-        public bool ControlsEnabled
-        {
-            get => _controlsEnabled;
-            set => SetProperty(ref _controlsEnabled, value);
-        }
-
-        public CommandImplementation HomeCommand { get; }
-        public CommandImplementation MovePrevCommand { get; }
-        public CommandImplementation MoveNextCommand { get; }
-
-        private static IEnumerable<DemoItem> GenerateDemoItems(ISnackbarMessageQueue snackbarMessageQueue)
-        {
-            if (snackbarMessageQueue is null)
-                throw new ArgumentNullException(nameof(snackbarMessageQueue));
-
-            yield return new DemoItem(
-                "Color Tool",
-                typeof(ColorTool),
-                new[]
-                {
-                    DocumentationLink.WikiLink("Brush-Names", "Brushes"),
-                    DocumentationLink.WikiLink("Custom-Palette-Hues", "Custom Palettes"),
-                    DocumentationLink.WikiLink("Swatches-and-Recommended-Colors", "Swatches"),
-                    DocumentationLink.DemoPageLink<ColorTool>("Demo View"),
-                    DocumentationLink.DemoPageLink<ColorToolViewModel>("Demo View Model"),
-                    DocumentationLink.ApiLink<PaletteHelper>()
-                });
-            
-            yield return new DemoItem(
-                "Color Tool",
-                typeof(ColorTool),
-                new[]
-                {
-                    DocumentationLink.WikiLink("Brush-Names", "Brushes"),
-                    DocumentationLink.WikiLink("Custom-Palette-Hues", "Custom Palettes"),
-                    DocumentationLink.WikiLink("Swatches-and-Recommended-Colors", "Swatches"),
-                    DocumentationLink.DemoPageLink<ColorTool>("Demo View"),
-                    DocumentationLink.DemoPageLink<ColorToolViewModel>("Demo View Model"),
-                    DocumentationLink.ApiLink<PaletteHelper>()
-                });
-        }
-
-        private bool DemoItemsFilter(object obj)
-        {
-            if (string.IsNullOrWhiteSpace(_searchKeyword))
+            Defect defect = e.Defect;
+            bool IsServerConnected = SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, UserInfo.User.Username, UserInfo.User.Account, UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
+            //Server offline;
+            if (!IsServerConnected)
             {
-                return true;
+                if (!GetNextMission())
+                {
+                    DialogHost.Show(new MessageAcceptDialog { Message = { Text = "There is no mission left" } }, "MainWindowDialog");
+                }
             }
-
-            return obj is DemoItem item
-                   && item.Name.ToLower().Contains(_searchKeyword!.ToLower());
+            else
+            {
+                DialogHost.Show(new ProgressMessageDialog(), "MainWindowDialog");
+            }
         }
+    }
+    public enum ViewName
+    {
+        Null,
+        InspImageView,
+        ProductSelectView
     }
 }

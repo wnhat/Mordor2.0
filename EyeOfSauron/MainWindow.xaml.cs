@@ -2,68 +2,37 @@
 using System.Diagnostics;
 using EyeOfSauron.ViewModel;
 using MaterialDesignThemes.Wpf;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
+using System.Windows.Controls;
 using EyeOfSauron.MyUserControl;
 
 namespace EyeOfSauron
 {
-    public partial class MainWindow
+    public partial class MainWindow : Window
     {
         public static Snackbar Snackbar = new();
-        public MainWindow(UserInfoViewModel userInfoViewModel)
+
+        private readonly MainWindowViewModel _viewModel;
+        
+        private LogininWindow loginWindow = new();
+
+        public MainWindow()
         {
             InitializeComponent();
-
-            Task.Factory.StartNew(() => Thread.Sleep(2500)).ContinueWith(t =>
-            {
-                //note you can use the message queue from any thread, but just for the demo here we 
-                //need to get the message queue from the snackbar, so need to be on the dispatcher
-                MainSnackbar.MessageQueue?.Enqueue("Welcome Login to Eye of Sauron");
-            }, TaskScheduler.FromCurrentSynchronizationContext());
-
-            DataContext = new MainWindowViewModel(MainSnackbar.MessageQueue!, userInfoViewModel);
-
-            var paletteHelper = new PaletteHelper();
-            var theme = paletteHelper.GetTheme();
-
-            DarkModeToggleButton.IsChecked = theme.GetBaseTheme() == BaseTheme.Dark;
-
-            if (paletteHelper.GetThemeManager() is { } themeManager)
-            {
-                themeManager.ThemeChanged += (_, e)
-                    => DarkModeToggleButton.IsChecked = e.NewTheme?.GetBaseTheme() == BaseTheme.Dark;
-            }
-
+            _viewModel = new();
+            _viewModel.LoginRequestEvent += LoginButton_Click;
+            DataContext = _viewModel;
             Snackbar = MainSnackbar;
+            loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
         }
 
-        private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void AccountAuthenticate(object sender, AccountAuthenticateEventArgs arges)
         {
-            //until we had a StaysOpen glag to Drawer, this will help with scroll bars
-            var dependencyObject = Mouse.Captured as DependencyObject;
-
-            while (dependencyObject != null)
-            {
-                if (dependencyObject is ScrollBar) return;
-                dependencyObject = VisualTreeHelper.GetParent(dependencyObject);
-            }
-
-            MenuToggleButton.IsChecked = false;
-        }
-
-        private async void MenuPopupButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            var sampleMessageDialog = new SampleMessageDialog
-            {
-                Message = { Text = ((ButtonBase)sender).Content.ToString() }
-            };
-
-            await DialogHost.Show(sampleMessageDialog, "RootDialog");
+            _viewModel.UserInfo.User = arges.User;
+            loginWindow.Close();
+            MainSnackbar.MessageQueue?.Enqueue(string.Format("Welcome to Eye Of Sauron, {0}", _viewModel.UserInfo.User.Username));
         }
 
         private void OnCopy(object sender, ExecutedRoutedEventArgs e)
@@ -81,12 +50,9 @@ namespace EyeOfSauron
             }
         }
 
-        private void MenuToggleButton_OnClick(object sender, RoutedEventArgs e) 
+        private void ColorToolToggleButton_OnClick(object sender, RoutedEventArgs e) 
             => MainScrollViewer.Focus();
-
-        private void MenuDarkModeButton_Click(object sender, RoutedEventArgs e) 
-            => ModifyTheme(DarkModeToggleButton.IsChecked == true);
-
+        
         private static void ModifyTheme(bool isDarkTheme)
         {
             var paletteHelper = new PaletteHelper();
@@ -96,13 +62,74 @@ namespace EyeOfSauron
             paletteHelper.SetTheme(theme);
         }
 
-        private void OnSelectedItemChanged(object sender, DependencyPropertyChangedEventArgs e)
-            => MainScrollViewer.ScrollToHome();
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void PanelidLableMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            //Window window = new LogininWindow();
-            //window.ShowDialog();
+            string? text = ((Button)sender).Content.ToString();
+            Clipboard.SetDataObject(text);
+            MainSnackbar.MessageQueue?.Enqueue("复制成功");
+        }
+
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_viewModel.UserInfo.UserExist)
+            {
+                loginWindow = new();
+                loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
+                loginWindow.ShowDialog();
+            }
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Enter:
+                case Key.Space:
+                    e.Handled = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private async void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel.UserInfo.UserExist)
+            {
+                var result = await DialogHost.Show(new MessageAcceptCancelDialog { Message = { Text = "退出登录，将退出当前任务"} }, "MainWindowDialog");
+                if(result is bool value)
+                {
+                    if (value)
+                    {
+                        _viewModel.UserInfo.Logout();
+                        _viewModel.SetProductSelectView();
+                        MainSnackbar.MessageQueue?.Enqueue("退出登录成功");
+                    }
+                }
+            }
+        }
+
+        private async void SampleViewButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel.UserInfo.UserExist)
+            {
+                SampleViewWindow sampleViewWindow = new();
+                sampleViewWindow.ShowDialog();
+            }
+            else
+            {
+                await DialogHost.Show(new MessageAcceptDialog { Message = { Text = "请登录后操作" } }, "MainWindowDialog");
+            }
+                
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            foreach (Window w in Application.Current.Windows)
+            {
+                if (w != this)
+                    w.Close();
+            }
         }
     }
 }

@@ -9,26 +9,28 @@ namespace EyeOfSauron.ViewModel
 {
     public class MissionInfoViewModel : ViewModelBase
     {
-        private string panelId = "";
-
-        private ProductInfo productInfo;
-
-        private int remainingCount;
-
-        public DefectListViewModel DetailDefectList { get; }
-
-        public InspImageViewModel InspImage { get; }
-
         public MissionInfoViewModel()
         {
             DetailDefectList = new();
             InspImage = new();
         }
+        
+        private string panelId = "";
+        
+        private ProductInfo? productInfo;
+
+        private int remainingCount;
 
         public string PanelId
         {
             get => panelId;
             set => SetProperty(ref panelId, value);
+        }
+
+        public int RemainingCount
+        {
+            get => remainingCount;
+            set => SetProperty(ref remainingCount, value);
         }
 
         public ProductInfo ProductInfo
@@ -37,41 +39,52 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref productInfo, value);
         }
 
-        public int RemainingCount
-        {
-            get => remainingCount;
-            set => SetProperty(ref remainingCount, value);
-        }
+        public DefectListViewModel DetailDefectList { get; }
+
+        public InspImageViewModel InspImage { get; }
     }
 
     public class InspImageViewModel : ViewModelBase
     {
+        
+        
         public int refreshPage = 0;
 
         public bool isVisible = false;
 
-        private BitmapImage _defaultImage = new();
+        private BitmapImage defaultImage = new();
+
+        private BitmapImageContainer? defectMapImage;
 
         static readonly Uri _defaultImageUri = new(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
 
         private ObservableCollection<BitmapImageContainer>? inspImages;
 
-        private ImageContainer[] inspImageArray1 = new ImageContainer[3];
-
         public List<ImageContainer> resultImageDataList = new();
 
         public List<ImageContainer> defectImageDataList = new();
 
-        public bool IsVisible
+        public InspImageViewModel()
+        {
+            defaultImage.BeginInit();
+            defaultImage.UriSource = _defaultImageUri;
+            defaultImage.EndInit();
+            defaultImage.Freeze();
+            inspImages = new ObservableCollection<BitmapImageContainer>
+            {
+                new BitmapImageContainer(new ImageContainer()),
+                new BitmapImageContainer(new ImageContainer()),
+                new BitmapImageContainer(new ImageContainer())
+            };
+            RefreshImageCommand = new(
+                _ => RefreshImageMethod(),
+                _ => resultImageDataList != null);
+        }
+
+        public bool ImageLableIsVisible
         {
             get => isVisible;
             set => SetProperty(ref isVisible, value);
-        }
-
-        public ImageContainer[] InspImageArray1
-        {
-            get => inspImageArray1;
-            set => SetProperty(ref inspImageArray1, value);
         }
 
         public ObservableCollection<BitmapImageContainer> InspImages
@@ -80,31 +93,20 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref inspImages, value);
         }
 
-        public InspImageViewModel()
-        {
-            _defaultImage.BeginInit();
-            _defaultImage.UriSource = _defaultImageUri;
-            _defaultImage.EndInit();
-            _defaultImage.Freeze();
-            inspImages = new ObservableCollection<BitmapImageContainer>
-            {
-                new BitmapImageContainer(new ImageContainer()),
-                new BitmapImageContainer(new ImageContainer()),
-                new BitmapImageContainer(new ImageContainer())
-            };
-            RefreshImageCommand = new CommandImplementation(
-                _ => RefreshImageMethod(),
-                _ => resultImageDataList != null);
-        }
-
         public BitmapImage DefaultImage
         {
-            get => _defaultImage;
-            set => SetProperty(ref _defaultImage, value);
+            get => defaultImage;
+            set => SetProperty(ref defaultImage, value);
+        }
+
+        public BitmapImageContainer DefectMapImage
+        {
+            get => defectMapImage;
+            set => SetProperty(ref defectMapImage, value);
         }
 
         public CommandImplementation RefreshImageCommand { get; }
-
+        
         public void RefreshImageMethod()
         {
             if (resultImageDataList.Count == 0)
@@ -127,7 +129,6 @@ namespace EyeOfSauron.ViewModel
         }
     }
 
-    //This class shoudl be rewrite;
     public sealed class DefectListViewModel : ViewModelBase
     {
         private AetDetailDefect? selectedItem;
@@ -136,28 +137,8 @@ namespace EyeOfSauron.ViewModel
 
         public DefectListViewModel()
         {
-            AetDetailDefects = new ObservableCollection<AetDetailDefect>
-            {
-                new AetDetailDefect("InnerDefect1","0001"),
-                new AetDetailDefect("InnerDefect2","0002"),
-            };
-
+            AetDetailDefects = new ObservableCollection<AetDetailDefect>{ };
             SelectedItem = AetDetailDefects.FirstOrDefault();
-
-            SelectedItemChangedCommand = new CommandImplementation(
-                _ =>
-                {
-                    var aetDetailDefect = SelectedItem as AetDetailDefect;
-                    if (aetDetailDefect != null)
-                    {
-
-                    }
-                    else
-                    {
-
-                    }
-                },
-                _ => SelectedItem != null);
         }
 
         public AetDetailDefect? SelectedItem
@@ -171,8 +152,6 @@ namespace EyeOfSauron.ViewModel
             get => aetDetailDefects;
             set => SetProperty(ref aetDetailDefects, value);
         }
-
-        public CommandImplementation SelectedItemChangedCommand { get; }
 
     }
 

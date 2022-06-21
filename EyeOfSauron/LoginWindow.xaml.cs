@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using EyeOfSauron.ViewModel;
-
+using CoreClass.Model;
+using MaterialDesignThemes.Wpf;
+using EyeOfSauron.MyUserControl;
 
 namespace EyeOfSauron
 {
@@ -22,33 +12,47 @@ namespace EyeOfSauron
     /// </summary>
     public partial class LogininWindow : Window
     {
+        public delegate void ValuePassHandler(object sender, AccountAuthenticateEventArgs e);
+        public event ValuePassHandler? AccountAuthenticateEvent ;
         private readonly UserInfoViewModel _viewModel;
+
         public LogininWindow()
         {
             _viewModel = new UserInfoViewModel();
             DataContext = _viewModel;
+            InitializeComponent();
         }
+        
         private void LoginButtonClick(object sender, RoutedEventArgs e)
         {
-            try
+            var authenticateResult = _viewModel.Authenticate(userNameTextBox.Text, passwordTextBox.Password);
+            switch (authenticateResult)
             {
-            _viewModel.Authenticate(userNameTextBox.Text, passwordTextBox.Password);
-            ProductSelectWindow window = new ProductSelectWindow();
-            window._viewModel.UserInfoViewModel = _viewModel;
-            //Window window = new MainWindow(_viewModel);
-            Hide();
-            window.ShowDialog();
-            Show();
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
+                case AuthenticateResult.Success:
+                    AccountAuthenticateEventArgs arges = new(_viewModel.User);
+                    AccountAuthenticateEvent?.Invoke(this, arges);
+                    break;
+                case AuthenticateResult.EmptyInput:
+                    break;
+                case AuthenticateResult.AccountNotExist:
+                    DialogHost.Show(new MessageAcceptDialog { Message = { Text = "用户不存在" } }, "LoginWindowDialogHost");
+                    break;
+                case AuthenticateResult.PasswordError:
+                    DialogHost.Show(new MessageAcceptDialog { Message = { Text = "密码错误" } }, "LoginWindowDialogHost");
+                    break;
+                default:
+                    break;
             }
         }
+    }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+    public class AccountAuthenticateEventArgs : EventArgs
+    {
+        public User User { get; set; }
+
+        public AccountAuthenticateEventArgs(User user)
         {
-            Application.Current.Shutdown();
+            this.User = user;
         }
     }
 }

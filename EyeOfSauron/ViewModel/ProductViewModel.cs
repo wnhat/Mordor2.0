@@ -1,17 +1,10 @@
-﻿using System;
-using System.Windows;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MongoDB.Driver;
-using CoreClass;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using CoreClass.Model;
 
 namespace EyeOfSauron.ViewModel
 {
-    
+
     public class ProductViewModel : ViewModelBase
     {
         public UserInfoViewModel userInfoViewModel = new();
@@ -20,13 +13,24 @@ namespace EyeOfSauron.ViewModel
 
         private ProductCardViewModel? selectedProductCardViewModel;
 
-        public ProductViewModel(UserInfoViewModel userInfo)
-        {
-            this.userInfoViewModel = userInfo;
-        }
-        
+        private double refreshButtonProgressValue;
+
+        private bool isMissionFreshAllowable = true;
+
         public ProductViewModel() { }
-        
+
+        public double RefreshButtonProgressValue
+        {
+            get => refreshButtonProgressValue;
+            set => SetProperty(ref refreshButtonProgressValue, value);
+        }
+
+        public bool IsMissionFreshAllowable
+        {
+            get => isMissionFreshAllowable;
+            set => SetProperty(ref isMissionFreshAllowable, value);
+        }
+
         public UserInfoViewModel UserInfoViewModel
         {
             get => this.userInfoViewModel;

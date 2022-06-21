@@ -205,7 +205,7 @@ namespace CoreClass.Model
                             }
                         }
                         // 添加contours；
-                        var contours = dir.GetFileContainer("Contours");
+                        var contours = dir.GetFileContainer("Contours.Merge");
                         if (contours != null)
                         {
                             this.AviContours = new String(Encoding.UTF8.GetChars(contours.Data));
@@ -251,6 +251,13 @@ namespace CoreClass.Model
             var getresult = AETresultCollection.Find(x => x.history.ID == id).FirstOrDefault();
             return getresult;
         }
+
+        public static AETresult Get(string panelId)
+        {
+            var getresults = AETresultCollection.Find(x => x.PanelId == panelId);
+            var getresult = getresults.ToList().LastOrDefault();
+            return getresult;
+        }
     }
 
     public class ImageContainer
@@ -270,6 +277,14 @@ namespace CoreClass.Model
         {
             Name = name;
             Data = data;
+        }
+
+        public static ImageContainer GetDefult
+        {
+            get
+            {
+                return new ImageContainer("None", Array.Empty<byte>());
+            }
         }
     }
     public class DefectInfo

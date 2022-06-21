@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using MongoDB.Driver;
-using MongoDB.Bson.Serialization.Attributes;
 using System.Security.Cryptography;
-using System.Drawing;
-using System.Drawing.Imaging;
 using CoreClass;
 using CoreClass.Model;
 
@@ -15,73 +10,64 @@ namespace EyeOfSauron.ViewModel
 {
     public class UserInfoViewModel : ViewModelBase
     {
-        private User _user;
+        private User? user;
 
         public UserInfoViewModel()
         {
-            _user = new User();
+            
+        }
+
+        public UserInfoViewModel(User user)
+        {
+            this.user = user;
         }
 
         public User User
         {
-            get => _user;
-            set => SetProperty(ref _user, value);
+            get => user;
+            set => SetProperty(ref user, value);
         }
 
-        public void Authenticate(string account, string password)
+        public AuthenticateResult Authenticate(string account, string password)
         {
             if (string.IsNullOrEmpty(account) || string.IsNullOrEmpty(password))
             {
-                throw new Exception("Empty input");
+                return AuthenticateResult.EmptyInput;
             }
             var collection = DBconnector.DICSDB.GetCollection<User>("User");
             var filter = Builders<User>.Filter.Eq("Account", account);
-            _user = collection.Find(filter).FirstOrDefault();
-            if (_user == null)
+            User = collection.Find(filter).FirstOrDefault();
+            if (User == null)
             {
-                throw new Exception("Account not exist");
+                return AuthenticateResult.AccountNotExist;
             }
-            else if (!_user.VerifyPasswordHash(password))
+            else if (!User.VerifyPasswordHash(password))
             {
-                throw new Exception("Password error");
-            }
-        }
-
-        public bool UserExist()
-        {
-            if (_user != null)
-            {
-                return true;
+                return AuthenticateResult.PasswordError;
             }
             else
             {
-                return false;
+                return AuthenticateResult.Success;
             }
         }
 
-        private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
+        public bool UserExist
         {
-            if (password == null)
-            {
-                throw new ArgumentNullException(nameof(password));
-            }
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new ArgumentException("Value cannot be empty or whitespace.", nameof(password));
-            }
-            if (storedHash.Length != 64)
-            {
-                throw new ArgumentException("Invalid length of password hash (64 bytes expected).", nameof(storedHash));
-            }
-            if (storedSalt.Length != 128)
-            {
-                throw new ArgumentException("Invalid length of password salt (128 bytes expected).", nameof(storedSalt));
-            }
-            using (var hmac = new HMACSHA512(storedSalt))
-            {
-                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return Enumerable.SequenceEqual(computedHash, storedHash);
-            }
+            get => !(user == null || user.Equals(User.AutoJudgeUser));
         }
+
+        public void Logout()
+        {
+            //Incase view binding error,show something after logedout;
+            User = User.AutoJudgeUser;
+        }
+    }
+
+    public enum AuthenticateResult
+    {
+        EmptyInput,
+        AccountNotExist,
+        PasswordError,
+        Success
     }
 }

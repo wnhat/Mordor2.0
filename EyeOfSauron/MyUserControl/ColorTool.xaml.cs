@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace EyeOfSauron.MyUserControl
 {
-    public partial class ColorTool:UserControl
+    public partial class ColorTool : UserControl
     {
         public ColorTool()
         {

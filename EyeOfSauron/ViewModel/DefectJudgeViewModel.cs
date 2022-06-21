@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using CoreClass;
 using CoreClass.Model;
+using System.Windows.Controls;
 
 namespace EyeOfSauron.ViewModel
 {
