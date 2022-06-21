@@ -7,6 +7,10 @@ using MaterialDesignThemes.Wpf;
 using EyeOfSauron.MyUserControl;
 using System.Text.RegularExpressions;
 using CoreClass.Model;
+using CoreClass.Service;
+using System.Linq;
+using System.Windows.Threading;
+using System;
 
 namespace EyeOfSauron
 {
@@ -16,7 +20,6 @@ namespace EyeOfSauron
     public partial class SampleViewWindow : Window
     {
         private readonly SampleViewerViewModel _viewModel;
-        
         public SampleViewWindow()
         {
             InitializeComponent();
@@ -33,7 +36,7 @@ namespace EyeOfSauron
 
         private void PanelidLableMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            string? text = ((Label)sender).Content.ToString();
+            string? text = ((Button)sender).Content.ToString();
             Clipboard.SetDataObject(text);
             MainSnackbar.MessageQueue?.Enqueue("复制成功");
         }
@@ -47,46 +50,69 @@ namespace EyeOfSauron
             }
             if (!string.IsNullOrWhiteSpace(ResultPanelList.InputTextBox.Text))
             {
-                List<string> lines = new();
-                int lineCount = ResultPanelList.InputTextBox.LineCount;
-                for (int line = 0; line < lineCount; line++)
+                Regex regex = new(@"7[0-9,A-Z][0-9][0-9,A-Z][0-9][1-9,X-Z][0-9,D,E][0-9]{3}[A-C][0-9][A-B][A-B][A-Z][0-2][0-9]");
+                string inputText = ResultPanelList.InputTextBox.Text.ToUpper().Replace(" ", "");
+                var panelIdList = regex.Matches(inputText);
+                foreach (Match item in panelIdList)
                 {
-                    lines.Add(ResultPanelList.InputTextBox.GetLineText(line).Trim());
+                    List<string> list = new();
+                    string panelId = item.Value;
+                    if (!list.Contains(panelId))
+                    {
+                        list.Add(panelId);
+                        var aetResults = AETresult.Get(panelId);
+                        if (aetResults != null)
+                        {
+                            foreach (var aetResult in aetResults)
+                            {
+                                PanelMission panelMission = new(aetResult);
+                                ResultPanelList.viewModel.PanelList.Add(new PanelSampleContainer(panelMission));
+                            }
+                        }
+                    }
+                }
+                if (ResultPanelList.viewModel.PanelList.Count > 0)
+                {
+                    ResultPanelList.viewModel.selectedItem = ResultPanelList.viewModel.PanelList[0];
                 }
                 ResultPanelList.InputTextBox.Clear();
-                foreach (string item in lines)
-                {
-
-                    ResultPanelList.viewModel.PanelList.Add(new PanelSampleContainer(item));
-                }
             }
         }
-        //public void setSampleView(string panelId)
-        //{
-        //    string pattern = @"^\d+$";
-        //    Regex rg = new(pattern, RegexOptions.Multiline | RegexOptions.Singleline);
-        //    _ = rg.Match(ResultPanelList.InputTextBox.Text).Value;
-        //    AETresult aETresult = AETresult.Get(panelId);
-        //    PanelMission panelMission = new(aETresult);
-        //}
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            if (ResultPanelList.viewModel.selectedItem != null)
+            {
+                _viewModel.InspImageView._viewModel.PanelId = ResultPanelList.viewModel.selectedItem.PanelMission.AetResult.PanelId;
+                _viewModel.InspImageView._viewModel.InspImage.resultImageDataList = ResultPanelList.viewModel.selectedItem.PanelMission.resultImageDataList;
+                _viewModel.InspImageView._viewModel.InspImage.defectImageDataList = ResultPanelList.viewModel.selectedItem.PanelMission.defectImageDataList;
+                _viewModel.InspImageView._viewModel.InspImage.DefectMapImage = ResultPanelList.viewModel.selectedItem.PanelMission.ContoursImageContainer;
+                _viewModel.InspImageView._viewModel.DetailDefectList.AetDetailDefects.Clear();
+                foreach (var item in ResultPanelList.viewModel.selectedItem.PanelMission.bitmapImageContainers)
+                {
+                    _viewModel.InspImageView._viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.Name, item.Name, item.BitmapImage));
+                }
+                if (_viewModel.InspImageView._viewModel.DetailDefectList.AetDetailDefects.Count != 0)
+                {
+                    _viewModel.InspImageView._viewModel.DetailDefectList.SelectedItem = _viewModel.InspImageView._viewModel.DetailDefectList.AetDetailDefects.FirstOrDefault();
+                }
+                _viewModel.InspImageView._viewModel.InspImage.refreshPage = 0;
+                _viewModel.InspImageView._viewModel.InspImage.RefreshImageMethod();
+            }
         }
 
         private void PanelListBoxClearButton_Click(object sender, RoutedEventArgs e)
         {
             ResultPanelList.viewModel.PanelList.Clear();
-            //await DialogHost.Show(new MessageAcceptCancelDialog { Message = { Text = "确认清除"} }, "PanelListViewDialog");
         }
 
-        private void MessageAcceptCancelDialog_OnDialogClosing(object sender, DialogClosingEventArgs eventArgs)
+        private void MessageAcceptCancelDialog_OnDialogClosing(object sender, DialogClosingEventArgs e)
         {
-            if (Equals(eventArgs.Parameter, true))
+            if (Equals(e.Parameter, true))
             {
                 ResultPanelList.viewModel.PanelList.Clear();
             }
         }
+
     }
 }

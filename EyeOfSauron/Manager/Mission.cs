@@ -136,28 +136,28 @@ namespace EyeOfSauron
 
         public InspectMission? inspectMission;
 
-        public AETresult aetResult;
+        public AETresult AetResult { get; set; }
 
         public PanelMission(AETresult result)
         {
-            aetResult = result;
-            IniResultImageDataList(aetResult.ResultImages);
-            IniDefectImageDataList(aetResult.DefectImages);
+            AetResult = result;
+            IniResultImageDataList(AetResult.ResultImages);
+            IniDefectImageDataList(AetResult.DefectImages);
             InitialContoursImage();
         }
 
         public PanelMission(InspectMission mission, AETresult result) 
         {
             inspectMission = mission;
-            aetResult = result;
-            IniResultImageDataList(aetResult.ResultImages);
-            IniDefectImageDataList(aetResult.DefectImages);
+            AetResult = result;
+            IniResultImageDataList(AetResult.ResultImages);
+            IniDefectImageDataList(AetResult.DefectImages);
             InitialContoursImage();
         }
 
         private void InitialContoursImage()
         {
-            DetailDefectContours defect = new(aetResult.AviContours, aetResult.SviContours);
+            DetailDefectContours defect = new(AetResult.AviContours, AetResult.SviContours);
             ContoursImageContainer = new(defect.GetImageContainer());
         }
 

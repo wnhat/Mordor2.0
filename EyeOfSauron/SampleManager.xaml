@@ -5,9 +5,9 @@
     xmlns:Converter="clr-namespace:EyeOfSauron.Converter"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:EyeOfSauron"
-    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:uc="clr-namespace:EyeOfSauron.MyUserControl"
     xmlns:viewmodel="clr-namespace:EyeOfSauron.ViewModel"
     Title="SampleManager"
@@ -32,9 +32,7 @@
         <materialDesign:DialogHost.DialogContent>
             <StackPanel Margin="16">
                 <TextBlock Text="Add Panel ID" />
-                <TextBlock
-                    x:Name="DialogMessage"
-                    Margin="0,8,0,0"/>
+                <TextBlock x:Name="DialogMessage" Margin="0,8,0,0" />
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                     <Button
                         Margin="0,8,8,0"
@@ -83,17 +81,19 @@
                     DockPanel.Dock="Top"
                     Mode="PrimaryMid">
                     <DockPanel>
-                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                            <Label
-                                VerticalAlignment="Center"
-                                HorizontalContentAlignment="Center"
-                                Content="{Binding DataContext.PanelId, ElementName=ImageView,FallbackValue={}}"
-                                MouseDoubleClick="PanelidLableMouseDoubleClick"
-                                ToolTip="Double Click to Copy" />
+                        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                             <TextBlock
                                 VerticalAlignment="Center"
-                                FontSize="20"
+                                FontSize="14"
                                 Text="{Binding DateTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" />
+                            <Separator Width="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                            <Button
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Center"
+                                Content="{Binding InspImageView.DataContext.PanelId, FallbackValue=PanelID}"
+                                MouseDoubleClick="PanelidLableMouseDoubleClick"
+                                Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                                ToolTip="Double Click to Copy" />
                         </StackPanel>
                         <ToggleButton
                             x:Name="ColorToolToggleButton"
@@ -104,14 +104,13 @@
                             Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
                         <!--  Fill the middle  -->
                         <TextBlock VerticalAlignment="Center" />
-                       
+
                     </DockPanel>
                 </materialDesign:ColorZone>
+                <ProgressBar IsIndeterminate="True" Value="{Binding LoadMissionProgressValue, FallbackValue=100}" />
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
-                        <!--  LastRowHeight=0 to show Snackbar  -->
-                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -119,7 +118,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Viewbox
-                            Margin="10,10,10,10"
+                            Margin="10,10,0,10"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Top"
                             Stretch="None">
@@ -140,14 +139,12 @@
                             Grid.Column="1"
                             Margin="10,10,10,10"
                             Stretch="Fill">
-                            <uc:InspImageView x:Name="ImageView" />
-                            <!--<ContentPresenter Content="{Binding InspImageView}" />-->
+                            <!--<uc:InspImageView x:Name="ImageView" />-->
+                            <ContentPresenter x:Name="ImageView" Content="{Binding InspImageView}" />
                         </Viewbox>
                     </Grid>
-
                     <materialDesign:Snackbar
                         x:Name="MainSnackbar"
-                        Grid.Row="2"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Bottom"
                         MessageQueue="{materialDesign:MessageQueue}" />

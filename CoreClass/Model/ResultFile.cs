@@ -252,11 +252,10 @@ namespace CoreClass.Model
             return getresult;
         }
 
-        public static AETresult Get(string panelId)
+        public static List<AETresult> Get(string panelId)
         {
             var getresults = AETresultCollection.Find(x => x.PanelId == panelId);
-            var getresult = getresults.ToList().LastOrDefault();
-            return getresult;
+            return getresults.ToList();
         }
     }
 

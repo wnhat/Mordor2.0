@@ -17,7 +17,7 @@ namespace CoreClass
         readonly Graphics graphics;
         public DetailDefectContours(params string[] data)
         {
-            // 绑定画布
+            //绑定画布
             graphics = Graphics.FromImage(defectMap);
             //添加背景颜色
             SolidBrush solidBrush = new SolidBrush(Color.FromArgb(69, 99, 73));
@@ -40,7 +40,7 @@ namespace CoreClass
                 string s = L.ElementAt(i);
                 if (s.StartsWith("Cell_X"))//记录cell尺寸
                 {
-                    string[] cellSizeInfo = s.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] cellSizeInfo = s.Replace(" ","").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                     scaleX = Convert.ToDouble(cellSizeInfo[0].Substring(7)) / (double)cellX;
                     scaleY = Convert.ToDouble(cellSizeInfo[1].Substring(7)) / (double)cellY;
                 }
@@ -57,7 +57,7 @@ namespace CoreClass
                     }
                     points.Clear();
                 }
-                else
+                else if( s != "" )
                 {
                     string[] pointLocation = s.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                     int pointX = Convert.ToInt32(pointLocation[0]);

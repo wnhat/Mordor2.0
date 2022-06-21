@@ -87,7 +87,10 @@ namespace CoreClass.Service
             return result;
         }
 
-        // Get all unfinished mission and group by productinfo;
+        /// <summary>
+        /// Get all unfinished mission and group by productinfo;
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<BsonDocument>> GetRemainMissionCount()
         {
             // Find unfinished and unrequested mission, then aggregate by productinfo;

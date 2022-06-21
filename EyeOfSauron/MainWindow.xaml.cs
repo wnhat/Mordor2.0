@@ -119,8 +119,8 @@ namespace EyeOfSauron
             else
             {
                 await DialogHost.Show(new MessageAcceptDialog { Message = { Text = "请登录后操作" } }, "MainWindowDialog");
-            }
-                
+                LoginButton_Click(sender, e);
+            } 
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

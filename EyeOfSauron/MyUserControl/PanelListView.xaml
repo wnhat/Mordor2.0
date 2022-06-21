@@ -12,6 +12,14 @@
     Height="600"
     d:DataContext="{d:DesignInstance Type=viewmodel:PanelListViewModel}"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <materialDesign:DialogHost
         x:Name="PanelListViewDialog"
         DialogMargin="8"
@@ -69,14 +77,14 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn DisplayMemberBinding="{Binding PanelId}" Header="PanelID" />
-                        <GridViewColumn DisplayMemberBinding="{Binding PanelId}" Header="EqpID" />
-                        <GridViewColumn DisplayMemberBinding="{Binding PanelId}" Header="DateTime" />
+                        <GridViewColumn DisplayMemberBinding="{Binding PanelMission.AetResult.EqName}" Header="EqpID" />
+                        <GridViewColumn DisplayMemberBinding="{Binding InspDate, StringFormat={}{0:MM-dd HH:mm:ss}}" Header="DateTime" />
                     </GridView>
                 </ListView.View>
             </ListView>
             <StackPanel
                 Grid.Row="0"
-                Margin="0,0,28,10"
+                Margin="0,0,20,10"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom">
                 <Button
@@ -84,6 +92,8 @@
                     Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
                     Content="{materialDesign:PackIcon Kind=Plus,
                                                       Size=22}"
+                    Focusable="False"
+                    IsTabStop="True"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"
                     ToolTip="Get Panel Sample By ID" />
                 <Button
@@ -91,6 +101,7 @@
                     Margin="0,10,0,0"
                     Content="{materialDesign:PackIcon Kind=ArchiveRemove,
                                                       Size=22}"
+                    IsTabStop="False"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"
                     ToolTip="Clean The Panel Sample List" />
             </StackPanel>

@@ -6,6 +6,7 @@ using MongoDB.Driver;
 using EyeOfSauron.ViewModel;
 using CoreClass.Service;
 using System.Windows.Threading;
+using MongoDB.Bson;
 
 namespace EyeOfSauron.MyUserControl
 {
@@ -44,8 +45,8 @@ namespace EyeOfSauron.MyUserControl
             foreach (var item in remainMissionCount)
             {
                 // Convert the first BsonElement in the item to ProductInfo;
-                var buffer = item.GetValue("_id").AsObjectId;
-                var productInfo = new ProductInfoService().GetProductInfo(buffer).Result;
+                var productObjectId = item.GetValue("_id").AsObjectId;
+                var productInfo = new ProductInfoService().GetProductInfo(productObjectId).Result;
                 int count = item.GetValue("count").ToInt32();
                 _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfo, count)));
             }
