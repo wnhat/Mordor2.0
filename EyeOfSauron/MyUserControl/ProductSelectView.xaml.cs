@@ -7,6 +7,7 @@ using EyeOfSauron.ViewModel;
 using CoreClass.Service;
 using System.Windows.Threading;
 using MongoDB.Bson;
+using CoreClass;
 
 namespace EyeOfSauron.MyUserControl
 {
@@ -41,19 +42,32 @@ namespace EyeOfSauron.MyUserControl
             // Get the remaining mission quantity to set viewmodel;
             _viewModel.ProductInfos.Clear();
             //Issue: Thread will be waiting here if DICSDB no connection;
-            var remainMissionCount = await RemainService.GetRemainMissionCount();
-            foreach (var item in remainMissionCount)
+            try
             {
-                // Convert the first BsonElement in the item to ProductInfo;
-                var productObjectId = item.GetValue("_id").AsObjectId;
-                var productInfo = new ProductInfoService().GetProductInfo(productObjectId).Result;
-                int count = item.GetValue("count").ToInt32();
-                _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfo, count)));
+                var remainMissionCount = await RemainService.GetRemainMissionCount();
+                foreach (var item in remainMissionCount)
+                {
+                    // Convert the first BsonElement in the item to ProductInfo;
+                    var productObjectId = item.GetValue("_id").AsObjectId;
+                    var productInfo = new ProductInfoService().GetProductInfo(productObjectId).Result;
+                    int count = item.GetValue("count").ToInt32();
+                    _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfo, count)));
+                }
+                if (_viewModel.ProductInfos.Count > 0)
+                {
+                    _viewModel.SelectedProductCardViewModel = _viewModel.ProductInfos.First();
+                }
             }
-            if (_viewModel.ProductInfos.Count > 0)
+
+            catch(TimeoutException e)
             {
-                _viewModel.SelectedProductCardViewModel = _viewModel.ProductInfos.First();
+                MessageBox.Show(e.Message);
             }
+            catch (TypeInitializationException)
+            {
+                MessageBox.Show("DICSDB no connection");
+            }
+
         }
 
         private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)

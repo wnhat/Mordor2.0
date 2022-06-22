@@ -14,18 +14,25 @@ namespace EyeOfSauron
     {
         public static Snackbar Snackbar = new();
 
-        private readonly MainWindowViewModel _viewModel;
+        private readonly MainWindowViewModel? _viewModel;
         
         private LogininWindow loginWindow = new();
 
         public MainWindow()
         {
             InitializeComponent();
-            _viewModel = new();
-            _viewModel.LoginRequestEvent += LoginButton_Click;
-            DataContext = _viewModel;
-            Snackbar = MainSnackbar;
-            loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
+            try
+            {
+                _viewModel = new();
+                _viewModel.LoginRequestEvent += LoginButton_Click;
+                DataContext = _viewModel;
+                Snackbar = MainSnackbar;
+                loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         private void AccountAuthenticate(object sender, AccountAuthenticateEventArgs arges)
@@ -129,6 +136,16 @@ namespace EyeOfSauron
             {
                 if (w != this)
                     w.Close();
+            }
+        }
+
+        private void UserChangeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel.UserInfo.UserExist)
+            {
+                loginWindow = new();
+                loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
+                loginWindow.ShowDialog();
             }
         }
     }

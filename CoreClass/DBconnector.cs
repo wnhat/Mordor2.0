@@ -26,7 +26,7 @@ namespace CoreClass
         static DBconnector()
         {
             // initial mongodb collection;
-
+            //mongoClient.Settings.ConnectTimeout = new TimeSpan(0, 0, 10);
             // check if collection AETresult exists;
             var collectionList = DICSDB.ListCollections().ToList();
             if (!collectionList.Any(x => x.GetValue("name") == "AETresult"))

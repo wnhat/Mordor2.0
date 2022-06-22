@@ -74,7 +74,7 @@
                     </Grid>
                 </DockPanel>
             </materialDesign:DrawerHost.RightDrawerContent>
-            <DockPanel>
+            <DockPanel >
                 <materialDesign:ColorZone
                     Padding="12"
                     materialDesign:ShadowAssist.ShadowDepth="Depth2"
@@ -107,7 +107,10 @@
 
                     </DockPanel>
                 </materialDesign:ColorZone>
-                <ProgressBar IsIndeterminate="True" Value="{Binding LoadMissionProgressValue, FallbackValue=100}" />
+                <ProgressBar
+                    DockPanel.Dock="Top"
+                    Margin="0,0,0,0"
+                    Value="{Binding LoadMissionProgressValue, FallbackValue=10}"/>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -135,13 +138,10 @@
                                 </Grid>
                             </materialDesign:Card>
                         </Viewbox>
-                        <Viewbox
-                            Grid.Column="1"
-                            Margin="10,10,10,10"
-                            Stretch="Fill">
+                        <Grid Grid.Column="1" Margin="10,10,10,10">
                             <!--<uc:InspImageView x:Name="ImageView" />-->
                             <ContentPresenter x:Name="ImageView" Content="{Binding InspImageView}" />
-                        </Viewbox>
+                        </Grid>
                     </Grid>
                     <materialDesign:Snackbar
                         x:Name="MainSnackbar"

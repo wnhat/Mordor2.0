@@ -16,7 +16,7 @@
     <UserControl.InputBindings>
         <KeyBinding Key="Tab" Command="{Binding InspImage.RefreshImageCommand}" />
     </UserControl.InputBindings>
-    <Viewbox KeyDown="UserControl_KeyDown" KeyUp="UserControl_KeyUp">
+    <Viewbox KeyDown="UserControl_KeyDown" KeyUp="UserControl_KeyUp" Stretch="Fill">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />

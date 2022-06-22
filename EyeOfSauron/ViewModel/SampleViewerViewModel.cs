@@ -10,7 +10,9 @@ namespace EyeOfSauron.ViewModel
         private DateTime dateTime = DateTime.Now;
         private InspImageView inspImageView = new();
         private double loadMissionProgressValue;
-        private readonly DispatcherTimer dispatcherTimer = new();
+        public readonly DispatcherTimer dispatcherTimer = new();
+        public int totalPanelCount = 0;
+        public int loadedPanelCount = 0;
 
         public SampleViewerViewModel()
         {
@@ -48,7 +50,16 @@ namespace EyeOfSauron.ViewModel
 
         private void MissionLoadProgress(object sender, EventArgs e)
         {
-
+            if( LoadMissionProgressValue < 100 )
+            {
+                var panelLoadPercentComplete = 100.0 / totalPanelCount * loadedPanelCount;
+                LoadMissionProgressValue = panelLoadPercentComplete;
+            }
+            else
+            {
+                LoadMissionProgressValue = 0;
+                dispatcherTimer.Stop();
+            }
         }
     }
 }

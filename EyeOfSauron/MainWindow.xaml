@@ -90,7 +90,7 @@
                                 <StackPanel>
                                     <Button
                                         HorizontalAlignment="Center"
-                                        Click="LoginButton_Click"
+                                        Click="UserChangeButton_Click"
                                         Content="{materialDesign:PackIcon Kind=AccountCircle}"
                                         ToolTip="User Change" />
                                     <Button
@@ -100,7 +100,7 @@
                                         ToolTip="Logout" />
                                 </StackPanel>
                             </materialDesign:PopupBox>
-
+                            <materialDesign:PackIcon VerticalAlignment="Center" Kind="AlertBox" materialDesign:HintAssist.HelperText="aaaa" />
                             <Button
                                 VerticalAlignment="Center"
                                 HorizontalContentAlignment="Center"
@@ -124,7 +124,6 @@
                             DockPanel.Dock="Right"
                             IsChecked="False"
                             Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
-
                         <materialDesign:Badged
                             x:Name="EndInspButton"
                             Margin="10,0,20,0"
@@ -133,7 +132,7 @@
                             Badge="{Binding InspImageView.DataContext.RemainingCount, FallbackValue=0}"
                             BadgeColorZoneMode="PrimaryLight"
                             DockPanel.Dock="Right"
-                            Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}">
+                            Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay, FallbackValue=Collapsed}">
                             <Button
                                 Command="{Binding EndInspCommand}"
                                 Content="End Insp"
@@ -178,35 +177,35 @@
                         <TextBlock Text="" />
                     </DockPanel>
                 </materialDesign:ColorZone>
+                <ProgressBar IsIndeterminate="True" Visibility="Collapsed" />
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Viewbox
+                    <Grid
                         x:Name="MainScrollViewer"
                         Grid.Column="0"
                         Margin="0,5,0,0"
                         VerticalAlignment="Top"
-                        materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True"
-                        Stretch="{Binding OnShowView, Converter={StaticResource EnumToStretchConverter}}">
+                        materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True">
                         <ContentPresenter Content="{Binding MainContent}" />
-                    </Viewbox>
+                    </Grid>
                     <Viewbox
                         x:Name="DefectJudgeViewbox"
-                        Grid.Column="1"
+                        Grid.Column="2"
                         Margin="0,5,0,0"
                         Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}">
                         <ContentPresenter Content="{Binding DefectJudgeView}" />
                     </Viewbox>
                     <materialDesign:Snackbar
                         x:Name="MainSnackbar"
-                        Width="Auto"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom"
+                        Margin="0,1001,0,0"
+                        VerticalAlignment="Top"
+                        HorizontalContentAlignment="Center"
                         MessageQueue="{materialDesign:MessageQueue}" />
                 </Grid>
             </DockPanel>

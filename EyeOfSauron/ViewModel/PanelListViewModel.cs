@@ -15,6 +15,7 @@ namespace EyeOfSauron.ViewModel
             get => panelList;
             set => SetProperty(ref panelList, value);
         }
+
         public PanelSampleContainer selectedItem = new();
         public PanelSampleContainer SelectedItem
         {

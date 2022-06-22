@@ -11,6 +11,7 @@ using CoreClass.Service;
 using System.Linq;
 using System.Windows.Threading;
 using System;
+using System.Threading.Tasks;
 
 namespace EyeOfSauron
 {
@@ -41,7 +42,7 @@ namespace EyeOfSauron
             MainSnackbar.MessageQueue?.Enqueue("复制成功");
         }
 
-        private void PanelListAcceptCancelDialog_OnDialogClosing(object sender, DialogClosingEventArgs eventArgs)
+        private async void PanelListAcceptCancelDialog_OnDialogClosing(object sender, DialogClosingEventArgs eventArgs)
         {
             if (!Equals(eventArgs.Parameter, true))
             {
@@ -50,25 +51,26 @@ namespace EyeOfSauron
             }
             if (!string.IsNullOrWhiteSpace(ResultPanelList.InputTextBox.Text))
             {
+                //Match every panel ID of input;
                 Regex regex = new(@"7[0-9,A-Z][0-9][0-9,A-Z][0-9][1-9,X-Z][0-9,D,E][0-9]{3}[A-C][0-9][A-B][A-B][A-Z][0-2][0-9]");
                 string inputText = ResultPanelList.InputTextBox.Text.ToUpper().Replace(" ", "");
                 var panelIdList = regex.Matches(inputText);
+                //ProgressBar set
+                if (panelIdList.Count > 0)
+                {
+                    _viewModel.totalPanelCount = panelIdList.Count;
+                    _viewModel.dispatcherTimer.Start();
+                }
+                //Buffer panel list for deduplicating
+                List<string> bufferList = new();
                 foreach (Match item in panelIdList)
                 {
-                    List<string> list = new();
                     string panelId = item.Value;
-                    if (!list.Contains(panelId))
+                    if (!bufferList.Contains(panelId))
                     {
-                        list.Add(panelId);
-                        var aetResults = AETresult.Get(panelId);
-                        if (aetResults != null)
-                        {
-                            foreach (var aetResult in aetResults)
-                            {
-                                PanelMission panelMission = new(aetResult);
-                                ResultPanelList.viewModel.PanelList.Add(new PanelSampleContainer(panelMission));
-                            }
-                        }
+                        bufferList.Add(panelId);
+                        _viewModel.loadedPanelCount = bufferList.Count;
+                        await Task.Run(() => LoadOnePanel(panelId));
                     }
                 }
                 if (ResultPanelList.viewModel.PanelList.Count > 0)
@@ -76,6 +78,26 @@ namespace EyeOfSauron
                     ResultPanelList.viewModel.selectedItem = ResultPanelList.viewModel.PanelList[0];
                 }
                 ResultPanelList.InputTextBox.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Load all panel mission and add to PanelList
+        /// </summary>
+        /// <param name="panelId"></param>
+        private void LoadOnePanel(string panelId)
+        {
+            var aetResults = AETresult.Get(panelId);
+            if (aetResults != null)
+            {
+                foreach (var aetResult in aetResults)
+                {
+                    PanelMission panelMission = new(aetResult);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        ResultPanelList.viewModel.PanelList.Add(new PanelSampleContainer(panelMission));
+                    });
+                }
             }
         }
 
