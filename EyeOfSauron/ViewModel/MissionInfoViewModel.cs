@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.Linq;
 using CoreClass.Model;
+using CoreClass;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -46,35 +47,23 @@ namespace EyeOfSauron.ViewModel
 
     public class InspImageViewModel : ViewModelBase
     {
-        
-        
         public int refreshPage = 0;
 
         public bool isVisible = false;
 
-        private BitmapImage defaultImage = new();
-
         private BitmapImageContainer? defectMapImage;
-
-        static readonly Uri _defaultImageUri = new(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
 
         private ObservableCollection<BitmapImageContainer>? inspImages;
 
         public List<ImageContainer> resultImageDataList = new();
 
-        public List<ImageContainer> defectImageDataList = new();
-
         public InspImageViewModel()
         {
-            defaultImage.BeginInit();
-            defaultImage.UriSource = _defaultImageUri;
-            defaultImage.EndInit();
-            defaultImage.Freeze();
             inspImages = new ObservableCollection<BitmapImageContainer>
             {
-                new BitmapImageContainer(new ImageContainer()),
-                new BitmapImageContainer(new ImageContainer()),
-                new BitmapImageContainer(new ImageContainer())
+                new BitmapImageContainer(ImageContainer.GetDefult),
+                new BitmapImageContainer(ImageContainer.GetDefult),
+                new BitmapImageContainer(ImageContainer.GetDefult)
             };
             RefreshImageCommand = new(
                 _ => RefreshImageMethod(),
@@ -91,12 +80,6 @@ namespace EyeOfSauron.ViewModel
         {
             get => inspImages;
             set => SetProperty(ref inspImages, value);
-        }
-
-        public BitmapImage DefaultImage
-        {
-            get => defaultImage;
-            set => SetProperty(ref defaultImage, value);
         }
 
         public BitmapImageContainer DefectMapImage
@@ -162,12 +145,6 @@ namespace EyeOfSauron.ViewModel
         private string name = "";
 
         private BitmapImage detailDefectImage = new();
-
-        public AetDetailDefect(string name, string defectNo)
-        {
-            Name = name;
-            DefectNo = defectNo;
-        }
 
         public AetDetailDefect(string name, string defectNo, BitmapImage bitmapImage)
         {

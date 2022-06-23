@@ -152,12 +152,11 @@ namespace EyeOfSauron.ViewModel
                 InspImageView._viewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
                 InspImageView._viewModel.ProductInfo = new ProductInfoService().GetProductInfo(mission.onInspPanelMission.inspectMission.Info).Result;
                 InspImageView._viewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
-                InspImageView._viewModel.InspImage.defectImageDataList = mission.onInspPanelMission.defectImageDataList;
                 InspImageView._viewModel.InspImage.DefectMapImage = mission.onInspPanelMission.ContoursImageContainer;
                 InspImageView._viewModel.DetailDefectList.AetDetailDefects.Clear();
-                foreach (var item in mission.onInspPanelMission.bitmapImageContainers)
+                foreach (var item in mission.onInspPanelMission.defectImageDataList)
                 {
-                    InspImageView._viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.Name, item.Name, item.BitmapImage));
+                    InspImageView._viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.Name, item.DefectInfo.DefectName, item.BitmapImage));
                 }
                 if (InspImageView._viewModel.DetailDefectList.AetDetailDefects.Count != 0)
                 {

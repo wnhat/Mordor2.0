@@ -11,6 +11,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using Newtonsoft.Json;
+using System.Drawing;
 
 namespace CoreClass.Model
 {
@@ -176,7 +177,7 @@ namespace CoreClass.Model
                                             CoordEnd = new Coordinate(Convert.ToDecimal(field[(int)ResultIndexDefectData.COORD_END_X]), Convert.ToDecimal(field[(int)ResultIndexDefectData.COORD_END_Y])),
                                             PsFlag = field[(int)ResultIndexDefectData.PS_FLAG],
                                             Size = Convert.ToInt32(field[(int)ResultIndexDefectData.DEF_SIZE]),
-                                            DefectImageFileName = field[(int)ResultIndexDefectData.IMG_NAME],
+                                            DefectImageFileName = field[(int)ResultIndexDefectData.DEF_IMG_FILE],
                                             DRAW_RECT = field[(int)ResultIndexDefectData.DRAW_RECT],
                                             CameraNumber = Int32.Parse(field[(int)ResultIndexDefectData.CAM_NO]),
                                         };
@@ -208,7 +209,7 @@ namespace CoreClass.Model
                         var contours = dir.GetFileContainer("Contours.Merge");
                         if (contours != null)
                         {
-                            this.AviContours = new String(Encoding.UTF8.GetChars(contours.Data));
+                            this.AviContours = new string(Encoding.UTF8.GetChars(contours.Data));
                         }
                     }
                     else if (path.PcName == Pcinfo.SVI)
@@ -282,23 +283,32 @@ namespace CoreClass.Model
         {
             get
             {
-                return new ImageContainer("None", Array.Empty<byte>());
+                int cellX = 1500;
+                int cellY = 600;
+                Bitmap defectMap = new(cellX, cellY);
+                Graphics graphics = Graphics.FromImage(defectMap);
+                SolidBrush solidBrush = new SolidBrush(Color.FromArgb(182, 226, 255));
+                graphics.FillRectangle(solidBrush, new Rectangle(new Point(0, 0), new Size(cellX, cellY)));
+                MemoryStream buffer = new();
+                defectMap.Save(buffer, System.Drawing.Imaging.ImageFormat.Jpeg);
+                ImageContainer imageContainer = new("DefaultImage", buffer.ToArray());
+                return imageContainer;
             }
         }
     }
     public class DefectInfo
     {
-        public string PatternName;
-        public string DefectName;
-        public string DefectCode;
-        public Coordinate PixelStart;
-        public Coordinate PixelEnd;
-        public Coordinate CoordStart;
-        public Coordinate CoordEnd;
-        public int Size;
-        public string DefectImageFileName;
-        public string DRAW_RECT;
-        public int CameraNumber;
-        public string PsFlag;
+        public string PatternName { get; set; }
+        public string DefectName { get; set; }
+        public string DefectCode { get; set; }
+        public Coordinate PixelStart { get; set; }
+        public Coordinate PixelEnd { get; set; }
+        public Coordinate CoordStart { get; set; }
+        public Coordinate CoordEnd { get; set; }
+        public int Size { get; set; }
+        public string DefectImageFileName { get; set; }
+        public string DRAW_RECT { get; set; }
+        public int CameraNumber { get; set; }
+        public string PsFlag { get; set; }
     }
 }
