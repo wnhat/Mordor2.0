@@ -16,7 +16,10 @@
     <UserControl.InputBindings>
         <KeyBinding Key="Tab" Command="{Binding InspImage.RefreshImageCommand}" />
     </UserControl.InputBindings>
-    <Viewbox KeyDown="UserControl_KeyDown" KeyUp="UserControl_KeyUp" Stretch="Fill">
+    <Viewbox
+        KeyDown="UserControl_KeyDown"
+        KeyUp="UserControl_KeyUp"
+        Stretch="Fill">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -147,9 +150,18 @@
                                         SelectedItem="{Binding DetailDefectList.SelectedItem, Mode=TwoWay}">
                                         <ListView.View>
                                             <GridView>
-                                                <GridViewColumn DisplayMemberBinding="{Binding DefectNo}" Header="DEFECT_NO" />
-                                                <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="NAME" />
-                                                <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Unknown" />
+                                                <GridViewColumn
+                                                    Width="Auto"
+                                                    DisplayMemberBinding="{Binding DefectInfo.DefectName}"
+                                                    Header="DEFECT_NAME" />
+                                                <GridViewColumn
+                                                    Width="Auto"
+                                                    DisplayMemberBinding="{Binding DefectInfo.DefectCode}"
+                                                    Header="CODE" />
+                                                <GridViewColumn
+                                                    Width="Auto"
+                                                    DisplayMemberBinding="{Binding DefectInfo.DefectImageFileName}"
+                                                    Header="FILE_NAME" />
                                             </GridView>
                                         </ListView.View>
                                     </ListView>

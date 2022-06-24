@@ -5,6 +5,10 @@ using MaterialDesignThemes.Wpf;
 
 namespace EyeOfSauron.ViewModel
 {
+
+    /// <summary>
+    /// This class is copied from MaterialDesignToolkit:"https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit"
+    /// </summary>
     public class ThemeSettingsViewModel : ViewModelBase
     {
         public ThemeSettingsViewModel()

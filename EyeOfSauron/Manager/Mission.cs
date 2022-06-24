@@ -224,7 +224,7 @@ namespace EyeOfSauron
                     }
                     else
                     {
-                        defectImageDataList.Add(new BitmapImageContainer(ImageContainer.GetDefult, defectInfos[defectInfoImageNmaeIndex.IndexOf(ImageName)]));
+                        defectImageDataList.Add(new BitmapImageContainer(ImageContainer.GetDefault, defectInfos[defectInfoImageNmaeIndex.IndexOf(ImageName)]));
                     }
                 }
             }
@@ -244,7 +244,7 @@ namespace EyeOfSauron
             ImageContainer buffer;
             if (imageContainer == null || imageContainer.Data == null || imageContainer.Data.Length == 0)
             {
-                buffer = GetDefult;
+                buffer = GetDefault;
             }
             else
             {

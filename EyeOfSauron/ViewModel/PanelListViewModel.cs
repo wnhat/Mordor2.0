@@ -16,26 +16,15 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref panelList, value);
         }
 
-        public PanelSampleContainer selectedItem = new();
-        public PanelSampleContainer SelectedItem
+        private PanelSampleContainer? selectedItem;
+        public PanelSampleContainer? SelectedItem
         {
             get => selectedItem;
             set => SetProperty(ref selectedItem, value);
         }
     }
-    public class PanelSampleContainer : ViewModelBase
+    public class PanelSampleContainer
     {
-        private PanelMission? panelMission;
-        private string? panelId;
-        private DateTime? inspDate;
-        public PanelSampleContainer()
-        {
-
-        }
-        public PanelSampleContainer(string panelId)
-        {
-            PanelId = panelId; 
-        }
         public PanelSampleContainer(PanelMission panelMission)
         {
             PanelId = panelMission.AetResult.PanelId;
@@ -43,20 +32,8 @@ namespace EyeOfSauron.ViewModel
             InspDate = panelMission.AetResult.history.InspDate.AddHours(8);
             PanelMission = panelMission;
         }            
-        public string PanelId
-        {
-            get => panelId;
-            set => SetProperty(ref panelId, value);
-        }
-        public DateTime? InspDate
-        {
-            get => inspDate;
-            set => SetProperty(ref inspDate, value);
-        }
-        public PanelMission PanelMission
-        {
-            get => panelMission;
-            set => SetProperty(ref panelMission, value);
-        }
+        public string PanelId { get; private set; }
+        public DateTime InspDate { get; private set; }
+        public PanelMission PanelMission { get; private set; }
     }
 }

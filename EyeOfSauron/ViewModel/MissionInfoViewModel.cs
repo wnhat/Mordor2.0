@@ -61,9 +61,9 @@ namespace EyeOfSauron.ViewModel
         {
             inspImages = new ObservableCollection<BitmapImageContainer>
             {
-                new BitmapImageContainer(ImageContainer.GetDefult),
-                new BitmapImageContainer(ImageContainer.GetDefult),
-                new BitmapImageContainer(ImageContainer.GetDefult)
+                new BitmapImageContainer(ImageContainer.GetDefault),
+                new BitmapImageContainer(ImageContainer.GetDefault),
+                new BitmapImageContainer(ImageContainer.GetDefault)
             };
             RefreshImageCommand = new(
                 _ => RefreshImageMethod(),
@@ -135,40 +135,16 @@ namespace EyeOfSauron.ViewModel
             get => aetDetailDefects;
             set => SetProperty(ref aetDetailDefects, value);
         }
-
     }
 
-    public sealed class AetDetailDefect : ViewModelBase
+    public sealed class AetDetailDefect
     {
-        private string defectNo = "";
-
-        private string name = "";
-
-        private BitmapImage detailDefectImage = new();
-
-        public AetDetailDefect(string name, string defectNo, BitmapImage bitmapImage)
+        public AetDetailDefect(DefectInfo defectInfo, BitmapImage bitmapImage)
         {
-            Name = name;
-            DefectNo = defectNo;
+            DefectInfo = defectInfo;
             DetailDefectImage = bitmapImage;
         }
-
-        public string Name
-        {
-            get => name;
-            set => SetProperty(ref name, value);
-        }
-
-        public string DefectNo
-        {
-            get => defectNo;
-            set => SetProperty(ref defectNo, value);
-        }
-
-        public BitmapImage DetailDefectImage
-        {
-            get => detailDefectImage;
-            set => SetProperty(ref detailDefectImage, value);
-        }
+        public DefectInfo DefectInfo { get; private set; }
+        public BitmapImage DetailDefectImage { get; private set; }
     }
 }

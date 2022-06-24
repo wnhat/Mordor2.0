@@ -75,7 +75,7 @@ namespace EyeOfSauron
                 }
                 if (ResultPanelList.viewModel.PanelList.Count > 0)
                 {
-                    ResultPanelList.viewModel.selectedItem = ResultPanelList.viewModel.PanelList[0];
+                    ResultPanelList.viewModel.SelectedItem = ResultPanelList.viewModel.PanelList[0];
                 }
                 ResultPanelList.InputTextBox.Clear();
             }
@@ -103,15 +103,15 @@ namespace EyeOfSauron
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ResultPanelList.viewModel.selectedItem != null)
+            if (ResultPanelList.viewModel.SelectedItem != null)
             {
-                _viewModel.InspImageView._viewModel.PanelId = ResultPanelList.viewModel.selectedItem.PanelMission.AetResult.PanelId;
-                _viewModel.InspImageView._viewModel.InspImage.resultImageDataList = ResultPanelList.viewModel.selectedItem.PanelMission.resultImageDataList;
-                _viewModel.InspImageView._viewModel.InspImage.DefectMapImage = ResultPanelList.viewModel.selectedItem.PanelMission.ContoursImageContainer;
+                _viewModel.InspImageView._viewModel.PanelId = ResultPanelList.viewModel.SelectedItem.PanelMission.AetResult.PanelId;
+                _viewModel.InspImageView._viewModel.InspImage.resultImageDataList = ResultPanelList.viewModel.SelectedItem.PanelMission.resultImageDataList;
+                _viewModel.InspImageView._viewModel.InspImage.DefectMapImage = ResultPanelList.viewModel.SelectedItem.PanelMission.ContoursImageContainer;
                 _viewModel.InspImageView._viewModel.DetailDefectList.AetDetailDefects.Clear();
-                foreach (var item in ResultPanelList.viewModel.selectedItem.PanelMission.defectImageDataList)
+                foreach (var item in ResultPanelList.viewModel.SelectedItem.PanelMission.defectImageDataList)
                 {
-                    _viewModel.InspImageView._viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.Name, item.DefectInfo.DefectName, item.BitmapImage));
+                    _viewModel.InspImageView._viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.DefectInfo, item.BitmapImage));
                 }
                 if (_viewModel.InspImageView._viewModel.DetailDefectList.AetDetailDefects.Count != 0)
                 {
@@ -126,14 +126,5 @@ namespace EyeOfSauron
         {
             ResultPanelList.viewModel.PanelList.Clear();
         }
-
-        private void MessageAcceptCancelDialog_OnDialogClosing(object sender, DialogClosingEventArgs e)
-        {
-            if (Equals(e.Parameter, true))
-            {
-                ResultPanelList.viewModel.PanelList.Clear();
-            }
-        }
-
     }
 }

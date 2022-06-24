@@ -156,7 +156,7 @@ namespace EyeOfSauron.ViewModel
                 InspImageView._viewModel.DetailDefectList.AetDetailDefects.Clear();
                 foreach (var item in mission.onInspPanelMission.defectImageDataList)
                 {
-                    InspImageView._viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.Name, item.DefectInfo.DefectName, item.BitmapImage));
+                    InspImageView._viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.DefectInfo, item.BitmapImage));
                 }
                 if (InspImageView._viewModel.DetailDefectList.AetDetailDefects.Count != 0)
                 {

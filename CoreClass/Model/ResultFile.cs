@@ -279,7 +279,7 @@ namespace CoreClass.Model
             Data = data;
         }
 
-        public static ImageContainer GetDefult
+        public static ImageContainer GetDefault
         {
             get
             {
