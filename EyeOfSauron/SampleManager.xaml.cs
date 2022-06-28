@@ -2,16 +2,12 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using EyeOfSauron.ViewModel;
 using MaterialDesignThemes.Wpf;
-using EyeOfSauron.MyUserControl;
 using System.Text.RegularExpressions;
 using CoreClass.Model;
-using CoreClass.Service;
 using System.Linq;
-using System.Windows.Threading;
-using System;
 using System.Threading.Tasks;
+using EyeOfSauron.ViewModel;
 
 namespace EyeOfSauron
 {
@@ -27,8 +23,10 @@ namespace EyeOfSauron
             _viewModel = new();
             DataContext = _viewModel;
             ResultPanelList.PanelList.SelectionChanged += new SelectionChangedEventHandler(ListView_SelectionChanged);
+            ResultPanelList.PanelList.MouseUp += new MouseButtonEventHandler(ListView_MouseUp);
             ResultPanelList.PanelListViewDialog.DialogClosing += new DialogClosingEventHandler(PanelListAcceptCancelDialog_OnDialogClosing);
             ResultPanelList.PanelListBoxClearButton.Click += new RoutedEventHandler(PanelListBoxClearButton_Click);
+            _viewModel.samplePanelListView.PanelSampleList.SelectionChanged += new SelectionChangedEventHandler(PanelSampleList_SelectionChanged);
             MainSnackbar.MessageQueue?.Enqueue("Welcome to Eye of Sauron");
         }
 
@@ -95,7 +93,7 @@ namespace EyeOfSauron
                     PanelMission panelMission = new(aetResult);
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        ResultPanelList.viewModel.PanelList.Add(new PanelSampleContainer(panelMission));
+                        ResultPanelList.viewModel.PanelList.Add(new PanelViewContainer(panelMission));
                     });
                 }
             }
@@ -105,26 +103,35 @@ namespace EyeOfSauron
         {
             if (ResultPanelList.viewModel.SelectedItem != null)
             {
-                _viewModel.InspImageView._viewModel.PanelId = ResultPanelList.viewModel.SelectedItem.PanelMission.AetResult.PanelId;
-                _viewModel.InspImageView._viewModel.InspImage.resultImageDataList = ResultPanelList.viewModel.SelectedItem.PanelMission.resultImageDataList;
-                _viewModel.InspImageView._viewModel.InspImage.DefectMapImage = ResultPanelList.viewModel.SelectedItem.PanelMission.ContoursImageContainer;
-                _viewModel.InspImageView._viewModel.DetailDefectList.AetDetailDefects.Clear();
-                foreach (var item in ResultPanelList.viewModel.SelectedItem.PanelMission.defectImageDataList)
-                {
-                    _viewModel.InspImageView._viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.DefectInfo, item.BitmapImage));
-                }
-                if (_viewModel.InspImageView._viewModel.DetailDefectList.AetDetailDefects.Count != 0)
-                {
-                    _viewModel.InspImageView._viewModel.DetailDefectList.SelectedItem = _viewModel.InspImageView._viewModel.DetailDefectList.AetDetailDefects.FirstOrDefault();
-                }
-                _viewModel.InspImageView._viewModel.InspImage.refreshPage = 0;
-                _viewModel.InspImageView._viewModel.InspImage.RefreshImageMethod();
+                _viewModel.InspImageView.LoadOneInspImageView(ResultPanelList.viewModel.SelectedItem);
             }
+        }
+
+        private void ListView_MouseUp(object sender, MouseEventArgs e)
+        {
+
         }
 
         private void PanelListBoxClearButton_Click(object sender, RoutedEventArgs e)
         {
             ResultPanelList.viewModel.PanelList.Clear();
+        }
+
+        private void AddPanelSampleButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ResultPanelList.viewModel.SelectedItem != null)
+            {
+                PanelSample.AddOnePanelSample(new(ResultPanelList.viewModel.SelectedItem.PanelMission.AetResult, MissionCollectionComboBox.Text, "", MissionType.Sample));
+                _viewModel.samplePanelListView.viewModel.GetSamples();
+            }
+        }
+
+        private void PanelSampleList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_viewModel.samplePanelListView.viewModel.SelectedItem != null)
+            {
+                _viewModel.InspImageView.LoadOneInspImageView(_viewModel.samplePanelListView.viewModel.SelectedItem);
+            }
         }
     }
 }

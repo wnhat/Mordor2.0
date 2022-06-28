@@ -95,5 +95,32 @@ namespace EyeOfSauron.MyUserControl
                     break;
             }
         }
+
+        public void LoadOneInspImageView(PanelViewContainer panelViewContainer)
+        {
+            LoadOneInspImageView(panelViewContainer.PanelMission);
+        }
+
+        public void LoadOneInspImageView(PanelMission panelMission)
+        {
+            if (panelMission != null)
+            {
+                //Notice: AetResult.PanelID is null;
+                _viewModel.PanelId = panelMission.AetResult.PanelId;
+                _viewModel.InspImage.resultImageDataList = panelMission.resultImageDataList;
+                _viewModel.InspImage.DefectMapImage = panelMission.ContoursImageContainer;
+                _viewModel.DetailDefectList.AetDetailDefects.Clear();
+                foreach (var item in panelMission.defectImageDataList)
+                {
+                    _viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.DefectInfo, item.BitmapImage));
+                }
+                if (_viewModel.DetailDefectList.AetDetailDefects.Count != 0)
+                {
+                    _viewModel.DetailDefectList.SelectedItem = _viewModel.DetailDefectList.AetDetailDefects.FirstOrDefault();
+                }
+                _viewModel.InspImage.refreshPage = 0;
+                _viewModel.InspImage.RefreshImageMethod();
+            }
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace CoreClass.Model
 
         [BsonId]
         public ObjectId Id { get; set; }
-        public PanelInspectHistory history;
+        public PanelInspectHistory history { get; set; }
         public string PanelId;
         public ImageContainer[] ResultImages;
         public ImageContainer[] DefectImages;

@@ -6,8 +6,6 @@ using MongoDB.Driver;
 using EyeOfSauron.ViewModel;
 using CoreClass.Service;
 using System.Windows.Threading;
-using MongoDB.Bson;
-using CoreClass;
 
 namespace EyeOfSauron.MyUserControl
 {
@@ -67,7 +65,6 @@ namespace EyeOfSauron.MyUserControl
             {
                 MessageBox.Show("DICSDB no connection");
             }
-
         }
 
         private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)

@@ -4,15 +4,18 @@ using System.Windows.Threading;
 
 namespace EyeOfSauron.ViewModel
 {
-    class SampleViewerViewModel:ViewModelBase
+    public class SampleViewerViewModel:ViewModelBase
     {
         private ColorTool colorTool = new();
         private DateTime dateTime = DateTime.Now;
         private InspImageView inspImageView = new();
+        private DefectSelectView defectSelectView = new();
         private double loadMissionProgressValue;
         public readonly DispatcherTimer dispatcherTimer = new();
         public int totalPanelCount = 0;
         public int loadedPanelCount = 0;
+        public SamplePanelListView samplePanelListView = new();
+        
 
         public SampleViewerViewModel()
         {
@@ -25,6 +28,7 @@ namespace EyeOfSauron.ViewModel
                     {
                         DateTime = DateTime.Now;
                     }), Dispatcher.CurrentDispatcher);
+            InspImageView._viewModel.ExtendedUserControl = samplePanelListView;
         }
 
         public double LoadMissionProgressValue 
@@ -46,6 +50,12 @@ namespace EyeOfSauron.ViewModel
         {
             get => inspImageView;
             set => SetProperty(ref inspImageView, value);
+        }
+
+        public DefectSelectView DefectSelectView
+        {
+            get => defectSelectView;
+            set => SetProperty(ref defectSelectView, value);
         }
 
         private void MissionLoadProgress(object sender, EventArgs e)

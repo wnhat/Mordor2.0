@@ -9,23 +9,23 @@ namespace EyeOfSauron.ViewModel
 {
     public class PanelListViewModel : ViewModelBase
     {
-        private ObservableCollection<PanelSampleContainer> panelList = new();
-        public ObservableCollection<PanelSampleContainer> PanelList
+        private ObservableCollection<PanelViewContainer> panelList = new();
+        public ObservableCollection<PanelViewContainer> PanelList
         {
             get => panelList;
             set => SetProperty(ref panelList, value);
         }
 
-        private PanelSampleContainer? selectedItem;
-        public PanelSampleContainer? SelectedItem
+        private PanelViewContainer? selectedItem;
+        public PanelViewContainer? SelectedItem
         {
             get => selectedItem;
             set => SetProperty(ref selectedItem, value);
         }
     }
-    public class PanelSampleContainer
+    public class PanelViewContainer
     {
-        public PanelSampleContainer(PanelMission panelMission)
+        public PanelViewContainer(PanelMission panelMission)
         {
             PanelId = panelMission.AetResult.PanelId;
             //UTC+8:00

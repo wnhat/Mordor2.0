@@ -36,7 +36,7 @@ namespace CoreClass.Model
         public JudgeGrade LastJudge;
 
         public string MtpResult;
-        public string MviResult;
+        public string MviResult { get; set; }
         public string LastResult;
 
         public string Mtpcode;

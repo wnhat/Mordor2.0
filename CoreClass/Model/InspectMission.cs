@@ -144,5 +144,7 @@ namespace CoreClass.Model
         MesMission,
         S_GradeCheck,
         F_GradeCheck,
+        ExamMission,//考试任务
+        Sample//样本
     }
 }

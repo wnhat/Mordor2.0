@@ -149,21 +149,8 @@ namespace EyeOfSauron.ViewModel
             if (mission?.onInspPanelMission != null)
             {
                 InspImageView._viewModel.RemainingCount = await mission.RemainMissionCount();
-                InspImageView._viewModel.PanelId = mission.onInspPanelMission.inspectMission.PanelID;
                 InspImageView._viewModel.ProductInfo = new ProductInfoService().GetProductInfo(mission.onInspPanelMission.inspectMission.Info).Result;
-                InspImageView._viewModel.InspImage.resultImageDataList = mission.onInspPanelMission.resultImageDataList;
-                InspImageView._viewModel.InspImage.DefectMapImage = mission.onInspPanelMission.ContoursImageContainer;
-                InspImageView._viewModel.DetailDefectList.AetDetailDefects.Clear();
-                foreach (var item in mission.onInspPanelMission.defectImageDataList)
-                {
-                    InspImageView._viewModel.DetailDefectList.AetDetailDefects.Add(new AetDetailDefect(item.DefectInfo, item.BitmapImage));
-                }
-                if (InspImageView._viewModel.DetailDefectList.AetDetailDefects.Count != 0)
-                {
-                    InspImageView._viewModel.DetailDefectList.SelectedItem = InspImageView._viewModel.DetailDefectList.AetDetailDefects.FirstOrDefault();
-                }
-                InspImageView._viewModel.InspImage.refreshPage = 0;
-                InspImageView._viewModel.InspImage.RefreshImageMethod();
+                InspImageView.LoadOneInspImageView(mission.onInspPanelMission);
             }
         }
 

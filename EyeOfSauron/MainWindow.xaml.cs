@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
-using EyeOfSauron.ViewModel;
 using MaterialDesignThemes.Wpf;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Controls;
+using EyeOfSauron.ViewModel;
 using EyeOfSauron.MyUserControl;
 
 namespace EyeOfSauron

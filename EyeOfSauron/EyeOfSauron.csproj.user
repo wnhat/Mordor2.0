@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <_LastSelectedProfileId>E:\10147584\Project\Mordor2.0\EyeOfSauron\Properties\PublishProfiles\ClickOnceProfile.pubxml</_LastSelectedProfileId>
+    <_LastSelectedProfileId>E:\10147584\Project\Mordor2.0\EyeOfSauron\Properties\PublishProfiles\ClickOnceProfile1.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
     <ApplicationDefinition Update="App.xaml">
@@ -32,6 +32,9 @@
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="MyUserControl\DefectSelectView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MyUserControl\InspImageView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -39,6 +42,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MyUserControl\DefectJudgeView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MyUserControl\SamplePanelListView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MyUserControl\PanelListView.xaml">

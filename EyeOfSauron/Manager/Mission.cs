@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using CoreClass;
 using CoreClass.Model;
 using System.IO;
-using System.Drawing;
 using CoreClass.Service;
-using Rectangle = System.Drawing.Rectangle;
 
 namespace EyeOfSauron
 {

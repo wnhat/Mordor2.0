@@ -74,7 +74,7 @@
                     </Grid>
                 </DockPanel>
             </materialDesign:DrawerHost.RightDrawerContent>
-            <DockPanel >
+            <DockPanel>
                 <materialDesign:ColorZone
                     Padding="12"
                     materialDesign:ShadowAssist.ShadowDepth="Depth2"
@@ -108,9 +108,9 @@
                     </DockPanel>
                 </materialDesign:ColorZone>
                 <ProgressBar
-                    DockPanel.Dock="Top"
                     Margin="0,0,0,0"
-                    Value="{Binding LoadMissionProgressValue, FallbackValue=10}"/>
+                    DockPanel.Dock="Top"
+                    Value="{Binding LoadMissionProgressValue, FallbackValue=10}" />
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -120,28 +120,57 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Viewbox
-                            Margin="10,10,0,10"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Top"
-                            Stretch="None">
-                            <materialDesign:Card UniformCornerRadius="6">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <uc:PanelListView x:Name="ResultPanelList" />
-                                </Grid>
-                            </materialDesign:Card>
-                        </Viewbox>
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Viewbox Margin="5,10,5,10" Stretch="None">
+                                <materialDesign:Card UniformCornerRadius="6">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <uc:PanelListView x:Name="ResultPanelList" />
+                                    </Grid>
+                                </materialDesign:Card>
+                            </Viewbox>
+                            <uc:DefectSelectView Grid.Row="1" x:Name="DefectSelectView" />
+                            <!--<ContentPresenter Grid.Row="1" x:Name="DefectSelectView" Content="{Binding DefectSelectView}"/>-->
+                        </Grid>
+
                         <Grid Grid.Column="1" Margin="10,10,10,10">
                             <!--<uc:InspImageView x:Name="ImageView" />-->
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
                             <ContentPresenter x:Name="ImageView" Content="{Binding InspImageView}" />
+                            <Grid Grid.Row="1" Height="100">
+                                <StackPanel Orientation="Horizontal">
+                                    <ComboBox
+                                        x:Name="MissionCollectionComboBox"
+                                        Margin="5,0,5,0"
+                                        materialDesign:HintAssist.Hint="MissionCollection"
+                                        materialDesign:HintAssist.HintOpacity=".26"
+                                        IsEditable="True">
+                                        <ComboBoxItem Content="Apple" />
+                                        <ComboBoxItem Content="Banana" />
+                                        <ComboBoxItem Content="Pear" />
+                                        <ComboBoxItem Content="Orange" />
+                                    </ComboBox>
+                                    <Button
+                                        Margin="5,0,5,0"
+                                        Click="AddPanelSampleButton_Click"
+                                        Content="添加" />
+                                </StackPanel>
+                            </Grid>
                         </Grid>
+
                     </Grid>
                     <materialDesign:Snackbar
                         x:Name="MainSnackbar"

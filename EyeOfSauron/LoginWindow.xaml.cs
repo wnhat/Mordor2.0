@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows;
-using EyeOfSauron.ViewModel;
 using CoreClass.Model;
 using MaterialDesignThemes.Wpf;
 using EyeOfSauron.MyUserControl;
+using EyeOfSauron.ViewModel;
 
 namespace EyeOfSauron
 {

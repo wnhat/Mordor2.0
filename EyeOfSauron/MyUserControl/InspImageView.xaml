@@ -12,7 +12,11 @@
     d:DataContext="{d:DesignInstance Type=viewModel:MissionInfoViewModel}"
     gif:ImageBehavior.AnimateInDesignMode="True"
     mc:Ignorable="d">
-    <UserControl.Resources />
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Converter:ListViewItemToIndexConverter x:Key="ListViewItemToIndexConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
     <UserControl.InputBindings>
         <KeyBinding Key="Tab" Command="{Binding InspImage.RefreshImageCommand}" />
     </UserControl.InputBindings>
@@ -152,6 +156,10 @@
                                             <GridView>
                                                 <GridViewColumn
                                                     Width="Auto"
+                                                    DisplayMemberBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Converter={StaticResource ListViewItemToIndexConverter}}"
+                                                    Header="序号" />
+                                                <GridViewColumn
+                                                    Width="Auto"
                                                     DisplayMemberBinding="{Binding DefectInfo.DefectName}"
                                                     Header="DEFECT_NAME" />
                                                 <GridViewColumn
@@ -168,10 +176,11 @@
                                 </ScrollViewer>
                             </materialDesign:Card>
                             <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
-                                <Image
+                                <!--<Image
                                     Width="795"
                                     Height="495"
-                                    Stretch="Fill" />
+                                    Stretch="Fill" />-->
+                                <ContentPresenter Content="{Binding ExtendedUserControl}" />
                             </materialDesign:Card>
                         </StackPanel>
                     </Grid>

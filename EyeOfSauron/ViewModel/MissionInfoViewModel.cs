@@ -5,6 +5,7 @@ using System.Windows.Media.Imaging;
 using System.Linq;
 using CoreClass.Model;
 using CoreClass;
+using System.Windows.Controls;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -20,7 +21,15 @@ namespace EyeOfSauron.ViewModel
         
         private ProductInfo? productInfo;
 
+        private UserControl extendedUserControl = new();
+
         private int remainingCount;
+
+        public UserControl ExtendedUserControl
+        {
+            get => extendedUserControl;
+            set => SetProperty(ref extendedUserControl, value);
+        }
 
         public string PanelId
         {
