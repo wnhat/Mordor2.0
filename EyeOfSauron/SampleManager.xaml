@@ -12,7 +12,7 @@
     xmlns:viewmodel="clr-namespace:EyeOfSauron.ViewModel"
     Title="SampleManager"
     Width="1400"
-    Height="900"
+    Height="1000"
     MinWidth="800"
     MinHeight="600"
     d:DataContext="{d:DesignInstance Type=viewmodel:SampleViewerViewModel}"
@@ -123,26 +123,180 @@
                         <Grid HorizontalAlignment="Center" VerticalAlignment="Top">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <Viewbox Margin="5,10,5,10" Stretch="None">
+
+                            <!--<Viewbox Margin="5,10,5,10" Stretch="None">
                                 <materialDesign:Card UniformCornerRadius="6">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
+                                        <ContentPresenter x:Name="ResultPanelList" Content="{Binding PanelListView}" />
                                         <uc:PanelListView x:Name="ResultPanelList" />
                                     </Grid>
                                 </materialDesign:Card>
-                            </Viewbox>
-                            <uc:DefectSelectView Grid.Row="1" x:Name="DefectSelectView" />
-                            <!--<ContentPresenter Grid.Row="1" x:Name="DefectSelectView" Content="{Binding DefectSelectView}"/>-->
-                        </Grid>
+                            </Viewbox>-->
+                            <!--<materialDesign:Card
+                                Grid.Row="1"
+                                Margin="5,10,5,10"
+                                UniformCornerRadius="6">
+                                <StackPanel Orientation="Vertical">
+                                    <ContentPresenter x:Name="DefectSelectView" Content="{Binding DefectSelectView}" />
+                                    <uc:DefectSelectView  x:Name="DefectSelectView" />
+                                    <StackPanel
+                                        Margin="0,10,0,10"
+                                        HorizontalAlignment="Center"
+                                        Orientation="Horizontal">
+                                        <ComboBox
+                                            x:Name="MissionCollectionComboBox"
+                                            Margin="5,0,5,0"
+                                            materialDesign:HintAssist.Hint="MissionCollection"
+                                            materialDesign:HintAssist.HintOpacity=".26"
+                                            DisplayMemberPath="CollectionName"
+                                            IsEditable="True"
+                                            ItemsSource="{Binding SampleCollection}"
+                                            SelectedItem="{Binding SelectedSamplePanelListViewMode, Mode=TwoWay}"
+                                            SelectionChanged="MissionCollectionComboBox_SelectionChanged" />
 
+                                        <Button
+                                            Margin="5,0,5,0"
+                                            Click="AddPanelSampleButton_Click"
+                                            Content="添加" />
+                                        <Button
+                                            Margin="5,0,5,0"
+                                            Command="{Binding RefreshMissionCollection}"
+                                            Content="刷新" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </materialDesign:Card>-->
+                            <materialDesign:DialogHost
+                                x:Name="AddPanelMissionToCollectionDialog"
+                                Identifier="AddPanelMissionToCollectionDialog"
+                                Style="{StaticResource MaterialDesignEmbeddedDialogHost}">
+                                <materialDesign:DialogHost.DialogContent>
+                                    <StackPanel Orientation="Vertical">
+                                        <materialDesign:Card
+                                            Width="300"
+                                            Margin="0,10,0,10"
+                                            UniformCornerRadius="10">
+                                            <TextBlock
+                                                Margin="0,10,0,10"
+                                                HorizontalAlignment="Center"
+                                                Text="{Binding PanelListView.DataContext.SelectedItem.PanelId, FallbackValue=PanelId}" />
+                                        </materialDesign:Card>
+                                        <ContentPresenter
+                                            x:Name="DefectSelectView2"
+                                            Margin="5,0,5,0"
+                                            Content="{Binding DefectSelectView}" />
+                                        <!--<uc:DefectSelectView x:Name="DefectSelectView" />-->
+                                        <TextBox
+                                            x:Name="NoteInputTextBox"
+                                            Width="300"
+                                            Height="100"
+                                            Margin="5,10,5,10"
+                                            HorizontalAlignment="Left"
+                                            materialDesign:HintAssist.Hint="Note"
+                                            materialDesign:TextFieldAssist.HasClearButton="True"
+                                            AcceptsReturn="True"
+                                            HorizontalScrollBarVisibility="Auto"
+                                            MaxLength="50"
+                                            Text="{Binding NoteString, Mode=TwoWay}"
+                                            Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                            TextWrapping="Wrap"
+                                            VerticalScrollBarVisibility="Auto" />
+                                        <StackPanel
+                                            Margin="0,10,0,10"
+                                            HorizontalAlignment="Center"
+                                            Orientation="Horizontal">
+                                            <ComboBox
+                                                x:Name="MissionCollectionComboBox2"
+                                                Margin="5,0,5,0"
+                                                materialDesign:HintAssist.Hint="MissionCollection"
+                                                materialDesign:HintAssist.HintOpacity=".26"
+                                                DisplayMemberPath="CollectionName"
+                                                IsEditable="True"
+                                                ItemsSource="{Binding SampleCollection}"
+                                                SelectedItem="{Binding SelectedSamplePanelListViewMode, Mode=TwoWay}"
+                                                SelectionChanged="MissionCollectionComboBox_SelectionChanged" />
+                                            <Button
+                                                Margin="5,0,5,0"
+                                                Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                                Content="添加">
+                                                <Button.CommandParameter>
+                                                    <system:Boolean>True</system:Boolean>
+                                                </Button.CommandParameter>
+                                            </Button>
+                                            <Button
+                                                Margin="5,0,5,0"
+                                                Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                                Content="取消"
+                                                IsCancel="True">
+                                                <Button.CommandParameter>
+                                                    <system:Boolean>False</system:Boolean>
+                                                </Button.CommandParameter>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </materialDesign:DialogHost.DialogContent>
+                                <StackPanel>
+                                    <Viewbox Margin="5,10,5,10" Stretch="None">
+                                        <materialDesign:Card UniformCornerRadius="6">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <ContentPresenter x:Name="ResultPanelList" Content="{Binding PanelListView}" />
+                                                <!--<uc:PanelListView x:Name="ResultPanelList" />-->
+                                            </Grid>
+                                        </materialDesign:Card>
+                                    </Viewbox>
+                                    <materialDesign:Card Margin="5,10,5,10" UniformCornerRadius="6">
+                                        <StackPanel Orientation="Vertical">
+                                            <!--<ContentPresenter x:Name="DefectSelectView" Content="{Binding DefectSelectView}" />-->
+                                            <!--<uc:DefectSelectView  x:Name="DefectSelectView" />-->
+                                            <StackPanel
+                                                Margin="0,10,0,10"
+                                                HorizontalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <ComboBox
+                                                    x:Name="MissionCollectionComboBox"
+                                                    Margin="5,0,5,0"
+                                                    materialDesign:HintAssist.Hint="MissionCollection"
+                                                    materialDesign:HintAssist.HintOpacity=".26"
+                                                    DisplayMemberPath="CollectionName"
+                                                    IsEditable="True"
+                                                    ItemsSource="{Binding SampleCollection}"
+                                                    SelectedItem="{Binding SelectedSamplePanelListViewMode, Mode=TwoWay}"
+                                                    SelectionChanged="MissionCollectionComboBox_SelectionChanged" />
+                                                <Button
+                                                    Margin="5,0,5,0"
+                                                    Click="AddPanelSampleButton_Click"
+                                                    Content="添加" />
+                                                <Button
+                                                    Margin="5,0,5,0"
+                                                    Command="{Binding RefreshMissionCollection}"
+                                                    Content="刷新" />
+                                                <Button
+                                                    x:Name="AddToCollectionButton"
+                                                    Margin="5,0,5,0"
+                                                    Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                                                    Content="{materialDesign:PackIcon Kind=Plus,
+                                                                                      Size=22}"
+                                                    Focusable="False"
+                                                    IsTabStop="True"
+                                                    ToolTip="Add To Collection" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+                                </StackPanel>
+                            </materialDesign:DialogHost>
+                        </Grid>
                         <Grid Grid.Column="1" Margin="10,10,10,10">
                             <!--<uc:InspImageView x:Name="ImageView" />-->
                             <Grid.RowDefinitions>
@@ -151,26 +305,29 @@
                             </Grid.RowDefinitions>
                             <ContentPresenter x:Name="ImageView" Content="{Binding InspImageView}" />
                             <Grid Grid.Row="1" Height="100">
-                                <StackPanel Orientation="Horizontal">
+                                <!--<StackPanel Orientation="Horizontal">
                                     <ComboBox
                                         x:Name="MissionCollectionComboBox"
                                         Margin="5,0,5,0"
                                         materialDesign:HintAssist.Hint="MissionCollection"
                                         materialDesign:HintAssist.HintOpacity=".26"
-                                        IsEditable="True">
-                                        <ComboBoxItem Content="Apple" />
-                                        <ComboBoxItem Content="Banana" />
-                                        <ComboBoxItem Content="Pear" />
-                                        <ComboBoxItem Content="Orange" />
+                                        IsEditable="True"
+                                        DisplayMemberPath="CollectionName"
+                                        SelectionChanged="MissionCollectionComboBox_SelectionChanged"
+                                        SelectedItem="{Binding SelectedSamplePanelListViewMode, Mode=TwoWay}"
+                                        ItemsSource="{Binding SampleCollection}">
                                     </ComboBox>
                                     <Button
                                         Margin="5,0,5,0"
                                         Click="AddPanelSampleButton_Click"
                                         Content="添加" />
-                                </StackPanel>
+                                    <Button
+                                        Margin="5,0,5,0"
+                                        Command="{Binding RefreshMissionCollection}"
+                                        Content="刷新" />
+                                </StackPanel>-->
                             </Grid>
                         </Grid>
-
                     </Grid>
                     <materialDesign:Snackbar
                         x:Name="MainSnackbar"
@@ -179,7 +336,6 @@
                         MessageQueue="{materialDesign:MessageQueue}" />
                 </Grid>
             </DockPanel>
-
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>
 </Window>

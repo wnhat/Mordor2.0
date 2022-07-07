@@ -19,21 +19,9 @@ namespace EyeOfSauron.MyUserControl
             InitializeComponent();
         }
 
-        private void JudgeButtonClick(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Defect defect;
-            if ((sender as Button).Content == "S")
-            {
-                defect = null;
-            }
-            else if ((sender as Button).Content == "E")
-            {
-                defect = Defect.OperaterEjudge;
-            }
-            else
-            {
-                defect = (sender as Button).DataContext as Defect;
-            }
+            DefectSelectListBox.SelectedItems.Clear();
         }
     }
 }

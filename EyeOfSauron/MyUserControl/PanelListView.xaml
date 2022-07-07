@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewmodel="clr-namespace:EyeOfSauron.ViewModel"
-    Width="300"
+    Width="320"
     Height="600"
     d:DataContext="{d:DesignInstance Type=viewmodel:PanelListViewModel}"
     mc:Ignorable="d">
@@ -72,21 +72,68 @@
                 x:Name="PanelList"
                 d:ItemsSource="{d:SampleData ItemCount=5}"
                 FontSize="10"
-                SelectionMode="Extended"
                 ItemsSource="{Binding PanelList}"
-                SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+                SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                SelectionMode="Extended">
+                <ListView.Resources>
+                    <Style TargetType="{x:Type GridViewColumnHeader}">
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="Width" Value="Auto" />
+                    </Style>
+                </ListView.Resources>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn DisplayMemberBinding="{Binding PanelId}" Header="PanelID" />
-                        <GridViewColumn DisplayMemberBinding="{Binding PanelMission.AetResult.EqName}" Header="EqpID" />
-                        <GridViewColumn DisplayMemberBinding="{Binding InspDate, StringFormat={}{0:MM-dd HH:mm:ss}}" Header="DateTime" />
-                        <GridViewColumn DisplayMemberBinding="{Binding PanelMission.AetResult.history.MviResult}" Header="MviResult" />
+                        <GridViewColumn
+                            Width="120"
+                            DisplayMemberBinding="{Binding PanelId}"
+                            Header="PanelID" />
+                        <GridViewColumn
+                            Width="60"
+                            DisplayMemberBinding="{Binding PanelMission.AetResult.EqName}"
+                            Header="EqpID" />
+                        <GridViewColumn
+                            Width="90"
+                            DisplayMemberBinding="{Binding InspDate, StringFormat={}{0:MM-dd HH:mm:ss}}"
+                            Header="DateTime" />
+                        <GridViewColumn
+                            Width="Auto"
+                            DisplayMemberBinding="{Binding PanelMission.AetResult.history.MviResult}"
+                            Header="MviResult" />
                     </GridView>
                 </ListView.View>
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="打开目录">
+                            <MenuItem
+                                Command="{Binding OpenPathCommand}"
+                                CommandParameter="{Binding SelectedItem.PanelMission.AetResult.AviOriginImagePath}"
+                                Header="AVI原图" />
+                            <MenuItem
+                                Command="{Binding OpenPathCommand}"
+                                CommandParameter="{Binding SelectedItem.PanelMission.AetResult.AviResultPath}"
+                                Header="AVI结果" />
+                            <MenuItem
+                                Command="{Binding OpenPathCommand}"
+                                CommandParameter="{Binding SelectedItem.PanelMission.AetResult.SviOriginImagePath}"
+                                Header="SVI原图" />
+                            <MenuItem
+                                Command="{Binding OpenPathCommand}"
+                                CommandParameter="{Binding SelectedItem.PanelMission.AetResult.SviResultPath}"
+                                Header="SVI结果" />
+                        </MenuItem>
+                        <MenuItem Header="复制" />
+                        <MenuItem Header="标记">
+                            <MenuItem Header="Color1" />
+                            <MenuItem Header="Color2" />
+                            <MenuItem Header="Color3" />
+                            <MenuItem Header="Color4" />
+                        </MenuItem>
+                    </ContextMenu>
+                </ListView.ContextMenu>
             </ListView>
             <StackPanel
                 Grid.Row="0"
-                Margin="0,0,20,10"
+                Margin="0,0,20,20"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom">
                 <Button

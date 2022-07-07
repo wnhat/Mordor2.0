@@ -59,6 +59,7 @@ namespace CoreClass.Model
         {
             Collection.InsertOneAsync(panelSample);
         }
+
         public static async void AddManyPanelMission(List<PanelSample> panelSamples)
         {
             await Collection.InsertManyAsync(panelSamples);
@@ -68,20 +69,27 @@ namespace CoreClass.Model
         /// Get all collection name of MissionCollection;
         /// </summary>
         /// <returns>List of collection name on <BsonDocument> type</returns>
-        public static async Task<List<BsonDocument>> GetMissionCollection()
+        public static List<BsonDocument> GetMissionCollection()
         {
-            ProjectionDefinition<PanelSample> group = "{collection : '$MissionCollection'";
+            ProjectionDefinition<PanelSample> group = "{_id : '$MissionCollection'}";
             var agg = Collection.Aggregate()
                 .Match(x => x.IsDeleted == false)
                 .Group(group)
-                .Sort("{collection: 1 }");
-            var result = await agg.ToListAsync();
+                .Sort("{_id: 1 }");
+            var result = agg?.ToList();
             return result;
         }
 
         public static async Task<List<PanelSample>> GetSamples()
         {
             var result = await Collection.Find(x => x.IsDeleted == false).ToListAsync();
+            return result;
+        }
+
+        public static async Task<List<PanelSample>> GetSamples(string collectionName)
+        {
+            var filter = Builders<PanelSample>.Filter.Eq(x => x.MissionCollection, collectionName);
+            var result = await Collection.Find(filter).ToListAsync();
             return result;
         }
 
@@ -118,7 +126,6 @@ namespace CoreClass.Model
             var filter = Builders<PanelSample>.Filter.Eq(x => x.ID, panelSample.ID);
             Collection.DeleteOneAsync(filter);
         }
-
     }
     public class Sample_MutiDefect
     {

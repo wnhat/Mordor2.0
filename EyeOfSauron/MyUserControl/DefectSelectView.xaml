@@ -9,10 +9,19 @@
     xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
     d:DataContext="{d:DesignInstance Type=viewModel:DefectJudgeViewModel}"
     mc:Ignorable="d">
-    <StackPanel Width="300" VerticalAlignment="Top">
-        <ListBox Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineListBox}"
-                 ItemsSource="{Binding DefectJudgeList}"
-                 DisplayMemberPath="DefectName">
-        </ListBox>
-    </StackPanel>
+    <materialDesign:Card Width="300" UniformCornerRadius="6">
+        <StackPanel VerticalAlignment="Top">
+            <ListBox
+                x:Name="DefectSelectListBox"
+                DisplayMemberPath="DefectName"
+                ItemsSource="{Binding DefectJudgeList}"
+                Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineListBox}" />
+            <Button
+                Margin="0,0,0,10"
+                HorizontalAlignment="Center"
+                Click="Button_Click"
+                Content="清除"
+                Style="{StaticResource MaterialDesignFlatDarkButton}" />
+        </StackPanel>
+    </materialDesign:Card>
 </UserControl>

@@ -149,7 +149,7 @@
                                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                                     <ListView
                                         d:ItemsSource="{d:SampleData ItemCount=5}"
-                                        FontSize="16"
+                                        FontSize="18"
                                         ItemsSource="{Binding DetailDefectList.AetDetailDefects}"
                                         SelectedItem="{Binding DetailDefectList.SelectedItem, Mode=TwoWay}">
                                         <ListView.View>
@@ -160,26 +160,22 @@
                                                     Header="序号" />
                                                 <GridViewColumn
                                                     Width="Auto"
-                                                    DisplayMemberBinding="{Binding DefectInfo.DefectName}"
-                                                    Header="DEFECT_NAME" />
+                                                    DisplayMemberBinding="{Binding DefectInfo.PatternName}"
+                                                    Header="PATTERN" />
                                                 <GridViewColumn
                                                     Width="Auto"
-                                                    DisplayMemberBinding="{Binding DefectInfo.DefectCode}"
-                                                    Header="CODE" />
+                                                    DisplayMemberBinding="{Binding DefectInfo.DefectName}"
+                                                    Header="DEFECT" />
                                                 <GridViewColumn
                                                     Width="Auto"
                                                     DisplayMemberBinding="{Binding DefectInfo.DefectImageFileName}"
-                                                    Header="FILE_NAME" />
+                                                    Header="FILE" />
                                             </GridView>
                                         </ListView.View>
                                     </ListView>
                                 </ScrollViewer>
                             </materialDesign:Card>
                             <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
-                                <!--<Image
-                                    Width="795"
-                                    Height="495"
-                                    Stretch="Fill" />-->
                                 <ContentPresenter Content="{Binding ExtendedUserControl}" />
                             </materialDesign:Card>
                         </StackPanel>

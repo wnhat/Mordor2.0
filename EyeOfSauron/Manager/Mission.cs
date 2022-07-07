@@ -242,10 +242,12 @@ namespace EyeOfSauron
             if (imageContainer == null || imageContainer.Data == null || imageContainer.Data.Length == 0)
             {
                 buffer = GetDefault;
+                Name = imageContainer?.Name;
             }
             else
             {
                 buffer = imageContainer;
+                Name = imageContainer.Name;
             }
             BitmapImage = new BitmapImage();
             BitmapImage.BeginInit();

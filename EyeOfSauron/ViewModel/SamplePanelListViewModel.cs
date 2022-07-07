@@ -10,7 +10,13 @@ namespace EyeOfSauron.ViewModel
 {
     public class SamplePanelListViewModel : ViewModelBase
     {
+        private string? collectionName ;
         private ObservableCollection<SamplePanelContainer> panelList = new();
+        public string? CollectionName
+        {
+            get => collectionName;
+            set => SetProperty(ref collectionName, value);
+        }
         public ObservableCollection<SamplePanelContainer> PanelList
         {
             get => panelList;
@@ -27,32 +33,34 @@ namespace EyeOfSauron.ViewModel
         {
             GetSamples();
         }
-
-        public static async void Get()
+        public SamplePanelListViewModel(string collectionName)
         {
-            var Missions = await PanelSample.GetMissionCollection();
-            List<string> MissionCollection = new();
-            foreach (var item in Missions)
-            {
-                // Convert the first BsonElement in the item to ProductInfo;
-                var mission = item.GetValue("collection").AsString;
-                MissionCollection.Add(mission);
-            }
+            GetSamples(collectionName);
         }
 
-        public async void GetSamples()
+        public async void GetSamples(string collectionName = "")
         {
-            var samples = await PanelSample.GetSamples();
-            if(samples != null)
+            List<PanelSample>? samples;
+            if (collectionName == string.Empty)
+            {
+                samples = await PanelSample.GetSamples();
+            }
+            else
+            {
+                samples = await PanelSample.GetSamples(collectionName);
+            }
+            if (samples != null)
             {
                 PanelList.Clear();
                 foreach (var item in samples)
                 {
                     PanelList.Add(new(item));
                 }
+                CollectionName = collectionName;
             }
         }
     }
+
     public class SamplePanelContainer: PanelMission
     {
         public SamplePanelContainer(PanelSample panelSample):base(panelSample.AetResult)
