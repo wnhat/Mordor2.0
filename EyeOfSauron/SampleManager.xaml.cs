@@ -41,7 +41,8 @@ namespace EyeOfSauron
         {
             if (_viewModel.PanelListView.viewModel.SelectedItem != null && MissionCollectionComboBox.Text != string.Empty)
             {
-                PanelSample.AddOnePanelSample(new(_viewModel.PanelListView.viewModel.SelectedItem.PanelMission.AetResult, MissionCollectionComboBox.Text, "", MissionType.Sample));
+                PanelMission selectPanelMission = _viewModel.PanelListView.viewModel.SelectedItem.PanelMission;
+                PanelSample.AddOnePanelSample(new(selectPanelMission.AetResult, MissionCollectionComboBox.Text, "", MissionType.Sample, selectPanelMission.ProductInfo));
                 _viewModel.samplePanelListView.viewModel.GetSamples(MissionCollectionComboBox.Text);
             }
         }
@@ -78,7 +79,8 @@ namespace EyeOfSauron
                 }
                 if (_viewModel.PanelListView.viewModel.SelectedItem != null && MissionCollectionComboBox.Text != string.Empty)
                 {
-                    PanelSample.AddOnePanelSample(new(_viewModel.PanelListView.viewModel.SelectedItem.PanelMission.AetResult, MissionCollectionComboBox.Text, _viewModel.NoteString, MissionType.Sample));
+                    PanelMission selectPanelMission = _viewModel.PanelListView.viewModel.SelectedItem.PanelMission;
+                    PanelSample.AddOnePanelSample(new(selectPanelMission.AetResult, MissionCollectionComboBox.Text, _viewModel.NoteString,  MissionType.Sample, selectPanelMission.ProductInfo));
                     _viewModel.samplePanelListView.viewModel.GetSamples(MissionCollectionComboBox.Text);
                     _viewModel.NoteString = string.Empty;
                 }

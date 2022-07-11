@@ -7,6 +7,7 @@ using MaterialDesignThemes.Wpf;
 using System.Linq;
 using CoreClass.Service;
 using System.Windows.Threading;
+using System.Collections.ObjectModel;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -120,9 +121,11 @@ namespace EyeOfSauron.ViewModel
                 if (o is ProductInfo && o != null)
                 {
                     SetInspView();
-                    ProductInfo productInfo = o as ProductInfo;
+                    ProductInfo? productInfo = o as ProductInfo;
                     try
                     {
+                        productInfo.InspPatternCount = 2;
+                        SetInspImageLayout(productInfo.InspPatternCount);
                         mission = new(productInfo);
                         LoadOnInspPanelMission();
                         mission.FillPreDownloadMissionQueue();
@@ -138,6 +141,50 @@ namespace EyeOfSauron.ViewModel
             {
                 await DialogHost.Show(new MessageAcceptDialog { Message = { Text = "请登录后操作" } }, "MainWindowDialog");
                 LoginRequestEvent.Invoke(this, new RoutedEventArgs());
+            }
+        }
+
+        private void SetInspImageLayout(int patternCount )
+        {
+            switch (patternCount)
+            {
+                case 1:
+                case 3:
+                    InspImageView._viewModel.LayoutPresets.SetInspImageLayout(patternCount);
+                    InspImageView._viewModel.InspImage.pagePatternCount = patternCount;
+                    InspImageView._viewModel.InspImage.InspImages.Clear();
+                    for (int i = 0; i < patternCount; i++)
+                    {
+                        InspImageView._viewModel.InspImage.InspImages.Add(new BitmapImageContainer(ImageContainer.GetDefault));
+                    }
+                    Grid.SetRowSpan(inspImageView.imageGrid1, 2);
+                    Grid.SetColumn(inspImageView.imageGrid4, 1);
+                    Grid.SetColumnSpan(inspImageView.imageGrid4, 1);
+                    break;
+                case 2:
+                    InspImageView._viewModel.LayoutPresets.SetInspImageLayout(patternCount);
+                    InspImageView._viewModel.InspImage.pagePatternCount = patternCount;
+                    InspImageView._viewModel.InspImage.InspImages.Clear();
+                    for (int i = 0; i < patternCount; i++)
+                    {
+                        InspImageView._viewModel.InspImage.InspImages.Add(new BitmapImageContainer(ImageContainer.GetDefault));
+                    }
+                    Grid.SetRowSpan(inspImageView.imageGrid1, 1);
+                    Grid.SetColumn(inspImageView.imageGrid4, 0);
+                    Grid.SetColumnSpan(inspImageView.imageGrid4, 2);
+                    break;
+                default:
+                    InspImageView._viewModel.LayoutPresets.SetInspImageLayout(3);
+                    InspImageView._viewModel.InspImage.pagePatternCount = 3;
+                    InspImageView._viewModel.InspImage.InspImages.Clear();
+                    for (int i = 0; i < 3; i++)
+                    {
+                        InspImageView._viewModel.InspImage.InspImages.Add(new BitmapImageContainer(ImageContainer.GetDefault));
+                    }
+                    Grid.SetRowSpan(inspImageView.imageGrid1, 2);
+                    Grid.SetColumn(inspImageView.imageGrid4, 1);
+                    Grid.SetColumnSpan(inspImageView.imageGrid4, 1);
+                    break;
             }
         }
 

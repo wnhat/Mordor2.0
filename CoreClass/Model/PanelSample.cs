@@ -33,14 +33,17 @@ namespace CoreClass.Model
 
         public string Note { get; set; }
 
+        public ProductInfo ProductInfo { get; set; }
+
         public AETresult AetResult { get; set; }
 
         public Sample_MutiDefect MutiDefect { get; set; }
 
-        public PanelSample(AETresult aetResult, string missionCollection, string note, MissionType missionType, Defect[] defects = null)
+        public PanelSample(AETresult aetResult, string missionCollection, string note, MissionType missionType, ProductInfo info, Defect[] defects = null)
         {
             PanelID = aetResult.PanelId;
             AetResult = aetResult;
+            ProductInfo = info;
             MissionCollection = missionCollection;
             Note = note;
             MissionType = missionType;

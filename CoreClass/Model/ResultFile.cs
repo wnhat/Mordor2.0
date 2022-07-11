@@ -33,7 +33,7 @@ namespace CoreClass.Model
         public string AVIRecipeName;
         public string SVIRecipeName;
         public string LotID;
-        public string PanelID;
+        public string PanelID;//Notice: May be null
         public string AviJudge;
         public string SviJudge;
         public string RecipeName;

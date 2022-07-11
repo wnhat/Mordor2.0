@@ -28,6 +28,7 @@ namespace EyeOfSauron
                 DataContext = _viewModel;
                 Snackbar = MainSnackbar;
                 loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
+                _viewModel.DefectJudgeView.DefectJudgeEvent += new DefectJudgeView.ValuePassHandler(DefectJudge);
             }
             catch (Exception e)
             {
@@ -58,7 +59,7 @@ namespace EyeOfSauron
         }
 
         private void ColorToolToggleButton_OnClick(object sender, RoutedEventArgs e) 
-            => MainScrollViewer.Focus();
+            => MainContent.Focus();
         
         private static void ModifyTheme(bool isDarkTheme)
         {
@@ -128,6 +129,11 @@ namespace EyeOfSauron
                 await DialogHost.Show(new MessageAcceptDialog { Message = { Text = "请登录后操作" } }, "MainWindowDialog");
                 LoginButton_Click(sender, e);
             } 
+        }
+
+        private void DefectJudge(object sender, DefectJudgeArgs e)
+        {
+            this.MainContent.Focus();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

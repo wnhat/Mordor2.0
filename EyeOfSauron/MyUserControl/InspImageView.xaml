@@ -8,6 +8,7 @@
     xmlns:local="clr-namespace:EyeOfSauron.MyUserControl"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
     d:DataContext="{d:DesignInstance Type=viewModel:MissionInfoViewModel}"
     gif:ImageBehavior.AnimateInDesignMode="True"
@@ -15,6 +16,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <Converter:ListViewItemToIndexConverter x:Key="ListViewItemToIndexConverter" />
+            <BitmapImage x:Key="DefaultImage" UriSource="/Resources/DefaultImage.bmp" />
+            <system:String x:Key="DefaultString">&#160;</system:String>
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.InputBindings>
@@ -56,6 +59,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid
+                        x:Name="imageGrid1"
                         Grid.Row="0"
                         Grid.Column="0"
                         Margin="5,5,5,5">
@@ -63,59 +67,72 @@
                             <Image
                                 x:Name="ImageBox1"
                                 Width="1600"
-                                Height="1000"
-                                Source="{Binding InspImage.InspImages[0].BitmapImage}"
+                                Height="{Binding LayoutPresets.ImageBox1_Height, FallbackValue=1000}"
+                                Source="{Binding InspImage.InspImages[0].BitmapImage, FallbackValue={StaticResource DefaultImage}}"
                                 Stretch="Fill" />
                         </materialDesign:Card>
                         <Label
                             Height="30"
-                            Margin="0,970,0,0"
+                            VerticalAlignment="Bottom"
                             Background="White"
-                            Content="{Binding InspImage.InspImages[0].Name}"
+                            Content="{Binding InspImage.InspImages[0].Name, FallbackValue={StaticResource DefaultString}}"
                             FontSize="16"
                             Visibility="{Binding InspImage.ImageLableIsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     </Grid>
                     <Grid
+                        x:Name="imageGrid2"
                         Grid.Row="0"
                         Grid.Column="1"
-                        Margin="5,5,5,5">
-                        <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                        Margin="5,5,5,5"
+                        Visibility="{Binding LayoutPresets.ImageBox2_Visibility}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <materialDesign:Card Grid.RowSpan="2" materialDesign:ShadowAssist.ShadowDepth="Depth1">
                             <Image
                                 x:Name="ImageBox2"
                                 Width="1600"
-                                Height="1000"
-                                Source="{Binding InspImage.InspImages[1].BitmapImage}"
+                                Height="{Binding LayoutPresets.ImageBox1_Height, FallbackValue=1000}"
+                                Source="{Binding InspImage.InspImages[1].BitmapImage, FallbackValue={StaticResource DefaultImage}}"
                                 Stretch="Fill" />
                         </materialDesign:Card>
                         <Label
+                            Grid.Row="1"
                             Height="30"
-                            Margin="0,970,0,0"
+                            VerticalAlignment="Bottom"
                             Background="White"
-                            Content="{Binding InspImage.InspImages[1].Name}"
+                            Content="{Binding InspImage.InspImages[1].Name, FallbackValue={StaticResource DefaultString}}"
                             FontSize="16"
                             Visibility="{Binding InspImage.ImageLableIsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     </Grid>
                     <Grid
+                        x:Name="imageGrid3"
                         Grid.Row="1"
                         Grid.Column="0"
-                        Margin="5,5,5,5">
+                        Margin="5,5,5,5"
+                        Visibility="{Binding LayoutPresets.ImageBox3_Visibility}">
                         <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth1">
                             <Image
                                 x:Name="ImageBox3"
                                 Width="1600"
                                 Height="1000"
-                                Source="{Binding InspImage.InspImages[2].BitmapImage}"
+                                Source="{Binding InspImage.InspImages[2].BitmapImage, FallbackValue={StaticResource DefaultImage}}"
                                 Stretch="Fill" />
                         </materialDesign:Card>
                         <Label
                             Height="30"
                             Margin="0,970,0,0"
+                            VerticalAlignment="Bottom"
                             Background="White"
-                            Content="{Binding InspImage.InspImages[2].Name}"
+                            Content="{Binding InspImage.InspImages[2].Name, FallbackValue={StaticResource DefaultString}}"
                             FontSize="16"
                             Visibility="{Binding InspImage.ImageLableIsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     </Grid>
-                    <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid
+                        x:Name="imageGrid4"
+                        Grid.Row="1"
+                        Grid.Column="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
@@ -123,7 +140,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Column="0">
+                        <StackPanel Grid.Column="0" Orientation="{Binding LayoutPresets.StackPanel1_Orientation}">
                             <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
                                 <Image
                                     Width="795"
@@ -139,7 +156,7 @@
                                     Stretch="Uniform" />
                             </materialDesign:Card>
                         </StackPanel>
-                        <StackPanel Grid.Column="1">
+                        <StackPanel Grid.Column="1" Orientation="{Binding LayoutPresets.StackPanel1_Orientation}">
                             <materialDesign:Card
                                 Width="795"
                                 Height="495"

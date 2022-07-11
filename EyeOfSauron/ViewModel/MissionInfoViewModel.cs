@@ -6,6 +6,7 @@ using System.Linq;
 using CoreClass.Model;
 using CoreClass;
 using System.Windows.Controls;
+using System.Windows;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -15,8 +16,10 @@ namespace EyeOfSauron.ViewModel
         {
             DetailDefectList = new();
             InspImage = new();
+            LayoutPresets = new();
         }
-        
+        public LayoutPresets LayoutPresets { get;}
+
         private string panelId = "";
         
         private ProductInfo? productInfo;
@@ -58,11 +61,15 @@ namespace EyeOfSauron.ViewModel
     {
         public int refreshPage = 0;
 
+        public int pagePatternCount = 3;
+
         public bool isVisible = false;
 
         private BitmapImageContainer? defectMapImage;
 
         private ObservableCollection<BitmapImageContainer>? inspImages;
+
+        private BitmapImageContainer defaultImage;
 
         public List<ImageContainer> resultImageDataList = new();
 
@@ -74,6 +81,7 @@ namespace EyeOfSauron.ViewModel
                 new BitmapImageContainer(ImageContainer.GetDefault),
                 new BitmapImageContainer(ImageContainer.GetDefault)
             };
+            defaultImage = new BitmapImageContainer(ImageContainer.GetDefault);
             RefreshImageCommand = new(
                 _ => RefreshImageMethod(),
                 _ => resultImageDataList != null);
@@ -91,6 +99,12 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref inspImages, value);
         }
 
+        public BitmapImageContainer DefaultImage
+        {
+            get => defaultImage;
+            set => SetProperty(ref defaultImage, value);
+        }
+
         public BitmapImageContainer DefectMapImage
         {
             get => defectMapImage;
@@ -105,13 +119,13 @@ namespace EyeOfSauron.ViewModel
             {
                 return;
             }
-            if (refreshPage < resultImageDataList.ToArray().Length)
+            if ((refreshPage + InspImages.Count) <= resultImageDataList.ToArray().Length)
             {
                 for (int i = 0; i < InspImages.Count; i++)
                 {
                     InspImages[i] = new BitmapImageContainer(resultImageDataList[refreshPage + i]);
                 }
-                refreshPage += 3;
+                refreshPage += pagePatternCount;
             }
             else
             {
@@ -155,5 +169,67 @@ namespace EyeOfSauron.ViewModel
         }
         public DefectInfo DefectInfo { get; private set; }
         public BitmapImage DetailDefectImage { get; private set; }
+    }
+
+    public class LayoutPresets : ViewModelBase
+    {
+        private int imageBox1_RowSpan = 1;
+        private int imageBox1_Height = 1000;
+        private Visibility imageBox2_Visibility = Visibility.Visible;
+        private Visibility imageBox3_Visibility = Visibility.Visible;
+        private Orientation stackPanel1_Orientation = Orientation.Vertical;
+        public int ImageBox1_RowSpan
+        {
+            get => imageBox1_RowSpan;
+            set => SetProperty(ref imageBox1_RowSpan, value>=2?2:1);
+        }
+        public int ImageBox1_Height
+        {
+            get => imageBox1_Height;
+            set => SetProperty(ref imageBox1_Height, value>1000? value : 1000);
+        }
+        public Visibility ImageBox2_Visibility
+        {
+            get => imageBox2_Visibility;
+            set => SetProperty(ref imageBox2_Visibility, value == Visibility.Collapsed? Visibility.Collapsed: Visibility.Visible);
+        }
+        public Visibility ImageBox3_Visibility
+        {
+            get => imageBox3_Visibility;
+            set => SetProperty(ref imageBox3_Visibility, value == Visibility.Collapsed ? Visibility.Collapsed : Visibility.Visible);
+        }
+        public Orientation StackPanel1_Orientation
+        {
+            get => stackPanel1_Orientation;
+            set => SetProperty(ref stackPanel1_Orientation, value == Orientation.Horizontal ? Orientation.Horizontal : Orientation.Vertical);
+        }
+        public void SetInspImageLayout(int imageCount)
+        {
+            switch (imageCount)
+            {
+                default:
+                case 3:
+                    imageBox1_RowSpan = 1;
+                    ImageBox1_Height = 1000;
+                    ImageBox2_Visibility = Visibility.Visible;
+                    ImageBox3_Visibility = Visibility.Visible;
+                    StackPanel1_Orientation = Orientation.Vertical;
+                    break;
+                case 2:
+                    imageBox1_RowSpan = 1;
+                    ImageBox1_Height = 1500;
+                    ImageBox2_Visibility = Visibility.Visible;
+                    ImageBox3_Visibility = Visibility.Collapsed;
+                    StackPanel1_Orientation = Orientation.Horizontal;
+                    break;
+                case 1:
+                    imageBox1_RowSpan = 2;
+                    ImageBox1_Height = 1800;
+                    ImageBox2_Visibility = Visibility.Collapsed;
+                    ImageBox3_Visibility = Visibility.Collapsed;
+                    StackPanel1_Orientation = Orientation.Vertical;
+                    break;
+            }
+        }
     }
 }

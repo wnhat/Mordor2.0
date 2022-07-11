@@ -132,11 +132,14 @@ namespace EyeOfSauron
         public InspectMission? inspectMission;
 
         public AETresult AetResult { get; set; }
+
+        public ProductInfo ProductInfo { get; set; }
         
         public PanelMission(AETresult result, InspectMission? mission = null)
         {
             inspectMission = mission;
             AetResult = result;
+            ProductInfo = ProductInfo.GetProductInfo(result.PanelId);
             IniResultImageDataList(AetResult.ResultImages);
             IniDefectImageDataList(AetResult.DefectImages, AetResult.DefectCollection);
             InitialContoursImage();

@@ -36,6 +36,8 @@ namespace CoreClass.Model
         [JsonProperty("img")]
         public ImageContainer Img { get; set; }
 
+        public int InspPatternCount { get; set; }
+
         // override object.Equals
         public override bool Equals(object obj)
         {
@@ -67,6 +69,13 @@ namespace CoreClass.Model
             var count = Collection.CountDocuments(new BsonDocument());
             var randomint = rnd.Next(0, (int)count);
             return find[randomint];
+        }
+
+        public static ProductInfo GetProductInfo(string panelId)
+        {
+            string prefixId = panelId[..4];
+            var result = Collection.Find(x => x.PrefixId == prefixId).FirstOrDefault();
+            return result;
         }
     }
 }
