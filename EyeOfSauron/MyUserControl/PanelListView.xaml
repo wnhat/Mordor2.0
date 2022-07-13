@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewmodel="clr-namespace:EyeOfSauron.ViewModel"
-    Width="320"
+    Width="370"
     Height="600"
     d:DataContext="{d:DesignInstance Type=viewmodel:PanelListViewModel}"
     mc:Ignorable="d">
@@ -31,6 +31,7 @@
                 <TextBox
                     x:Name="InputTextBox"
                     Height="350"
+                    Width="300"
                     Margin="0,8,0,0"
                     HorizontalAlignment="Stretch"
                     materialDesign:HintAssist.Hint="Panel ID Input"
@@ -96,7 +97,7 @@
                             DisplayMemberBinding="{Binding InspDate, StringFormat={}{0:MM-dd HH:mm:ss}}"
                             Header="DateTime" />
                         <GridViewColumn
-                            Width="Auto"
+                            Width="60"
                             DisplayMemberBinding="{Binding PanelMission.AetResult.history.MviResult}"
                             Header="MviResult" />
                     </GridView>

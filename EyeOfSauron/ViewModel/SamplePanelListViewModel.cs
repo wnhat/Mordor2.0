@@ -10,9 +10,9 @@ namespace EyeOfSauron.ViewModel
 {
     public class SamplePanelListViewModel : ViewModelBase
     {
-        private string? collectionName ;
+        private string collectionName = string.Empty;
         private ObservableCollection<SamplePanelContainer> panelList = new();
-        public string? CollectionName
+        public string CollectionName
         {
             get => collectionName;
             set => SetProperty(ref collectionName, value);

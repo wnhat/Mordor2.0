@@ -18,7 +18,7 @@
             Click="JudgeButtonClick"
             Content="S"
             FontWeight="Bold"
-            Style="{StaticResource MaterialDesignRaisedLightButton}" />
+            Style="{StaticResource MaterialDesignRaisedLightButton}" IsTabStop="False" />
         <Button
             Width="140"
             Height="120"
@@ -27,8 +27,8 @@
             Click="JudgeButtonClick"
             CommandParameter="{Binding RelativeSource={x:Static RelativeSource.Self}}"
             Content="E"
-            FontWeight="Bold" />
-        <ItemsControl ItemsSource="{Binding DefectJudgeList}">
+            FontWeight="Bold" IsTabStop="False" />
+        <ItemsControl ItemsSource="{Binding DefectJudgeList}" IsTabStop="False">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid Columns="1" />
@@ -43,7 +43,7 @@
                         materialDesign:ButtonAssist.CornerRadius="5"
                         Click="JudgeButtonClick"
                         Content="{Binding DefectName}"
-                        FontWeight="Bold" />
+                        FontWeight="Bold" IsTabStop="False" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

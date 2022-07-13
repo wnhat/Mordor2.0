@@ -21,13 +21,15 @@ namespace EyeOfSauron.ViewModel
         private DefectSelectView defectSelectView = new();
         private PanelListView panelListView = new();
         private string noteString = string.Empty;
+        private string addCollectionDialog_ComboxText = string.Empty;
         private double loadMissionProgressValue;
-        public readonly DispatcherTimer dispatcherTimer = new();
+        private readonly DispatcherTimer dispatcherTimer = new();
         public int totalPanelCount = 0;
         public int loadedPanelCount = 0;
         public SamplePanelListView samplePanelListView = new();
         public ObservableCollection<SamplePanelListViewModel> sampleCollection = new();
         public SamplePanelListViewModel selectedSamplePanelListViewModel = new();
+        public MessageAcceptCancelDialog MessageAcceptCancelDialog { get; set; }
         public CommandImplementation RefreshMissionCollection { get; }
 
         public SampleViewerViewModel()
@@ -48,6 +50,7 @@ namespace EyeOfSauron.ViewModel
                     }), Dispatcher.CurrentDispatcher);
             InspImageView._viewModel.ExtendedUserControl = samplePanelListView;
             RefreshMissionCollection = new(_=>RefreshCollection());
+            MessageAcceptCancelDialog = new();
             RefreshCollection();
         }
 
@@ -99,6 +102,11 @@ namespace EyeOfSauron.ViewModel
             }
         }
 
+        public void AddToCollection_OnDialogClosing(object sender, DialogClosingEventArgs e)
+        {
+
+        }
+
         /// <summary>
         /// Load all panel mission and add to PanelList
         /// </summary>
@@ -134,30 +142,38 @@ namespace EyeOfSauron.ViewModel
 
         public static List<string> GetCollectionNames()
         {
-            var Missions = PanelSample.GetMissionCollection();
             List<string> MissionCollection = new();
+            var Missions = PanelSample.GetMissionCollection();
             foreach (var item in Missions)
             {
-                var mission = item.GetValue("_id").AsString;
-                MissionCollection.Add(mission);
+                var missionName = item.GetValue("_id").AsString;
+                MissionCollection.Add(missionName);
             }
             return MissionCollection;
         }
 
         public void RefreshCollection()
         {
+            string buff = AddCollectionDialog_ComboxText;
             sampleCollection.Clear();
             var collection = GetCollectionNames();
             foreach (string item in collection)
             {
                 sampleCollection.Add(new(item));
             }
+            AddCollectionDialog_ComboxText = buff;
         }
 
         public string NoteString
         {
             get => noteString;
             set => SetProperty(ref noteString, value);
+        }
+
+        public string AddCollectionDialog_ComboxText
+        {
+            get => addCollectionDialog_ComboxText;
+            set => SetProperty(ref addCollectionDialog_ComboxText, value);
         }
 
         public PanelListView PanelListView
@@ -208,7 +224,7 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref selectedSamplePanelListViewModel, value);
         }
 
-        private void MissionLoadProgress(object sender, EventArgs e)
+        private void MissionLoadProgress(object? sender, EventArgs e)
         {
             if( LoadMissionProgressValue < 100 )
             {

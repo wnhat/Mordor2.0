@@ -20,6 +20,7 @@
     AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource Self}}"
     Background="{DynamicResource MaterialDesignPaper}"
     Closing="Window_Closing"
+    IsTabStop="False"
     KeyDown="Window_KeyDown"
     Style="{StaticResource MaterialDesignWindow}"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -29,7 +30,9 @@
     <Window.CommandBindings>
         <CommandBinding Command="Copy" Executed="OnCopy" />
     </Window.CommandBindings>
-
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding InspImageView.DataContext.InspImage.RefreshImageCommand}" Gesture="Tab" />
+    </Window.InputBindings>
     <Window.Resources>
         <ResourceDictionary>
             <Converter:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
@@ -41,6 +44,7 @@
     <materialDesign:DialogHost
         DialogTheme="Inherit"
         Identifier="MainWindowDialog"
+        x:Name="MainWindowDialog"
         SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
         <materialDesign:DrawerHost IsRightDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <materialDesign:DrawerHost.RightDrawerContent>
@@ -82,8 +86,12 @@
                                 Content="{Binding UserInfo.User.Username, FallbackValue=UserName}"
                                 Icon="{Binding UserInfo.User.UserIcon, FallbackValue=U}"
                                 IconBackground="{DynamicResource PrimaryHueLightBrush}"
-                                IconForeground="{DynamicResource PrimaryHueLightForegroundBrush}" />
-                            <materialDesign:PopupBox PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
+                                IconForeground="{DynamicResource PrimaryHueLightForegroundBrush}"
+                                IsTabStop="False" />
+                            <materialDesign:PopupBox
+                                IsTabStop="False"
+                                PlacementMode="BottomAndAlignRightEdges"
+                                StaysOpen="False">
                                 <materialDesign:PopupBox.ToggleContent>
                                     <materialDesign:PackIcon Kind="ChevronDown" />
                                 </materialDesign:PopupBox.ToggleContent>
@@ -100,17 +108,21 @@
                                         ToolTip="Logout" />
                                 </StackPanel>
                             </materialDesign:PopupBox>
-                            <materialDesign:PackIcon VerticalAlignment="Center" Kind="AlertBox" materialDesign:HintAssist.HelperText="aaaa" />
+                            <!--<materialDesign:PackIcon VerticalAlignment="Center" Kind="AlertBox" materialDesign:HintAssist.HelperText="aaaa" />-->
                             <Button
                                 VerticalAlignment="Center"
                                 HorizontalContentAlignment="Center"
                                 Content="{Binding InspImageView.DataContext.PanelId, FallbackValue={}}"
+                                IsTabStop="False"
                                 MouseDoubleClick="PanelidLableMouseDoubleClick"
                                 Style="{StaticResource MaterialDesignFlatMidBgButton}"
                                 ToolTip="Double Click to Copy"
                                 Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}" />
 
-                            <Separator Width="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                            <Separator
+                                Width="2"
+                                IsTabStop="False"
+                                Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                             <TextBlock
                                 VerticalAlignment="Center"
                                 FontSize="14"
@@ -123,6 +135,7 @@
                             Click="ColorToolToggleButton_OnClick"
                             DockPanel.Dock="Right"
                             IsChecked="False"
+                            IsTabStop="False"
                             Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
                         <materialDesign:Badged
                             x:Name="EndInspButton"
@@ -136,6 +149,7 @@
                             <Button
                                 Command="{Binding EndInspCommand}"
                                 Content="End Insp"
+                                IsTabStop="False"
                                 Style="{StaticResource MaterialDesignRaisedLightButton}" />
                         </materialDesign:Badged>
 
@@ -152,6 +166,7 @@
                                 Command="{Binding StartInspCommand}"
                                 CommandParameter="{Binding ProductSelectView.DataContext.SelectedProductCardViewModel.ProductInfo.Key}"
                                 Content="Start Insp"
+                                IsTabStop="False"
                                 Style="{StaticResource MaterialDesignRaisedLightButton}" />
                         </materialDesign:Badged>
 
@@ -161,10 +176,12 @@
                             VerticalAlignment="Center"
                             Content="{Binding ProductSelectView.DataContext.SelectedProductCardViewModel.ProductInfo.Key.Name, FallbackValue=MODEL}"
                             DockPanel.Dock="Right"
+                            IsTabStop="False"
                             Style="{StaticResource MaterialDesignFlatLightBgButton}" />
                         <Separator
                             Width="2"
                             DockPanel.Dock="Right"
+                            IsTabStop="False"
                             Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                         <Button
                             Margin="0,0,10,0"
@@ -173,6 +190,7 @@
                             Click="SampleViewButton_Click"
                             Content="SampleView"
                             DockPanel.Dock="Right"
+                            IsTabStop="False"
                             Style="{StaticResource MaterialDesignRaisedLightButton}" />
                         <TextBlock Text="" />
                     </DockPanel>
@@ -205,6 +223,7 @@
                         x:Name="MainSnackbar"
                         VerticalAlignment="Bottom"
                         HorizontalContentAlignment="Center"
+                        IsTabStop="False"
                         MessageQueue="{materialDesign:MessageQueue}" />
                 </Grid>
             </DockPanel>

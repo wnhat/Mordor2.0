@@ -9,7 +9,7 @@
     xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
     d:DataContext="{d:DesignInstance Type=viewModel:DefectJudgeViewModel}"
     mc:Ignorable="d">
-    <materialDesign:Card Width="300" UniformCornerRadius="6">
+    <materialDesign:Card Width="500" UniformCornerRadius="6">
         <StackPanel VerticalAlignment="Top">
             <ListBox
                 x:Name="DefectSelectListBox"

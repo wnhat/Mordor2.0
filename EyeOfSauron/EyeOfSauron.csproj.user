@@ -44,6 +44,12 @@
     <Page Update="MyUserControl\DefectJudgeView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="MyUserControl\AddToCollectionDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MyUserControl\CollectionSettingDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MyUserControl\SamplePanelListView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -56,7 +62,7 @@
     <Page Update="MyUserControl\ProgressMessageDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="MyUserControl\AcceptCancelDialog.xaml">
+    <Page Update="MyUserControl\InputAcceptCancelDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MyUserControl\MessageAcceptCancelDialog.xaml">
@@ -74,7 +80,7 @@
     <Page Update="ViewModel\DocumentationLinks.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="MyUserControl\SampleMessageDialog.xaml">
+    <Page Update="MyUserControl\MessageAcceptDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

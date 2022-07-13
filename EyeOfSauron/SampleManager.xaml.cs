@@ -9,6 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using EyeOfSauron.ViewModel;
 using System;
+using EyeOfSauron.MyUserControl;
+using System.Collections.ObjectModel;
 
 namespace EyeOfSauron
 {
@@ -24,7 +26,8 @@ namespace EyeOfSauron
             _viewModel = new();
             DataContext = _viewModel;
             MainSnackbar.MessageQueue?.Enqueue("Welcome to Eye of Sauron");
-            AddPanelMissionToCollectionDialog.DialogClosing += new DialogClosingEventHandler(AddPanelMissionToCollection_OnDialogClosing);
+            //AddPanelMissionToCollectionDialog.DialogClosing += new DialogClosingEventHandler(_viewModel.AddToCollection_OnDialogClosing);
+            InspViewDialogHost.DialogClosing += new DialogClosingEventHandler(InspViewDialog_OnDialogClosing);
         }
 
         private void ColorToolToggleButton_OnClick(object sender, RoutedEventArgs e)
@@ -51,7 +54,7 @@ namespace EyeOfSauron
         {
             try
             {
-                if(_viewModel.SelectedSamplePanelListViewMode != null)
+                if (_viewModel.SelectedSamplePanelListViewMode != null)
                 {
                     _viewModel.samplePanelListView.viewModel.PanelList = _viewModel.SelectedSamplePanelListViewMode.PanelList;
                     _viewModel.samplePanelListView.viewModel.CollectionName = _viewModel.SelectedSamplePanelListViewMode.CollectionName;
@@ -63,26 +66,65 @@ namespace EyeOfSauron
             }
         }
 
-        private void AddPanelMissionToCollection_OnDialogClosing(object sender, DialogClosingEventArgs e)
+        private void CollectionSetting_Click(object sender, RoutedEventArgs e)
+        {
+
+            CollectionSettingDialog collectionSettingDialog = new();
+            ObservableCollection<PanelMissionCollectionInfo> panelMissionCollectionInfo = new();
+            foreach (var item in _viewModel.sampleCollection)
+            {
+                panelMissionCollectionInfo.Add(new(item.CollectionName,item.PanelList.Count));
+            }
+            collectionSettingDialog.viewModel.PanelMissionCollectionInfo = panelMissionCollectionInfo;
+            DialogHost.Show(collectionSettingDialog, "InspViewDialogHost");
+        }
+
+        private void AddCollectionButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel.PanelListView.PanelList.SelectedItem != null )
+            {
+                var selectedItems = _viewModel.PanelListView.PanelList.SelectedItems;
+                ObservableCollection<PanelViewContainer> panelViewContainers = new();
+                foreach (var panelViewContainer in selectedItems)
+                {
+                    panelViewContainers.Add((PanelViewContainer)panelViewContainer);
+                }
+                AddToCollectionDialog addToCollectionDialog = new();
+                addToCollectionDialog.viewModel.PanelMissions = panelViewContainers;
+                DialogHost.Show(addToCollectionDialog, "InspViewDialogHost");
+            }
+        }
+
+        private void InspViewDialog_OnDialogClosing(object sender, DialogClosingEventArgs e)
         {
             if (!Equals(e.Parameter, true))
             {
-                return ;
+                return;
             }
             else
             {
-                var defects = _viewModel.DefectSelectView.DefectSelectListBox.SelectedItems;
-                Defect[] defectArray = new Defect[defects.Count];
-                for(int i = 0; i < defects.Count; i++)
+                var eventSource = ((DialogHost)sender).DialogContent;
+                if (eventSource is AddToCollectionDialog Dialog)
                 {
-                    defectArray[i] = (Defect)defects[i];
-                }
-                if (_viewModel.PanelListView.viewModel.SelectedItem != null && MissionCollectionComboBox.Text != string.Empty)
-                {
-                    PanelMission selectPanelMission = _viewModel.PanelListView.viewModel.SelectedItem.PanelMission;
-                    PanelSample.AddOnePanelSample(new(selectPanelMission.AetResult, MissionCollectionComboBox.Text, _viewModel.NoteString,  MissionType.Sample, selectPanelMission.ProductInfo));
-                    _viewModel.samplePanelListView.viewModel.GetSamples(MissionCollectionComboBox.Text);
-                    _viewModel.NoteString = string.Empty;
+                    var dialogViewModel = Dialog.viewModel;
+                    List<Defect>? defects = new();
+                    if (dialogViewModel.DefectSelectView.DefectSelectListBox.SelectedItem != null)
+                    {
+                        foreach (var defect in dialogViewModel.DefectSelectView.DefectSelectListBox.SelectedItems)
+                        {
+                            defects.Add((Defect)defect);
+                        }
+                    }
+                    if (_viewModel.PanelListView.viewModel.SelectedItem != null && _viewModel.AddCollectionDialog_ComboxText != string.Empty)
+                    {
+                        foreach(var item in dialogViewModel.PanelMissions)
+                        {
+                            PanelMission selectPanelMission = item.PanelMission;
+                            PanelSample.AddOnePanelSample(new(selectPanelMission.AetResult, _viewModel.AddCollectionDialog_ComboxText, dialogViewModel.NoteString, MissionType.Sample, selectPanelMission.ProductInfo, defects));
+                        }
+                        _viewModel.samplePanelListView.viewModel.GetSamples(_viewModel.AddCollectionDialog_ComboxText);
+                        _viewModel.NoteString = string.Empty;
+                    }
                 }
             }
         }

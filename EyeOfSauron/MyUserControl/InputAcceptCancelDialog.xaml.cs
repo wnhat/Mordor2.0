@@ -5,9 +5,9 @@ namespace EyeOfSauron.MyUserControl
     /// <summary>
     /// Interaction logic for SampleMessageDialog.xaml
     /// </summary>
-    public partial class AcceptCancelDialog : UserControl
+    public partial class InputAcceptCancelDialog : UserControl
     {
-        public AcceptCancelDialog()
+        public InputAcceptCancelDialog()
         {
             InitializeComponent();
         }

@@ -82,7 +82,7 @@ namespace EyeOfSauron.MyUserControl
             MainWindow.Snackbar.MessageQueue?.Enqueue("Mission Refresh Successfully");
         }
 
-        private void RefreshProgressValueUpdate(object sender, EventArgs e)
+        private void RefreshProgressValueUpdate(object? sender, EventArgs e)
         {
             if (!_viewModel.IsMissionFreshAllowable)
             {
