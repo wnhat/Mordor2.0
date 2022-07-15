@@ -45,7 +45,7 @@ namespace EyeOfSauron
             if (_viewModel.PanelListView.viewModel.SelectedItem != null && MissionCollectionComboBox.Text != string.Empty)
             {
                 PanelMission selectPanelMission = _viewModel.PanelListView.viewModel.SelectedItem.PanelMission;
-                PanelSample.AddOnePanelSample(new(selectPanelMission.AetResult, MissionCollectionComboBox.Text, "", MissionType.Sample, selectPanelMission.ProductInfo));
+                PanelSample.AddOnePanelSample(new(selectPanelMission.AetResult, new(MissionCollectionComboBox.Text), "", MissionType.Sample, selectPanelMission.ProductInfo));
                 _viewModel.samplePanelListView.viewModel.GetSamples(MissionCollectionComboBox.Text);
             }
         }
@@ -63,20 +63,21 @@ namespace EyeOfSauron
             }
             catch (NullReferenceException)
             {
+                //由于输入任务集名称造成的异常，不进行处理；
             }
         }
 
         private void CollectionSetting_Click(object sender, RoutedEventArgs e)
         {
-
-            CollectionSettingDialog collectionSettingDialog = new();
-            ObservableCollection<PanelMissionCollectionInfo> panelMissionCollectionInfo = new();
-            foreach (var item in _viewModel.sampleCollection)
+            try
             {
-                panelMissionCollectionInfo.Add(new(item.CollectionName,item.PanelList.Count));
+                CollectionSettingDialog collectionSettingDialog = new();
+                DialogHost.Show(collectionSettingDialog, "InspViewDialogHost");
             }
-            collectionSettingDialog.viewModel.PanelMissionCollectionInfo = panelMissionCollectionInfo;
-            DialogHost.Show(collectionSettingDialog, "InspViewDialogHost");
+            catch (Exception ex)
+            {
+                DialogHost.Show(new MessageAcceptDialog{ Message = {Text = ex.Message} }, "InspViewDialogHost");
+            }
         }
 
         private void AddCollectionButton_Click(object sender, RoutedEventArgs e)
@@ -120,11 +121,15 @@ namespace EyeOfSauron
                         foreach(var item in dialogViewModel.PanelMissions)
                         {
                             PanelMission selectPanelMission = item.PanelMission;
-                            PanelSample.AddOnePanelSample(new(selectPanelMission.AetResult, _viewModel.AddCollectionDialog_ComboxText, dialogViewModel.NoteString, MissionType.Sample, selectPanelMission.ProductInfo, defects));
+                            PanelSample.AddOnePanelSample(new(selectPanelMission.AetResult, new(_viewModel.AddCollectionDialog_ComboxText), dialogViewModel.NoteString, MissionType.Sample, selectPanelMission.ProductInfo, defects));
                         }
                         _viewModel.samplePanelListView.viewModel.GetSamples(_viewModel.AddCollectionDialog_ComboxText);
                         _viewModel.NoteString = string.Empty;
                     }
+                }
+                else if(eventSource is CollectionSettingDialog Dialog2)
+                {
+                    var dialogViewModel = Dialog2.viewModel;
                 }
             }
         }

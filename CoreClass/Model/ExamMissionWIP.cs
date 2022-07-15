@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using CoreClass.DICSEnum;
 using MongoDB.Bson;
@@ -11,20 +12,20 @@ namespace CoreClass.Model
 {
     public class ExamMissionWIP
     {
-        public static IMongoCollection<ExamMissionWIP> Collection = DBconnector.DICSDB.GetCollection<ExamMissionWIP>("ExamMissionWIP");
+        [BsonIgnore]
+        private static readonly IMongoCollection<ExamMissionWIP> Collection = DBconnector.DICSDB.GetCollection<ExamMissionWIP>("ExamMissionWIP");
         [BsonId]
         public ObjectId Id;
         public ObjectId UserID { get; private set; }
 
-        private string missionCollectionId;
-        public string MissionCollectionId 
+        private string missionCollectionName;
+        public string MissionCollectionName 
         {
-            get => missionCollectionId;
+            get => missionCollectionName;
             set
             {
-                missionCollectionId = value;
-                //MissionCount = PanelSample.GetSamples(MissionCollectionId).Result.Count;
-                MissionCount = PanelSample.GetSampleCount(MissionCollectionId);
+                missionCollectionName = value;
+                MissionCount = PanelSample.GetSampleCount(MissionCollectionName).GetValue("count").AsInt32;
             }
         }
         public int MissionCount { get; private set; }
@@ -32,7 +33,7 @@ namespace CoreClass.Model
         public ExamMissionWIP(User user, string MissionCollectionID)
         {
             Id = user.Id;
-            this.MissionCollectionId = MissionCollectionID;
+            this.MissionCollectionName = MissionCollectionID;
         }
         public static void AddOne(ExamMissionWIP examMissionWIP)
         {
@@ -47,9 +48,20 @@ namespace CoreClass.Model
             var result = await Collection.Find(x => x.UserID == id).ToListAsync();
             return result;
         }
+
+        public static List<BsonDocument> GetUserByCollectionName(string name)
+        {
+            ProjectionDefinition<ExamMissionWIP> group = "{_id : 'UserID'}";
+            var agg = Collection.Aggregate()
+                .Match(x => x.MissionCollectionName == name)
+                .Group(group);
+            var result = agg?.ToList();
+            return result;
+        }
+
         public static void DeleteOne(ObjectId userId, string missionCollectionID)
         {
-            Collection.DeleteOne(x => x.UserID == userId && x.MissionCollectionId == missionCollectionID);
+            Collection.DeleteOne(x => x.UserID == userId && x.MissionCollectionName == missionCollectionID);
         }
     }
 }

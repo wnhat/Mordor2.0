@@ -26,6 +26,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="MyUserControl\PushExamMissionDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MyUserControl\ColorTool.xaml">
       <SubType>Designer</SubType>
     </Page>

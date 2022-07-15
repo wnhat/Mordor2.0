@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using CoreClass.DICSEnum;
 using MongoDB.Bson;
@@ -11,7 +12,9 @@ namespace CoreClass.Model
 {
     public class PanelSample
     {
-        public static IMongoCollection<PanelSample> Collection = DBconnector.DICSDB.GetCollection<PanelSample>("SampleMission");
+        [BsonIgnore]
+        [JsonIgnore]
+        private static readonly IMongoCollection<PanelSample> Collection = DBconnector.DICSDB.GetCollection<PanelSample>("SampleMission");
         [BsonId]
         public ObjectId Id;
 
@@ -29,7 +32,7 @@ namespace CoreClass.Model
 
         public string PanelID { get; set; }
 
-        public string MissionCollection { get; set; }
+        public MissionCollection MissionCollection { get; set; }
 
         public string Note { get; set; }
 
@@ -39,7 +42,7 @@ namespace CoreClass.Model
 
         public Sample_MutiDefect MutiDefect { get; set; }
 
-        public PanelSample(AETresult aetResult, string missionCollection, string note, MissionType missionType, ProductInfo info, List<Defect> defects = null)
+        public PanelSample(AETresult aetResult, MissionCollection missionCollection, string note, MissionType missionType, ProductInfo info, List<Defect> defects = null)
         {
             PanelID = aetResult.PanelId;
             AetResult = aetResult;
@@ -74,7 +77,7 @@ namespace CoreClass.Model
         /// <returns>List of collection name on <BsonDocument> type</returns>
         public static List<BsonDocument> GetMissionCollection()
         {
-            ProjectionDefinition<PanelSample> group = "{_id : '$MissionCollection',count : {$sum : 1}}";
+            ProjectionDefinition<PanelSample> group = "{_id : '$MissionCollection',Count : {$sum : 1}}";
             var agg = Collection.Aggregate()
                 .Match(x => x.IsDeleted == false)
                 .Group(group)
@@ -97,19 +100,30 @@ namespace CoreClass.Model
 
         public static async Task<List<PanelSample>> GetSamples(string collectionName)
         {
-            var filter = Builders<PanelSample>.Filter.Eq(x => x.MissionCollection, collectionName);
-            var result = await Collection.Find(x => x.IsDeleted == false && x.MissionCollection == collectionName).ToListAsync();
+            var result = await Collection.Find(x => x.IsDeleted == false && x.MissionCollection.CollectionName == collectionName).ToListAsync();
             return result;
         }
 
-        public static int GetSampleCount(string collectionName)
+        public static BsonDocument GetSampleCount(string collectionName)
         {
             ProjectionDefinition<PanelSample> group = "{_id : '$MissionCollection', count : {$sum : 1}}";
             var agg = Collection.Aggregate()
-                .Match(x => x.IsDeleted == false && x.MissionCollection == collectionName)
+                .Match(x => x.IsDeleted == false && x.MissionCollection.CollectionName == collectionName)
                 .Group(group)
                 .Sort("{ count: -1 }");
-            var result = agg.First().GetValue("count").AsInt32;
+            var result = agg.First();
+            return result;
+        }
+
+
+        public static List<BsonDocument> GetSampleCount()
+        {
+            ProjectionDefinition<PanelSample> group = "{_id : '$MissionCollection', Count : {$sum : 1}}";
+            var agg = Collection.Aggregate()
+                .Match(x => x.IsDeleted == false)
+                .Group(group)
+                .Sort("{MissionCollection: -1 }");
+            var result = agg.ToList();
             return result;
         }
 
@@ -117,9 +131,9 @@ namespace CoreClass.Model
         /// Set delete flag to True;
         /// </summary>
         /// <param name="panelSample"></param>
-        public static void PanelSampleDelete(PanelSample panelSample)
+        public static void PanelSampleDelete(ObjectId Id)
         {
-            var filter = Builders<PanelSample>.Filter.Eq(x => x.Id, panelSample.Id);
+            var filter = Builders<PanelSample>.Filter.Eq(x => x.Id, Id);
             var update = Builders<PanelSample>.Update.Set(x => x.LastModifyTime, DateTime.Now).Set(x => x.IsDeleted, true);
             Collection.UpdateOneAsync(filter, update);
         }
@@ -130,9 +144,9 @@ namespace CoreClass.Model
         /// <param name="panelSample"></param>
         /// <param name="porp"></param>
         /// <param name="value"></param>
-        public static void UpdateProperty(PanelSample panelSample, string porpName, object value)
+        public static void UpdateProperty(ObjectId Id, string porpName, object value)
         {
-            var filter = Builders<PanelSample>.Filter.Eq(x => x.Id, panelSample.Id);
+            var filter = Builders<PanelSample>.Filter.Eq(x => x.Id, Id);
             var update = Builders<PanelSample>.Update.Set(x => x.LastModifyTime, DateTime.Now).Set(string.Format("${0}",porpName), value);
             Collection.UpdateOneAsync(filter, update);
         }
@@ -145,6 +159,18 @@ namespace CoreClass.Model
         {
             var filter = Builders<PanelSample>.Filter.Eq(x => x.Id, panelSample.Id);
             Collection.DeleteOneAsync(filter);
+        }
+    }
+    public class MissionCollection
+    {
+        public string CollectionName { get; set; }
+        [BsonRepresentation(BsonType.String)]
+        public MissionType MissionType { get; set; }
+
+        public MissionCollection(string name, MissionType missionType = MissionType.Sample)
+        {
+            CollectionName = name;
+            MissionType = missionType;
         }
     }
     public class Sample_MutiDefect

@@ -35,7 +35,7 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding PanelSample.PanelID}" Header="PanelID" />
-                    <GridViewColumn DisplayMemberBinding="{Binding PanelSample.MissionCollection}" Header="任务集" />
+                    <GridViewColumn DisplayMemberBinding="{Binding PanelSample.MissionCollection.CollectionName}" Header="任务集" />
                     <GridViewColumn DisplayMemberBinding="{Binding PanelSample.MutiDefect.DefectName}" Header="DefectName" />
                     <GridViewColumn DisplayMemberBinding="{Binding PanelSample.SampleGrade}" Header="Grade" />
                     <GridViewColumn DisplayMemberBinding="{Binding PanelSample.Note}" Header="备注" />

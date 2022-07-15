@@ -12,6 +12,7 @@ namespace EyeOfSauron.ViewModel
     {
         private string collectionName = string.Empty;
         private ObservableCollection<SamplePanelContainer> panelList = new();
+
         public string CollectionName
         {
             get => collectionName;
@@ -29,16 +30,12 @@ namespace EyeOfSauron.ViewModel
             get => selectedItem;
             set => SetProperty(ref selectedItem, value);
         }
-        public SamplePanelListViewModel()
-        {
-            GetSamples();
-        }
-        public SamplePanelListViewModel(string collectionName)
+        public SamplePanelListViewModel(string collectionName = "")
         {
             GetSamples(collectionName);
         }
 
-        public async void GetSamples(string collectionName = "")
+        public async void GetSamples(string collectionName)
         {
             List<PanelSample>? samples;
             if (collectionName == string.Empty)

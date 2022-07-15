@@ -25,7 +25,7 @@
         <KeyBinding Command="{Binding InspImageView.DataContext.InspImage.RefreshImageCommand}" Gesture="Tab" />
     </Window.InputBindings>
     <Window.Resources>
-        <ResourceDictionary >
+        <ResourceDictionary>
             <Converter:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
         </ResourceDictionary>
     </Window.Resources>
@@ -116,8 +116,8 @@
                 <ProgressBar
                     Margin="0,0,0,0"
                     DockPanel.Dock="Top"
-                    Value="{Binding LoadMissionProgressValue, FallbackValue=10}"
-                    Visibility="{Binding LoadMissionProgressValue, Converter={StaticResource EnumToVisibilityConverter}}"/>
+                    Visibility="{Binding LoadMissionProgressValue, Converter={StaticResource EnumToVisibilityConverter}}"
+                    Value="{Binding LoadMissionProgressValue, FallbackValue=10}" />
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -165,12 +165,14 @@
                                         <ComboBox
                                             x:Name="MissionCollectionComboBox"
                                             Margin="5,0,5,0"
+                                            IsEditable="True"
                                             materialDesign:HintAssist.Hint="MissionCollection"
                                             materialDesign:HintAssist.HintOpacity=".26"
                                             DisplayMemberPath="CollectionName"
                                             ItemsSource="{Binding SampleCollection}"
                                             SelectedItem="{Binding SelectedSamplePanelListViewMode, Mode=TwoWay}"
-                                            SelectionChanged="MissionCollectionComboBox_SelectionChanged" />
+                                            SelectionChanged="MissionCollectionComboBox_SelectionChanged"
+                                            Text="{Binding AddCollectionDialog_ComboxText, Mode=TwoWay}" />
                                         <Button
                                             Margin="5,0,5,0"
                                             Click="AddCollectionButton_Click"
@@ -190,7 +192,6 @@
                                             Margin="5,0,5,0"
                                             Click="CollectionSetting_Click"
                                             Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
-                                            
                                             Content="{materialDesign:PackIcon Kind=Cog,
                                                                               Size=22}"
                                             Focusable="False"

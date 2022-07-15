@@ -1,5 +1,6 @@
 ﻿using CoreClass.Model;
 using EyeOfSauron.MyUserControl;
+using MongoDB.Bson.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,23 +12,42 @@ namespace EyeOfSauron.ViewModel
 {
     public class CollectionSettingViewModel : ViewModelBase
     {
-        private ObservableCollection<PanelMissionCollectionInfo> panelMissionCollectionInfo = new();
-        public ObservableCollection<PanelMissionCollectionInfo> PanelMissionCollectionInfo
+        private ObservableCollection<MissionCollectionInfo> panelMissionCollectionInfos = new();
+        private MissionCollectionInfo? selectPanelMissionCollectionInfo;
+        public ObservableCollection<MissionCollectionInfo> PanelMissionCollectionInfos
         {
-            get => panelMissionCollectionInfo;
-            set => SetProperty(ref panelMissionCollectionInfo, value);
+            get => panelMissionCollectionInfos;
+            set => SetProperty(ref panelMissionCollectionInfos, value);
+        }
+        public MissionCollectionInfo? SelectPanelMissionCollectionInfo
+        {
+            get => selectPanelMissionCollectionInfo;
+            set => SetProperty(ref selectPanelMissionCollectionInfo, value);
+        }
+        public CollectionSettingViewModel()
+        {
+            var missionCollectionInfos = PanelSample.GetSampleCount();
+            foreach(var item in missionCollectionInfos)
+            {
+                //var b = item.GetValue("MissionCollection");
+                var missionCollectionInfo = BsonSerializer.Deserialize<MissionCollectionInfo>(item);
+                PanelMissionCollectionInfos.Add(missionCollectionInfo);
+            }
+            if (PanelMissionCollectionInfos != null)
+            {
+                selectPanelMissionCollectionInfo = PanelMissionCollectionInfos.First();
+            }
+            else throw new Exception("未找到任何任务集");
         }
     }
 
-    public class PanelMissionCollectionInfo
+    public class MissionCollectionInfo
     {
-        public string MissionCollectionName { get; private set; }
-        public int MissionCount { get; private set; }
+        public MissionCollection? _id { get; set; }//MongoDB 聚合查询结果的属性名必须为”_id“,此类用于反序列化查询结果
+        public int Count { get; set; }
+    }
+    public class NotfoundException : Exception 
+    {
 
-        public PanelMissionCollectionInfo(string name, int count)
-        {
-            MissionCollectionName = name;
-            MissionCount = count;
-        }
     }
 }

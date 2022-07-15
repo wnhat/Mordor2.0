@@ -10,6 +10,7 @@ using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 using System.Windows;
 using System.Text.RegularExpressions;
+using MongoDB.Bson.Serialization;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -140,26 +141,16 @@ namespace EyeOfSauron.ViewModel
             }
         }
 
-        public static List<string> GetCollectionNames()
-        {
-            List<string> MissionCollection = new();
-            var Missions = PanelSample.GetMissionCollection();
-            foreach (var item in Missions)
-            {
-                var missionName = item.GetValue("_id").AsString;
-                MissionCollection.Add(missionName);
-            }
-            return MissionCollection;
-        }
-
         public void RefreshCollection()
         {
             string buff = AddCollectionDialog_ComboxText;
             sampleCollection.Clear();
-            var collection = GetCollectionNames();
-            foreach (string item in collection)
+            var Missions = PanelSample.GetMissionCollection();
+            foreach (var item in Missions)
             {
-                sampleCollection.Add(new(item));
+                var missionCollectionInfo = BsonSerializer.Deserialize<MissionCollectionInfo>(item);
+                var missionName = missionCollectionInfo._id.CollectionName;
+                sampleCollection.Add(new(missionName));
             }
             AddCollectionDialog_ComboxText = buff;
         }
