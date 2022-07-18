@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
 using CoreClass.Model;
 using EyeOfSauron.ViewModel;
@@ -29,8 +30,8 @@ namespace EyeOfSauron.MyUserControl
 
         private void MenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            try
-            {
+            //try
+            //{
                 if (CollectionInfoList.SelectedItem != null)
                 {
                     var a = viewModel.SelectPanelMissionCollectionInfo;
@@ -41,17 +42,40 @@ namespace EyeOfSauron.MyUserControl
                 {
                     DialogHost.Show(new MessageAcceptDialog { Message = { Text = "未选定任何任务集" } }, "CollectionSettingViewDialog");
                 }
-            }catch (Exception ex)
-            {
-                DialogHost.Show(new MessageAcceptDialog { Message = { Text = ex.Message } }, "CollectionSettingViewDialog");
-            }
+            //}catch (Exception ex)
+            //{
+            //    DialogHost.Show(new MessageAcceptDialog { Message = { Text = ex.Message } }, "CollectionSettingViewDialog");
+            //}
 
         }
         private void PushSettingDialogClosingEventHandler(object sender, DialogClosingEventArgs e)
         {
-            if (e.Handled)
+            if (!Equals(e.Parameter, true))
             {
-                e.Cancel();
+                return;
+            }
+            else
+            {
+                var eventSource = ((DialogHost)sender).DialogContent;
+                if (eventSource is PushExamMissionDialog Dialog)
+                {
+                    e.Handled = true;
+                    var dialogViewModel = Dialog.viewModel;
+                    if (viewModel.SelectPanelMissionCollectionInfo != null)
+                    {
+                        string? CollectionName = viewModel.SelectPanelMissionCollectionInfo._id?.CollectionName;
+                        List<ExamMissionWIP> ExamMissionWIPs = new();
+                        foreach (var item in dialogViewModel.SelectedUsers)
+                        {
+                            ExamMissionWIPs.Add(new(item, CollectionName));
+                        }
+                        ExamMissionWIP.DelectMany(CollectionName);
+                        if (ExamMissionWIPs.Count > 0) 
+                        {
+                            ExamMissionWIP.AddMany(ExamMissionWIPs);
+                        }
+                    }
+                }
             }
         }
         public void MessageDialogOpenedEventHandler(object sender, DialogOpenedEventArgs e)

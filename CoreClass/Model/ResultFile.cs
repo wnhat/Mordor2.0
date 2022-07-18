@@ -229,7 +229,7 @@ namespace CoreClass.Model
                             }
                         }
                         // 添加contours；
-                        var contours = dir.GetFileContainer("Contours");
+                        var contours = dir.GetFileContainer("Contours.Merge");
                         if (contours != null)
                         {
                             this.SviContours = new String(Encoding.UTF8.GetChars(contours.Data));

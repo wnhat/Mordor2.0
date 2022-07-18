@@ -144,13 +144,13 @@ namespace EyeOfSauron.ViewModel
         public void RefreshCollection()
         {
             string buff = AddCollectionDialog_ComboxText;
-            sampleCollection.Clear();
+            SampleCollection.Clear();
             var Missions = PanelSample.GetMissionCollection();
             foreach (var item in Missions)
             {
                 var missionCollectionInfo = BsonSerializer.Deserialize<MissionCollectionInfo>(item);
                 var missionName = missionCollectionInfo._id.CollectionName;
-                sampleCollection.Add(new(missionName));
+                SampleCollection.Add(new(missionName));
             }
             AddCollectionDialog_ComboxText = buff;
         }

@@ -77,7 +77,7 @@ namespace CoreClass
                         pointY += 5;
                     }
                     points.Add(new Point(pointX, pointY));
-                    if (i == L.Count() - 1)
+                    if (i == L.Count() - 2)
                     {
                         DrawDefectMap(points.ToArray());
                     }
@@ -91,7 +91,7 @@ namespace CoreClass
         private void DrawDefectMap(Point[] pointList)
         {
             Pen defectDrawPen = new(Color.White);
-            defectDrawPen.Width = (float)1.6;
+            defectDrawPen.Width = (float)2.0;
             if (pointList.Length > 2)
             {
                 graphics.DrawPolygon(defectDrawPen, pointList);

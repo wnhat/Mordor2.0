@@ -9,7 +9,7 @@ namespace EyeOfSauron.MyUserControl
     /// </summary>
     public partial class PushExamMissionDialog : UserControl
     {
-        private readonly PushExamMissionViewModel viewModel;
+        public readonly PushExamMissionViewModel viewModel;
         public PushExamMissionDialog(MissionCollectionInfo missionCollectionInfo)
         {
             try

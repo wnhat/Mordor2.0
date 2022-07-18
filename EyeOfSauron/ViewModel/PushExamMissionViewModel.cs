@@ -1,4 +1,5 @@
 ﻿using CoreClass.Model;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -49,7 +50,8 @@ namespace EyeOfSauron.ViewModel
                 var b = ExamMissionWIP.GetUserByCollectionName(missionCollectionInfo._id.CollectionName);
                 foreach(var item in b)
                 {
-                    selectedUsers.Add(UserDbClass.GetUser(item.GetValue("UserID").AsObjectId));
+                    var a = item.GetValue("_id").AsObjectId;
+                    selectedUsers.Add(UserDbClass.GetUser(a));
                 }
                 var userList = UserDbClass.GetAllUsers();
                 foreach (var user in userList)

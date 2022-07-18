@@ -30,10 +30,10 @@ namespace CoreClass.Model
         }
         public int MissionCount { get; private set; }
 
-        public ExamMissionWIP(User user, string MissionCollectionID)
+        public ExamMissionWIP(User user, string MissionCollectionName)
         {
-            Id = user.Id;
-            this.MissionCollectionName = MissionCollectionID;
+            UserID = user.Id;
+            this.MissionCollectionName = MissionCollectionName;
         }
         public static void AddOne(ExamMissionWIP examMissionWIP)
         {
@@ -43,6 +43,7 @@ namespace CoreClass.Model
         {
             await Collection.InsertManyAsync(examMissionWIPs);
         }
+
         public static async Task<List<ExamMissionWIP>> GetByUser(ObjectId id)
         {
             var result = await Collection.Find(x => x.UserID == id).ToListAsync();
@@ -51,7 +52,7 @@ namespace CoreClass.Model
 
         public static List<BsonDocument> GetUserByCollectionName(string name)
         {
-            ProjectionDefinition<ExamMissionWIP> group = "{_id : 'UserID'}";
+            ProjectionDefinition<ExamMissionWIP> group = "{_id : '$UserID'}";
             var agg = Collection.Aggregate()
                 .Match(x => x.MissionCollectionName == name)
                 .Group(group);
@@ -59,9 +60,19 @@ namespace CoreClass.Model
             return result;
         }
 
-        public static void DeleteOne(ObjectId userId, string missionCollectionID)
+        public static void DeleteOne(ObjectId userId, string missionCollectionName)
         {
-            Collection.DeleteOne(x => x.UserID == userId && x.MissionCollectionName == missionCollectionID);
+            if (missionCollectionName != null)
+            {
+                Collection.DeleteOne(x => x.UserID == userId && x.MissionCollectionName == missionCollectionName);
+            }
+        }
+        public static void DelectMany(string missionCollectionName)
+        {
+            if(missionCollectionName != null)
+            {
+                Collection.DeleteMany(x => x.MissionCollectionName == missionCollectionName);
+            }
         }
     }
 }

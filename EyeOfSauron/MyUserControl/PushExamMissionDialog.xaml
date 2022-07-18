@@ -82,7 +82,7 @@
             </Border>
         </StackPanel>
 
-        <materialDesign:Card Grid.Row="1" UniformCornerRadius="5">
+        <!--<materialDesign:Card Grid.Row="1" UniformCornerRadius="5">
             <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
                 <TextBlock
                     Margin="5,0,0,0"
@@ -103,7 +103,7 @@
                     SelectedTime="{Binding Time}"
                     Style="{StaticResource MaterialDesignFloatingHintTimePicker}" />
             </StackPanel>
-        </materialDesign:Card>
+        </materialDesign:Card>-->
         <StackPanel
             Grid.Row="2"
             Margin="16,16,16,0"
