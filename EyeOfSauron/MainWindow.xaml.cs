@@ -28,6 +28,7 @@ namespace EyeOfSauron
                 DataContext = _viewModel;
                 Snackbar = MainSnackbar;
                 loginWindow.AccountAuthenticateEvent += new LogininWindow.ValuePassHandler(AccountAuthenticate);
+                _viewModel.ProductSelectView.ExamMissionRefreshButton.Click += new RoutedEventHandler(ExamMissionRefresh);
                 _viewModel.DefectJudgeView.DefectJudgeEvent += new DefectJudgeView.ValuePassHandler(DefectJudge);
             }
             catch (Exception e)
@@ -40,6 +41,15 @@ namespace EyeOfSauron
         {
             _viewModel.UserInfo.User = arges.User;
             loginWindow.Close();
+            if (_viewModel.UserInfo.UserExist)
+            {
+                _viewModel.ProductSelectView.GetExamMissions(_viewModel.UserInfo.User);
+                if (_viewModel.ProductSelectView._viewModel.ExamMissionCardViewModels.Count>0)
+                {
+                    DialogHost.Show(new MessageAcceptDialog { Message = { Text = "有待完成的考试任务" } }, "MainWindowDialog");
+                    _viewModel.ProductSelectView._viewModel.ControlTabSelectedIndex = (int)ControlTableItem.ExamMission;
+                }
+            }
             MainSnackbar.MessageQueue?.Enqueue(string.Format("Welcome to Eye Of Sauron, {0}", _viewModel.UserInfo.User.Username));
         }
 
@@ -136,6 +146,18 @@ namespace EyeOfSauron
             this.MainContent.Focus();
         }
 
+        private void ExamMissionRefresh(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel.UserInfo.UserExist)
+            {
+                _viewModel.ProductSelectView.GetExamMissions(_viewModel.UserInfo.User);
+                Snackbar.MessageQueue?.Enqueue("ExamMission Refresh Successfully");
+            }
+            else
+            {
+                DialogHost.Show(new MessageAcceptDialog { Message = { Text = "请登录后操作" } }, "MainWindowDialog");
+            }
+        }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             foreach (Window w in Application.Current.Windows)

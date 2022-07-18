@@ -6,6 +6,7 @@ using MongoDB.Driver;
 using EyeOfSauron.ViewModel;
 using CoreClass.Service;
 using System.Windows.Threading;
+using CoreClass.Model;
 
 namespace EyeOfSauron.MyUserControl
 {
@@ -67,9 +68,35 @@ namespace EyeOfSauron.MyUserControl
             }
         }
 
+        public void GetExamMissions(User user)
+        {
+            _viewModel.ExamMissionCardViewModels.Clear();
+            try
+            {
+                var examMissionWIPs = ExamMissionWIP.GetByUser(user.Id);
+                foreach (var item in examMissionWIPs)
+                {
+                    _viewModel.ExamMissionCardViewModels.Add(item);
+                }
+                if (_viewModel.ExamMissionCardViewModels.Count > 0)
+                {
+                    _viewModel.SelectedExamMissionCardViewModel = _viewModel.ExamMissionCardViewModels.First();
+                }
+            }
+
+            catch (TimeoutException e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            catch (TypeInitializationException)
+            {
+                MessageBox.Show("DICSDB no connection");
+            }
+        }
+
         private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)
         {
-            ProductCardViewModel viewModel = ((Button)sender).DataContext as ProductCardViewModel;
+            ProductCardViewModel? viewModel = ((Button)sender).DataContext as ProductCardViewModel;
             _viewModel.SelectedProductCardViewModel = viewModel;
         }
 
@@ -97,6 +124,20 @@ namespace EyeOfSauron.MyUserControl
                 _viewModel.IsMissionFreshAllowable = true;
                 dispatcherTimer.Stop();
             }
+        }
+
+        private void ExamMissionSelectBuuttonClick(object sender, RoutedEventArgs e)
+        {
+
+            ExamMissionWIP? viewModel = ((Button)sender).DataContext as ExamMissionWIP;
+            _viewModel.SelectedExamMissionCardViewModel = viewModel;
+        }
+
+        private void ExamMissionRefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            _viewModel.IsMissionFreshAllowable = false;
+            dispatcherTimer.Start();
+            progressStartTime = DateTime.Now;
         }
     }
 }

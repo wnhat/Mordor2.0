@@ -6,6 +6,7 @@ using CoreClass;
 using CoreClass.Model;
 using System.IO;
 using CoreClass.Service;
+using EyeOfSauron.ViewModel;
 
 namespace EyeOfSauron
 {
@@ -16,13 +17,34 @@ namespace EyeOfSauron
 
         public PanelMission onInspPanelMission;
 
-        public readonly ProductInfo productInfo;
+        public readonly ProductInfo? productInfo;
+
+        public ExamMissionWIP? ExamMissionWIP;
+
+        public ControlTableItem MissionType;
 
         readonly object Predownloadlock = new();
 
-        public Mission(ProductInfo Info)
+        public Mission(object o, ControlTableItem MissionType = ControlTableItem.ProductMission)
         {
-            productInfo = Info;
+            this.MissionType = MissionType;
+            switch (MissionType)
+            {
+                default:
+                case ControlTableItem.ProductMission:
+                    if(o is ProductInfo info)
+                    {
+                        productInfo = info;
+                    }
+                    break;
+                case ControlTableItem.ExamMission:
+                    if(o is ExamMissionWIP exam)
+                    {
+                        ExamMissionWIP = exam;
+                    }
+                    break;
+                
+            }
             if (PreLoadOneMission())
             {
                 onInspPanelMission = PreDownloadedPanelMissionQueue.Dequeue();
@@ -57,23 +79,48 @@ namespace EyeOfSauron
         /// <returns></returns>
         public bool PreLoadOneMission()
         {
-            InspectMission? inspectMission = InspectMission.GetMission(productInfo);
-            if (inspectMission == null)
+            switch (MissionType)
             {
-                return false;
+                case ControlTableItem.ProductMission:
+                    InspectMission? inspectMission = InspectMission.GetMission(productInfo);
+                    if (inspectMission == null)
+                    {
+                        return false;
+                    }
+                    AETresult? aetResult = AETresult.Get(inspectMission.HistoryID);
+                    if (aetResult == null)
+                    {
+                        SeverConnector.SendPanelMissionResult(new OperatorJudge(new Defect("异显", "DE00010"), User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, User.AutoJudgeUser.Id, 1), inspectMission);
+                        return PreLoadOneMission();
+                    }
+                    else
+                    {
+                        PanelMission panelMission = new(aetResult, inspectMission);
+                        PreDownloadedPanelMissionQueue.Enqueue(panelMission);
+                        return true;
+                    }
+                case ControlTableItem.ExamMission:
+                    ExamMissionResult? ExamMission = ExamMissionResult.GetOneAndUpdate(ExamMissionWIP.MissionCollectionName);
+                    if (ExamMission == null)
+                    {
+                        return true;
+                    }
+                    AETresult? examMissionAetResult = PanelSample.GetSample(ExamMission.PanelSampleId).AetResult;
+                    if (examMissionAetResult == null)
+                    {
+                        //SeverConnector.SendPanelMissionResult(new OperatorJudge(new Defect("异显", "DE00010"), User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, User.AutoJudgeUser.Id, 1), inspectMission);
+                        return PreLoadOneMission();
+                    }
+                    else
+                    {
+                        PanelMission panelMission = new(examMissionAetResult);
+                        PreDownloadedPanelMissionQueue.Enqueue(panelMission);
+                        return true;
+                    }
+                default:
+                    return false;
             }
-            AETresult? aetResult = AETresult.Get(inspectMission.HistoryID);
-            if (aetResult == null)
-            {
-                SeverConnector.SendPanelMissionResult(new OperatorJudge(new Defect("异显", "DE00010"), User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, User.AutoJudgeUser.Id, 1), inspectMission);
-                return PreLoadOneMission();
-            }
-            else
-            {
-                PanelMission panelMission = new(aetResult, inspectMission);
-                PreDownloadedPanelMissionQueue.Enqueue(panelMission);
-                return true;
-            }
+
         }
 
         /// <summary>

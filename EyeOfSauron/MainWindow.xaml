@@ -164,7 +164,7 @@
                             Visibility="{Binding OnShowView, Converter={StaticResource EnumToVisibilityConverter}, Mode=TwoWay}">
                             <Button
                                 Command="{Binding StartInspCommand}"
-                                CommandParameter="{Binding ProductSelectView.DataContext.SelectedProductCardViewModel.ProductInfo.Key}"
+                                CommandParameter="{Binding ProductSelectView.DataContext.ControlTabSelectedIndex}"
                                 Content="Start Insp"
                                 IsTabStop="False"
                                 Style="{StaticResource MaterialDesignRaisedLightButton}" />

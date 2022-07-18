@@ -8,6 +8,7 @@ using System.Linq;
 using CoreClass.Service;
 using System.Windows.Threading;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -118,22 +119,60 @@ namespace EyeOfSauron.ViewModel
         {
             if (UserInfo.UserExist)
             {
-                if (o is ProductInfo && o != null)
+                if(o is ControlTableItem)
                 {
-                    SetInspView();
-                    ProductInfo? productInfo = o as ProductInfo;
-                    try
+                    ControlTableItem controlTableItem = (ControlTableItem)o;
+                    switch (controlTableItem)
                     {
-                        productInfo.InspPatternCount = 2;
-                        SetInspImageLayout(productInfo.InspPatternCount);
-                        mission = new(productInfo);
-                        LoadOnInspPanelMission();
-                        mission.FillPreDownloadMissionQueue();
-                    }
-                    catch (MissionEmptyException ex)
-                    {
-                        await DialogHost.Show(new MessageAcceptDialog { Message = { Text = ex.Message } }, "MainWindowDialog");
-                        SetProductSelectView();
+                        case ControlTableItem.ProductMission:
+                            SetInspView();
+                            ProductInfo? productInfo = productSelectView._viewModel.SelectedProductCardViewModel?.ProductInfo.Key;
+                            if (productInfo != null)
+                            {
+                                try
+                                {
+                                    productInfo.InspPatternCount = 2;//This value should be set when the productInfo initializing
+                                    SetInspImageLayout(productInfo.InspPatternCount);
+                                    mission = new(productInfo);
+                                    LoadOnInspPanelMission();
+                                    mission.FillPreDownloadMissionQueue();
+                                }
+                                catch (MissionEmptyException ex)
+                                {
+                                    await DialogHost.Show(new MessageAcceptDialog { Message = { Text = ex.Message } }, "MainWindowDialog");
+                                    SetProductSelectView();
+                                }
+                            }
+                            break;
+                        case ControlTableItem.ExamMission:
+                            ExamMissionWIP? missionWIP = productSelectView._viewModel.SelectedExamMissionCardViewModel;
+                            if(missionWIP != null)
+                            {
+                                List<ExamMissionResult> ExamMissionResultList = new ();
+                                var a = PanelSample.GetSampleIds(missionWIP.MissionCollectionName).Result;
+                                foreach(var id in a)
+                                {
+                                    ExamMissionResultList.Add(new(missionWIP, id.GetValue("_id").AsObjectId));
+                                }
+                                ExamMissionResult.AddMany(ExamMissionResultList);
+
+                                SetInspView();
+                                try
+                                {
+                                    SetInspImageLayout(3);
+                                    mission = new(missionWIP, ControlTableItem.ExamMission);
+                                    LoadOnInspPanelMission();
+                                    mission.FillPreDownloadMissionQueue();
+                                }
+                                catch (MissionEmptyException ex)
+                                {
+                                    await DialogHost.Show(new MessageAcceptDialog { Message = { Text = ex.Message } }, "MainWindowDialog");
+                                    SetProductSelectView();
+                                }
+                            }
+                            break;
+                        default:
+                            break;
                     }
                 }
             }

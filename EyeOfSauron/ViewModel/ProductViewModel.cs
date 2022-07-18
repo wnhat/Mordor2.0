@@ -7,11 +7,15 @@ namespace EyeOfSauron.ViewModel
 
     public class ProductViewModel : ViewModelBase
     {
-        public UserInfoViewModel userInfoViewModel = new();
-
         private ObservableCollection<ProductCardViewModel> productCardViewModels = new();
 
         private ProductCardViewModel? selectedProductCardViewModel;
+
+        private ObservableCollection<ExamMissionWIP> examMissionCardViewModels = new();
+
+        private ExamMissionWIP? selectedExamMissionCardViewModel;
+
+        private int controlTabSelectedIndex = (int)ControlTableItem.ProductMission;
 
         private double refreshButtonProgressValue;
 
@@ -31,17 +35,7 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref isMissionFreshAllowable, value);
         }
 
-        public UserInfoViewModel UserInfoViewModel
-        {
-            get => this.userInfoViewModel;
-            set
-            {
-                this.userInfoViewModel = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public ProductCardViewModel SelectedProductCardViewModel
+        public ProductCardViewModel? SelectedProductCardViewModel
         {
             get => selectedProductCardViewModel;
             set => SetProperty(ref selectedProductCardViewModel, value);
@@ -51,6 +45,22 @@ namespace EyeOfSauron.ViewModel
         {
             get => productCardViewModels;
             set => SetProperty(ref productCardViewModels, value);
+        }
+
+        public ExamMissionWIP? SelectedExamMissionCardViewModel
+        {
+            get => selectedExamMissionCardViewModel;
+            set => SetProperty(ref selectedExamMissionCardViewModel, value);
+        }
+        public ObservableCollection<ExamMissionWIP> ExamMissionCardViewModels
+        {
+            get => examMissionCardViewModels;
+            set => SetProperty(ref examMissionCardViewModels, value);
+        }
+        public int ControlTabSelectedIndex
+        {
+            get => controlTabSelectedIndex;
+            set => SetProperty(ref controlTabSelectedIndex, value);
         }
     }
 
@@ -68,5 +78,10 @@ namespace EyeOfSauron.ViewModel
             get => productInfo;
             set => SetProperty(ref productInfo, value);
         }
+    }
+    public enum ControlTableItem
+    {
+        ProductMission = 0,
+        ExamMission = 1,
     }
 }

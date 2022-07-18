@@ -172,19 +172,19 @@
                                         <ListView.View>
                                             <GridView>
                                                 <GridViewColumn
-                                                    Width="Auto"
+                                                    Width="100"
                                                     DisplayMemberBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Converter={StaticResource ListViewItemToIndexConverter}}"
                                                     Header="序号" />
                                                 <GridViewColumn
-                                                    Width="Auto"
+                                                    Width="150"
                                                     DisplayMemberBinding="{Binding DefectInfo.PatternName}"
                                                     Header="PATTERN" />
                                                 <GridViewColumn
-                                                    Width="Auto"
+                                                    Width="280"
                                                     DisplayMemberBinding="{Binding DefectInfo.DefectName}"
                                                     Header="DEFECT" />
                                                 <GridViewColumn
-                                                    Width="Auto"
+                                                    Width="260"
                                                     DisplayMemberBinding="{Binding DefectInfo.DefectImageFileName}"
                                                     Header="FILE" />
                                             </GridView>

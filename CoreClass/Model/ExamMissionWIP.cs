@@ -44,9 +44,9 @@ namespace CoreClass.Model
             await Collection.InsertManyAsync(examMissionWIPs);
         }
 
-        public static async Task<List<ExamMissionWIP>> GetByUser(ObjectId id)
+        public static List<ExamMissionWIP> GetByUser(ObjectId id)
         {
-            var result = await Collection.Find(x => x.UserID == id).ToListAsync();
+            var result = Collection.Find(x => x.UserID == id).ToList();
             return result;
         }
 

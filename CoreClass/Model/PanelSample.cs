@@ -104,6 +104,16 @@ namespace CoreClass.Model
             return result;
         }
 
+        public static async Task<List<BsonDocument>> GetSampleIds(string collectionName)
+        {
+            ProjectionDefinition<PanelSample> group = "{_id : '$Id'}";
+            var agg = Collection.Aggregate()
+                .Match(x => x.IsDeleted == false && x.MissionCollection.CollectionName == collectionName)
+                .Group(group);
+            var result = await agg.ToListAsync();
+            return result;
+        }
+
         public static BsonDocument GetSampleCount(string collectionName)
         {
             ProjectionDefinition<PanelSample> group = "{_id : '$MissionCollection', count : {$sum : 1}}";

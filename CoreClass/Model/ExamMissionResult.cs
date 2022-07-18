@@ -16,6 +16,7 @@ namespace CoreClass.Model
         public ObjectId Id;
         public ObjectId UserId { get; private set; }
         public ObjectId PanelSampleId { get; private set; }
+        public string CollectionName { get; private set; }
 
         public DateTime DBInTime = DateTime.Now;
 
@@ -39,10 +40,11 @@ namespace CoreClass.Model
         public bool IsChecked { get; set; }
         public bool IsCorrect { get; private set; }
 
-        public ExamMissionResult(User user,PanelSample panelSample)
+        public ExamMissionResult(ExamMissionWIP examMissionWIP, ObjectId panelSampleId)
         {
-            UserId = user.Id;
-            PanelSampleId = panelSample.Id;
+            UserId = examMissionWIP.UserID;
+            CollectionName = examMissionWIP.MissionCollectionName;
+            PanelSampleId = panelSampleId;
         }
 
         public static void AddOne(ExamMissionResult examMissionResult)
@@ -53,6 +55,31 @@ namespace CoreClass.Model
         {
             await Collection.InsertManyAsync(examMissionResult);
         }
+
+        public static ExamMissionResult GetOneAndUpdate(string collectionName)
+        {
+            var filter = Builders<ExamMissionResult>.Filter.And(
+                Builders<ExamMissionResult>.Filter.Eq(x => x.CollectionName, collectionName),
+                Builders<ExamMissionResult>.Filter.Eq(x => x.IsChecked, false));
+            var update = Builders<ExamMissionResult>.Update.Set(x => x.LastModifyTime, DateTime.Now).Set(x => x.IsChecked, true);
+            ExamMissionResult mission = Collection.FindOneAndUpdate(filter, update);
+            if (mission == null)
+            {
+                return null;
+            }
+            else
+            {
+                return GetOne(mission.Id);
+            }
+        }
+
+        public static ExamMissionResult GetOne(ObjectId id)
+        {
+            var fileter = Builders<ExamMissionResult>.Filter.Eq(x => x.Id, id);
+            var mission = Collection.Find(fileter).FirstOrDefault();
+            return mission;
+        }
+
         /// <summary>
         /// Update value of the specific property;
         /// </summary>
