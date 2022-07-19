@@ -15,7 +15,7 @@ namespace EyeOfSauron.ViewModel
 
         private ExamMissionWIP? selectedExamMissionCardViewModel;
 
-        private int controlTabSelectedIndex = (int)ControlTableItem.ProductMission;
+        private ControlTableItem controlTabSelectedIndex = ControlTableItem.ProductMission;
 
         private double refreshButtonProgressValue;
 
@@ -57,7 +57,7 @@ namespace EyeOfSauron.ViewModel
             get => examMissionCardViewModels;
             set => SetProperty(ref examMissionCardViewModels, value);
         }
-        public int ControlTabSelectedIndex
+        public ControlTableItem ControlTabSelectedIndex
         {
             get => controlTabSelectedIndex;
             set => SetProperty(ref controlTabSelectedIndex, value);

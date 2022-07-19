@@ -119,9 +119,8 @@ namespace EyeOfSauron.ViewModel
         {
             if (UserInfo.UserExist)
             {
-                if(o is ControlTableItem)
+                if (o is ControlTableItem controlTableItem)
                 {
-                    ControlTableItem controlTableItem = (ControlTableItem)o;
                     switch (controlTableItem)
                     {
                         case ControlTableItem.ProductMission:
@@ -131,7 +130,7 @@ namespace EyeOfSauron.ViewModel
                             {
                                 try
                                 {
-                                    productInfo.InspPatternCount = 2;//This value should be set when the productInfo initializing
+                                    productInfo.InspPatternCount = 3;//This value should be set when the productInfo initializing
                                     SetInspImageLayout(productInfo.InspPatternCount);
                                     mission = new(productInfo);
                                     LoadOnInspPanelMission();
@@ -146,11 +145,11 @@ namespace EyeOfSauron.ViewModel
                             break;
                         case ControlTableItem.ExamMission:
                             ExamMissionWIP? missionWIP = productSelectView._viewModel.SelectedExamMissionCardViewModel;
-                            if(missionWIP != null)
+                            if (missionWIP != null)
                             {
-                                List<ExamMissionResult> ExamMissionResultList = new ();
-                                var a = PanelSample.GetSampleIds(missionWIP.MissionCollectionName).Result;
-                                foreach(var id in a)
+                                List<ExamMissionResult> ExamMissionResultList = new();
+                                var sampleIds = PanelSample.GetSampleIds(missionWIP.MissionCollectionName);
+                                foreach (var id in sampleIds)
                                 {
                                     ExamMissionResultList.Add(new(missionWIP, id.GetValue("_id").AsObjectId));
                                 }
@@ -185,10 +184,10 @@ namespace EyeOfSauron.ViewModel
 
         private void SetInspImageLayout(int patternCount )
         {
+            patternCount = patternCount > 3 & patternCount <1 ? 3 : patternCount;
             switch (patternCount)
             {
                 case 1:
-                case 3:
                     InspImageView._viewModel.LayoutPresets.SetInspImageLayout(patternCount);
                     InspImageView._viewModel.InspImage.pagePatternCount = patternCount;
                     InspImageView._viewModel.InspImage.InspImages.Clear();
@@ -213,14 +212,15 @@ namespace EyeOfSauron.ViewModel
                     Grid.SetColumnSpan(inspImageView.imageGrid4, 2);
                     break;
                 default:
-                    InspImageView._viewModel.LayoutPresets.SetInspImageLayout(3);
-                    InspImageView._viewModel.InspImage.pagePatternCount = 3;
+                case 3:
+                    InspImageView._viewModel.LayoutPresets.SetInspImageLayout(patternCount);
+                    InspImageView._viewModel.InspImage.pagePatternCount = patternCount;
                     InspImageView._viewModel.InspImage.InspImages.Clear();
-                    for (int i = 0; i < 3; i++)
+                    for (int i = 0; i < patternCount; i++)
                     {
                         InspImageView._viewModel.InspImage.InspImages.Add(new BitmapImageContainer(ImageContainer.GetDefault));
                     }
-                    Grid.SetRowSpan(inspImageView.imageGrid1, 2);
+                    Grid.SetRowSpan(inspImageView.imageGrid1, 1);
                     Grid.SetColumn(inspImageView.imageGrid4, 1);
                     Grid.SetColumnSpan(inspImageView.imageGrid4, 1);
                     break;
@@ -235,7 +235,7 @@ namespace EyeOfSauron.ViewModel
             if (mission?.onInspPanelMission != null)
             {
                 InspImageView._viewModel.RemainingCount = await mission.RemainMissionCount();
-                InspImageView._viewModel.ProductInfo = new ProductInfoService().GetProductInfo(mission.onInspPanelMission.inspectMission.Info).Result;
+                //InspImageView._viewModel.ProductInfo = new ProductInfoService().GetProductInfo(mission.onInspPanelMission.inspectMission.Info).Result;
                 InspImageView.LoadOneInspImageView(mission.onInspPanelMission);
             }
         }
@@ -274,9 +274,23 @@ namespace EyeOfSauron.ViewModel
         private void DefectJudge(object sender, DefectJudgeArgs e)
         {
             Defect defect = e.Defect;
-            bool IsServerConnected = SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, UserInfo.User.Username, UserInfo.User.Account, UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
+            bool IsServerConnected;
+            switch (mission.MissionType)
+            {
+                default:
+                case ControlTableItem.ProductMission:
+                    IsServerConnected = SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, UserInfo.User.Username, UserInfo.User.Account, UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
+                    break;
+                case ControlTableItem.ExamMission:
+                    List<KeyValuePair<string, object>> properties = new();
+                    properties.Add(new KeyValuePair<string, object>("ResultDefect", defect));
+                    properties.Add(new KeyValuePair<string, object>("IsChecked", true));
+                    ExamMissionResult.UpdateProperties(mission.onInspPanelMission.examMission.Id,properties);
+                    IsServerConnected = true;
+                    break;
+            }
             //Server offline;
-            if (!IsServerConnected)
+            if (IsServerConnected)
             {
                 if (!GetNextMission())
                 {

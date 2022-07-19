@@ -7,6 +7,7 @@ using CoreClass.Model;
 using System.IO;
 using CoreClass.Service;
 using EyeOfSauron.ViewModel;
+using MongoDB.Bson;
 
 namespace EyeOfSauron
 {
@@ -95,12 +96,12 @@ namespace EyeOfSauron
                     }
                     else
                     {
-                        PanelMission panelMission = new(aetResult, inspectMission);
+                        PanelMission panelMission = new(aetResult, inspectMission,null);
                         PreDownloadedPanelMissionQueue.Enqueue(panelMission);
                         return true;
                     }
                 case ControlTableItem.ExamMission:
-                    ExamMissionResult? ExamMission = ExamMissionResult.GetOneAndUpdate(ExamMissionWIP.MissionCollectionName);
+                    ExamMissionResult? ExamMission = ExamMissionResult.GetOneAndUpdate(ExamMissionWIP.UserID, ExamMissionWIP.MissionCollectionName);
                     if (ExamMission == null)
                     {
                         return true;
@@ -113,7 +114,7 @@ namespace EyeOfSauron
                     }
                     else
                     {
-                        PanelMission panelMission = new(examMissionAetResult);
+                        PanelMission panelMission = new(examMissionAetResult, null, ExamMission);
                         PreDownloadedPanelMissionQueue.Enqueue(panelMission);
                         return true;
                     }
@@ -155,8 +156,11 @@ namespace EyeOfSauron
         /// <returns>Remaining quantity of the product In DICSDB;</returns>
         private async Task<int> GetRemainingQuantityOfTheProduct()
         {
-            // get the remaining mission quantity to set viewmodel
-            var remainMissionCount = await DICSRemainInspectMissionService.GetRemainMissionCount(productInfo.Id);
+            BsonDocument remainMissionCount = MissionType switch
+            {
+                ControlTableItem.ExamMission => await ExamMissionResult.GetRemainMissionCount(ExamMissionWIP.UserID, ExamMissionWIP.MissionCollectionName),
+                _ => await DICSRemainInspectMissionService.GetRemainMissionCount(productInfo.Id),
+            };
             if (remainMissionCount != null)
             {
                 return remainMissionCount.GetValue("count").ToInt32();
@@ -178,13 +182,16 @@ namespace EyeOfSauron
 
         public InspectMission? inspectMission;
 
+        public ExamMissionResult? examMission;
+
         public AETresult AetResult { get; set; }
 
         public ProductInfo ProductInfo { get; set; }
         
-        public PanelMission(AETresult result, InspectMission? mission = null)
+        public PanelMission(AETresult result, InspectMission? mission = null, ExamMissionResult? examMissionResult = null)
         {
             inspectMission = mission;
+            examMission = examMissionResult;
             AetResult = result;
             ProductInfo = ProductInfo.GetProductInfo(result.PanelId);
             IniResultImageDataList(AetResult.ResultImages);

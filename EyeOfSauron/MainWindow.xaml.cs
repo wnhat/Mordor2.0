@@ -47,7 +47,7 @@ namespace EyeOfSauron
                 if (_viewModel.ProductSelectView._viewModel.ExamMissionCardViewModels.Count>0)
                 {
                     DialogHost.Show(new MessageAcceptDialog { Message = { Text = "有待完成的考试任务" } }, "MainWindowDialog");
-                    _viewModel.ProductSelectView._viewModel.ControlTabSelectedIndex = (int)ControlTableItem.ExamMission;
+                    _viewModel.ProductSelectView._viewModel.ControlTabSelectedIndex = ControlTableItem.ExamMission;
                 }
             }
             MainSnackbar.MessageQueue?.Enqueue(string.Format("Welcome to Eye Of Sauron, {0}", _viewModel.UserInfo.User.Username));

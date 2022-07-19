@@ -104,13 +104,13 @@ namespace CoreClass.Model
             return result;
         }
 
-        public static async Task<List<BsonDocument>> GetSampleIds(string collectionName)
+        public static List<BsonDocument> GetSampleIds(string collectionName)
         {
-            ProjectionDefinition<PanelSample> group = "{_id : '$Id'}";
+            ProjectionDefinition<PanelSample> group = "{_id : '$_id'}";
             var agg = Collection.Aggregate()
                 .Match(x => x.IsDeleted == false && x.MissionCollection.CollectionName == collectionName)
                 .Group(group);
-            var result = await agg.ToListAsync();
+            var result = agg.ToList();
             return result;
         }
 

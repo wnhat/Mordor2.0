@@ -11,9 +11,11 @@
     d:DataContext="{d:DesignInstance Type=viewModel:ProductViewModel}"
     Background="{DynamicResource MaterialDesignPaper}"
     mc:Ignorable="d">
-    <UserControl.Resources />
+    <UserControl.Resources >
+        <Converter:EnumToIntConverter x:Key="EnumToIntConverter"/>
+    </UserControl.Resources>
 
-    <TabControl SelectedIndex="{Binding ControlTabSelectedIndex, Mode=TwoWay}">
+    <TabControl SelectedIndex="{Binding ControlTabSelectedIndex,Converter={StaticResource EnumToIntConverter}, Mode=TwoWay}">
         <TabItem Header="WIP Panel" >
             <ScrollViewer>
                 <Grid>

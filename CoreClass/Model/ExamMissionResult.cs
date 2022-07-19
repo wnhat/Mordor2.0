@@ -56,9 +56,10 @@ namespace CoreClass.Model
             await Collection.InsertManyAsync(examMissionResult);
         }
 
-        public static ExamMissionResult GetOneAndUpdate(string collectionName)
+        public static ExamMissionResult GetOneAndUpdate(ObjectId userId, string collectionName)
         {
             var filter = Builders<ExamMissionResult>.Filter.And(
+                Builders<ExamMissionResult>.Filter.Eq(x => x.UserId, userId),
                 Builders<ExamMissionResult>.Filter.Eq(x => x.CollectionName, collectionName),
                 Builders<ExamMissionResult>.Filter.Eq(x => x.IsChecked, false));
             var update = Builders<ExamMissionResult>.Update.Set(x => x.LastModifyTime, DateTime.Now).Set(x => x.IsChecked, true);
@@ -86,15 +87,15 @@ namespace CoreClass.Model
         /// <param name="panelSample"></param>
         /// <param name="porp"></param>
         /// <param name="value"></param>
-        public static void UpdateProperty(ExamMissionResult examMissionResult, KeyValuePair<string,object> propValueKeyValuePair)
+        public static void UpdateProperty(ObjectId Id, KeyValuePair<string,object> propValueKeyValuePair)
         {
-            var filter = Builders<ExamMissionResult>.Filter.Eq(x => x.Id, examMissionResult.Id);
+            var filter = Builders<ExamMissionResult>.Filter.Eq(x => x.Id, Id);
             var update = Builders<ExamMissionResult>.Update.Set("$LastModifyTime", DateTime.Now).Set(string.Format("${0}", propValueKeyValuePair.Key), propValueKeyValuePair.Value);
             Collection.UpdateOneAsync(filter, update);
         }
-        public static void UpdateProperties(ExamMissionResult examMissionResult, List<KeyValuePair<string, object>> propValueKeyValuePairs)
+        public static void UpdateProperties(ObjectId Id, List<KeyValuePair<string, object>> propValueKeyValuePairs)
         {
-            var filter = Builders<ExamMissionResult>.Filter.Eq(x => x.Id, examMissionResult.Id);
+            var filter = Builders<ExamMissionResult>.Filter.Eq(x => x.Id, Id);
             var update = Builders<ExamMissionResult>.Update.Set(x => x.LastModifyTime, DateTime.Now);
             foreach (KeyValuePair<string, object> item in propValueKeyValuePairs)
             {
@@ -102,6 +103,15 @@ namespace CoreClass.Model
             }
             
             Collection.UpdateOneAsync(filter, update);
+        }
+
+        public static async Task<BsonDocument> GetRemainMissionCount(ObjectId userId, string collectionName)
+        {
+            ProjectionDefinition<ExamMissionResult> group = "{_id : '$Info', count : {$sum : 1}}";
+            var result = Collection.Aggregate()
+                .Match(x => x.UserId == userId && x.IsChecked == false && x.CollectionName == collectionName)
+                .Group(group);
+            return await result.FirstOrDefaultAsync();
         }
     }
 }
