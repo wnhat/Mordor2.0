@@ -170,7 +170,7 @@
                                             materialDesign:HintAssist.HintOpacity=".26"
                                             DisplayMemberPath="CollectionName"
                                             ItemsSource="{Binding SampleCollection}"
-                                            SelectedItem="{Binding SelectedSamplePanelListViewMode, Mode=TwoWay}"
+                                            SelectedItem="{Binding SelectedSamplePanelListViewModel, Mode=TwoWay}"
                                             SelectionChanged="MissionCollectionComboBox_SelectionChanged"
                                             Text="{Binding AddCollectionDialog_ComboxText, Mode=TwoWay}" />
                                         <Button

@@ -118,6 +118,10 @@ namespace CoreClass.Model
         {
             return DefectsList.Find(x => x.DefectName == defectName);
         }
+        public static Defect GetDefectById(ObjectId id)
+        {
+            return DefectsList.Find(x => x.Id == id);
+        }
         //refresh the defect list from database;
         public static void RefreshDefectList()
         {
@@ -127,6 +131,14 @@ namespace CoreClass.Model
         public override string ToString()
         {
             return DefectName;
+        }
+        public override bool Equals(object obj)
+        {
+            if(obj is Defect defect)
+            {
+                return DefectCode == defect.DefectCode;
+            }
+            else return false;
         }
     }
 }

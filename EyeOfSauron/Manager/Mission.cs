@@ -20,7 +20,7 @@ namespace EyeOfSauron
 
         public readonly ProductInfo? productInfo;
 
-        public ExamMissionWIP? ExamMissionWIP;
+        public ExamMissionCollection? ExamMissionWIP;
 
         public ControlTableItem MissionType;
 
@@ -39,7 +39,7 @@ namespace EyeOfSauron
                     }
                     break;
                 case ControlTableItem.ExamMission:
-                    if(o is ExamMissionWIP exam)
+                    if(o is ExamMissionCollection exam)
                     {
                         ExamMissionWIP = exam;
                     }
@@ -101,10 +101,10 @@ namespace EyeOfSauron
                         return true;
                     }
                 case ControlTableItem.ExamMission:
-                    ExamMissionResult? ExamMission = ExamMissionResult.GetOneAndUpdate(ExamMissionWIP.UserID, ExamMissionWIP.MissionCollectionName);
+                    ExamMissionResult? ExamMission = ExamMissionResult.GetOneAndUpdate(ExamMissionWIP);
                     if (ExamMission == null)
                     {
-                        return true;
+                        return false;
                     }
                     AETresult? examMissionAetResult = PanelSample.GetSample(ExamMission.PanelSampleId).AetResult;
                     if (examMissionAetResult == null)
@@ -158,7 +158,7 @@ namespace EyeOfSauron
         {
             BsonDocument remainMissionCount = MissionType switch
             {
-                ControlTableItem.ExamMission => await ExamMissionResult.GetRemainMissionCount(ExamMissionWIP.UserID, ExamMissionWIP.MissionCollectionName),
+                ControlTableItem.ExamMission => await ExamMissionResult.GetRemainMissionCount(ExamMissionWIP),
                 _ => await DICSRemainInspectMissionService.GetRemainMissionCount(productInfo.Id),
             };
             if (remainMissionCount != null)

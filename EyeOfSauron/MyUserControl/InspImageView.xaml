@@ -162,7 +162,8 @@
                                 Height="495"
                                 Margin="5,5,5,5"
                                 HorizontalAlignment="Stretch"
-                                materialDesign:ShadowAssist.ShadowDepth="Depth1" IsTabStop="False">
+                                materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                                IsTabStop="False">
                                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                                     <ListView
                                         d:ItemsSource="{d:SampleData ItemCount=5}"
@@ -192,7 +193,11 @@
                                     </ListView>
                                 </ScrollViewer>
                             </materialDesign:Card>
-                            <materialDesign:Card Margin="5,5,5,5" materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                            <materialDesign:Card
+                                Width="795"
+                                Height="495"
+                                Margin="5,5,5,5"
+                                materialDesign:ShadowAssist.ShadowDepth="Depth1">
                                 <ContentPresenter Content="{Binding ExtendedUserControl}" />
                             </materialDesign:Card>
                         </StackPanel>

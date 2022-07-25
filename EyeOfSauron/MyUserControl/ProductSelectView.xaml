@@ -11,12 +11,12 @@
     d:DataContext="{d:DesignInstance Type=viewModel:ProductViewModel}"
     Background="{DynamicResource MaterialDesignPaper}"
     mc:Ignorable="d">
-    <UserControl.Resources >
-        <Converter:EnumToIntConverter x:Key="EnumToIntConverter"/>
+    <UserControl.Resources>
+        <Converter:EnumToIntConverter x:Key="EnumToIntConverter" />
     </UserControl.Resources>
 
-    <TabControl SelectedIndex="{Binding ControlTabSelectedIndex,Converter={StaticResource EnumToIntConverter}, Mode=TwoWay}">
-        <TabItem Header="WIP Panel" >
+    <TabControl SelectedIndex="{Binding ControlTabSelectedIndex, Converter={StaticResource EnumToIntConverter}, Mode=TwoWay}">
+        <TabItem Header="WIP Panel">
             <ScrollViewer>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -119,22 +119,18 @@
         </TabItem>
         <TabItem Header="Exam Mission">
             <StackPanel Orientation="Vertical">
-                <Label Content="Lable2" />
                 <ScrollViewer>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <ItemsControl
-                            HorizontalAlignment="Center"
-                            ItemsSource="{Binding ExamMissionCardViewModels}">
+                        <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding ExamMissionCardViewModels}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel IsItemsHost="True" />
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
-
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Button

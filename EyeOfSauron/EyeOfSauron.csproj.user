@@ -53,6 +53,9 @@
     <Page Update="MyUserControl\CollectionSettingDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="MyUserControl\InformationView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MyUserControl\SamplePanelListView.xaml">
       <SubType>Designer</SubType>
     </Page>

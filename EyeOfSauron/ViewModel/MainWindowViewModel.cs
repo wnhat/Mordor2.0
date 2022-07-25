@@ -9,6 +9,7 @@ using CoreClass.Service;
 using System.Windows.Threading;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Net;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -16,30 +17,47 @@ namespace EyeOfSauron.ViewModel
     {
         public delegate void ValuePassHandler(object sender, RoutedEventArgs e);
         public event ValuePassHandler? LoginRequestEvent;
+        public event RoutedEventHandler? MissionFinishedEvent; 
         public MainWindowViewModel(UserInfoViewModel userInfoViewModel):this()
         {
             UserInfo = userInfoViewModel;
         }
-        
         public MainWindowViewModel()
         {
+            IPHostEntry ipEntry = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress[] addr = ipEntry.AddressList;
+            Defect.RefreshDefectList();
+            foreach (IPAddress address in addr)
+            {
+                var a = address;
+                var b = a.ToString();
+                Eqp = DicsEqp.GetByIp(b);
+                if (Eqp != null)
+                {
+                    break;
+                }
+            }
             MainContent = ProductSelectView;
-            DefectJudgeView.DefectJudgeEvent += new DefectJudgeView.ValuePassHandler(DefectJudge);
+            DefectJudgeView.DefectJudgedEvent += new RoutedEventHandler(DefectJudge);
             StartInspCommand = new CommandImplementation(StartInsp);
-            EndInspCommand = new CommandImplementation(_ => EndInsp());
+            EndInspCommand = new CommandImplementation(_ => EndInsp(), _=> productSelectView._viewModel.ControlTabSelectedIndex != ControlTableItem.ExamMission);
             _ = new DispatcherTimer(
                     TimeSpan.FromMilliseconds(1000),
                     DispatcherPriority.Normal,
                     new EventHandler((o, e) =>
                     {
                         DateTime = DateTime.Now;
-                    }), Dispatcher.CurrentDispatcher);
+                    }), 
+                    Dispatcher.CurrentDispatcher);
+            inspImageView._viewModel.ExtendedUserControl = informationView;
         }
+        public DicsEqp? Eqp = null;
         private Mission? mission;
         public PanelMission? onInspPanelMission;
         private UserInfoViewModel userInfo = new();
         private ProductSelectView productSelectView = new ();
         private InspImageView inspImageView = new ();
+        private InformationView informationView = new();
         private DefectJudgeView defectJudgeView = new();
         private UserControl mainContent = new();
         private ColorTool colorTool = new();
@@ -134,6 +152,7 @@ namespace EyeOfSauron.ViewModel
                                     SetInspImageLayout(productInfo.InspPatternCount);
                                     mission = new(productInfo);
                                     LoadOnInspPanelMission();
+                                    informationView.StartTick();
                                     mission.FillPreDownloadMissionQueue();
                                 }
                                 catch (MissionEmptyException ex)
@@ -142,32 +161,48 @@ namespace EyeOfSauron.ViewModel
                                     SetProductSelectView();
                                 }
                             }
+                            else
+                            {
+                                await DialogHost.Show(new MessageAcceptDialog { Message = { Text = "未选择有效型号" } }, "MainWindowDialog");
+                            }
                             break;
                         case ControlTableItem.ExamMission:
-                            ExamMissionWIP? missionWIP = productSelectView._viewModel.SelectedExamMissionCardViewModel;
-                            if (missionWIP != null)
+                            ExamMissionCollection? examMission = productSelectView._viewModel.SelectedExamMissionCardViewModel;
+                            if (examMission != null)
                             {
-                                List<ExamMissionResult> ExamMissionResultList = new();
-                                var sampleIds = PanelSample.GetSampleIds(missionWIP.MissionCollectionName);
-                                foreach (var id in sampleIds)
+                                var dialogResult =  await DialogHost.Show(new MessageAcceptCancelDialog { Message = { Text = "即将开始考试，考试过程中断将无法继续" } }, "MainWindowDialog");
+                                if(dialogResult is bool result)
                                 {
-                                    ExamMissionResultList.Add(new(missionWIP, id.GetValue("_id").AsObjectId));
+                                    if (result)
+                                    {
+                                        List<ExamMissionResult> ExamMissionResultList = new();
+                                        var sampleIds = PanelSample.GetSampleIds(examMission.MissionCollectionName);
+                                        foreach (var id in sampleIds)
+                                        {
+                                            ExamMissionResultList.Add(new(examMission, id.GetValue("_id").AsObjectId));
+                                        }
+                                        await ExamMissionResult.AddMany(ExamMissionResultList);
+                                        SetInspView();
+                                        try
+                                        {
+                                            SetInspImageLayout(3);
+                                            mission = new(examMission, ControlTableItem.ExamMission);
+                                            informationView.StartTick();
+                                            LoadOnInspPanelMission();
+                                            mission.FillPreDownloadMissionQueue();
+                                        }
+                                        catch (MissionEmptyException ex)
+                                        {
+                                            await DialogHost.Show(new MessageAcceptDialog { Message = { Text = ex.Message } }, "MainWindowDialog");
+                                            ExamMissionCollection.FinishOne(examMission.Id);
+                                            SetProductSelectView();
+                                        }
+                                    }
                                 }
-                                ExamMissionResult.AddMany(ExamMissionResultList);
-
-                                SetInspView();
-                                try
-                                {
-                                    SetInspImageLayout(3);
-                                    mission = new(missionWIP, ControlTableItem.ExamMission);
-                                    LoadOnInspPanelMission();
-                                    mission.FillPreDownloadMissionQueue();
-                                }
-                                catch (MissionEmptyException ex)
-                                {
-                                    await DialogHost.Show(new MessageAcceptDialog { Message = { Text = ex.Message } }, "MainWindowDialog");
-                                    SetProductSelectView();
-                                }
+                            }
+                            else
+                            {
+                                await DialogHost.Show(new MessageAcceptDialog { Message = { Text = "未选择有效考试" } }, "MainWindowDialog");
                             }
                             break;
                         default:
@@ -178,7 +213,7 @@ namespace EyeOfSauron.ViewModel
             else
             {
                 await DialogHost.Show(new MessageAcceptDialog { Message = { Text = "请登录后操作" } }, "MainWindowDialog");
-                LoginRequestEvent.Invoke(this, new RoutedEventArgs());
+                LoginRequestEvent?.Invoke(this, new RoutedEventArgs());
             }
         }
 
@@ -271,21 +306,32 @@ namespace EyeOfSauron.ViewModel
             }
         }
 
-        private void DefectJudge(object sender, DefectJudgeArgs e)
+        private async void DefectJudge(object sender,RoutedEventArgs e)
         {
-            Defect defect = e.Defect;
+            Defect defect = (Defect)sender;
             bool IsServerConnected;
+            var tactTime = informationView.viewModel.TactTimeFullPrecision;
+            informationView.viewModel.TactTime = 0;
+            informationView.viewModel.TotalTactTimeSpan += informationView.viewModel.TactTimeSpan;
+            informationView.viewModel.InspCount += 1;
+            informationView.viewModel.tactStartTime = DateTime.Now;
             switch (mission.MissionType)
             {
                 default:
                 case ControlTableItem.ProductMission:
                     IsServerConnected = SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, UserInfo.User.Username, UserInfo.User.Account, UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
+                    InspectMissionResult.InsertOne(new(mission.onInspPanelMission.inspectMission.ID, UserInfo.User.Id,Eqp,defect,tactTime));
+                    IsServerConnected = true;
                     break;
                 case ControlTableItem.ExamMission:
+                    mission.onInspPanelMission.examMission?.SetResult(defect, Eqp , tactTime);
                     List<KeyValuePair<string, object>> properties = new();
                     properties.Add(new KeyValuePair<string, object>("ResultDefect", defect));
                     properties.Add(new KeyValuePair<string, object>("IsChecked", true));
-                    ExamMissionResult.UpdateProperties(mission.onInspPanelMission.examMission.Id,properties);
+                    properties.Add(new KeyValuePair<string, object>("Eqp", Eqp));
+                    properties.Add(new KeyValuePair<string, object>("TactTime", tactTime));
+                    properties.Add(new KeyValuePair<string, object>("IsCorrect", mission.onInspPanelMission.examMission.IsCorrect));
+                    ExamMissionResult.UpdateProperties(mission.onInspPanelMission.examMission.Id, properties);
                     IsServerConnected = true;
                     break;
             }
@@ -294,12 +340,21 @@ namespace EyeOfSauron.ViewModel
             {
                 if (!GetNextMission())
                 {
-                    DialogHost.Show(new MessageAcceptDialog { Message = { Text = "There is no mission left" } }, "MainWindowDialog");
+                    await DialogHost.Show(new MessageAcceptDialog { Message = { Text = "There is no mission left" } }, "MainWindowDialog");
+                    switch (mission.MissionType)
+                    {
+                        default: break;
+                        case ControlTableItem.ExamMission:
+                            ExamMissionCollection.FinishOne(mission.ExamMissionWIP.Id);
+                            sender = mission.ExamMissionWIP.Id;
+                            break;
+                    }
+                    MissionFinishedEvent?.Invoke(sender, new());
                 }
             }
             else
             {
-                DialogHost.Show(new ProgressMessageDialog(), "MainWindowDialog");
+                await DialogHost.Show(new ProgressMessageDialog(), "MainWindowDialog");
             }
         }
     }

@@ -4,6 +4,7 @@ using CoreClass.Model;
 using MaterialDesignThemes.Wpf;
 using EyeOfSauron.MyUserControl;
 using EyeOfSauron.ViewModel;
+using System.Net;
 
 namespace EyeOfSauron
 {
@@ -12,10 +13,9 @@ namespace EyeOfSauron
     /// </summary>
     public partial class LogininWindow : Window
     {
-        public delegate void ValuePassHandler(object sender, AccountAuthenticateEventArgs e);
-        public event ValuePassHandler? AccountAuthenticateEvent ;
+        public event RoutedEventHandler? UserAuthenticateEvent;
         private readonly UserInfoViewModel _viewModel;
-        private MessageAcceptDialog messageAcceptDialog = new();
+        private readonly MessageAcceptDialog messageAcceptDialog = new();
 
         public LogininWindow()
         {
@@ -32,8 +32,7 @@ namespace EyeOfSauron
             switch (authenticateResult)
             {
                 case AuthenticateResult.Success:
-                    AccountAuthenticateEventArgs arges = new(_viewModel.User);
-                    AccountAuthenticateEvent?.Invoke(this, arges);
+                    UserAuthenticateEvent?.Invoke(_viewModel.User, new());
                     break;
                 case AuthenticateResult.EmptyInput:
                     break;
@@ -65,16 +64,6 @@ namespace EyeOfSauron
             {
                 e.Cancel();
             }
-        }
-    }
-
-    public class AccountAuthenticateEventArgs : EventArgs
-    {
-        public User User { get; set; }
-
-        public AccountAuthenticateEventArgs(User user)
-        {
-            this.User = user;
         }
     }
 }

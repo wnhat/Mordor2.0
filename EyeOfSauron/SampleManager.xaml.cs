@@ -26,7 +26,6 @@ namespace EyeOfSauron
             _viewModel = new();
             DataContext = _viewModel;
             MainSnackbar.MessageQueue?.Enqueue("Welcome to Eye of Sauron");
-            //AddPanelMissionToCollectionDialog.DialogClosing += new DialogClosingEventHandler(_viewModel.AddToCollection_OnDialogClosing);
             InspViewDialogHost.DialogClosing += new DialogClosingEventHandler(InspViewDialog_OnDialogClosing);
         }
 
@@ -40,30 +39,23 @@ namespace EyeOfSauron
             MainSnackbar.MessageQueue?.Enqueue("复制成功");
         }
 
-        private void AddPanelSampleButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (_viewModel.PanelListView.viewModel.SelectedItem != null && MissionCollectionComboBox.Text != string.Empty)
-            {
-                PanelMission selectPanelMission = _viewModel.PanelListView.viewModel.SelectedItem.PanelMission;
-                PanelSample.AddOnePanelSample(new(selectPanelMission.AetResult, new(MissionCollectionComboBox.Text), "", MissionType.Sample, selectPanelMission.ProductInfo));
-                _viewModel.samplePanelListView.viewModel.GetSamples(MissionCollectionComboBox.Text);
-            }
-        }
-
         private void MissionCollectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
-                if (_viewModel.SelectedSamplePanelListViewMode != null)
+                if (_viewModel.SelectedSamplePanelListViewModel != null)
                 {
-                    _viewModel.samplePanelListView.viewModel.PanelList = _viewModel.SelectedSamplePanelListViewMode.PanelList;
-                    _viewModel.samplePanelListView.viewModel.CollectionName = _viewModel.SelectedSamplePanelListViewMode.CollectionName;
-                    _viewModel.samplePanelListView.viewModel.SelectedItem = _viewModel.SelectedSamplePanelListViewMode.SelectedItem;
+                    _viewModel.samplePanelListView.viewModel.PanelList = _viewModel.SelectedSamplePanelListViewModel.PanelList;
+                    _viewModel.samplePanelListView.viewModel.CollectionName = _viewModel.SelectedSamplePanelListViewModel.CollectionName;
+                    _viewModel.samplePanelListView.viewModel.SelectedItem = _viewModel.SelectedSamplePanelListViewModel.SelectedItem;
                 }
             }
             catch (NullReferenceException)
             {
                 //由于输入任务集名称造成的异常，不进行处理；
+                _viewModel.samplePanelListView.viewModel.PanelList = new();
+                _viewModel.samplePanelListView.viewModel.CollectionName = string.Empty;
+                _viewModel.samplePanelListView.viewModel.SelectedItem = null;
             }
         }
 
@@ -121,7 +113,7 @@ namespace EyeOfSauron
                         foreach(var item in dialogViewModel.PanelMissions)
                         {
                             PanelMission selectPanelMission = item.PanelMission;
-                            PanelSample.AddOnePanelSample(new(selectPanelMission.AetResult, new(_viewModel.AddCollectionDialog_ComboxText), dialogViewModel.NoteString, MissionType.Sample, selectPanelMission.ProductInfo, defects));
+                            PanelSample.AddOnePanelSample(new(selectPanelMission.AetResult, new(_viewModel.AddCollectionDialog_ComboxText), dialogViewModel.NoteString, selectPanelMission.ProductInfo, defects));
                         }
                         _viewModel.samplePanelListView.viewModel.GetSamples(_viewModel.AddCollectionDialog_ComboxText);
                         _viewModel.NoteString = string.Empty;

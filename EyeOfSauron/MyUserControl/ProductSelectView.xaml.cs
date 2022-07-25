@@ -7,6 +7,7 @@ using EyeOfSauron.ViewModel;
 using CoreClass.Service;
 using System.Windows.Threading;
 using CoreClass.Model;
+using System.Collections.Generic;
 
 namespace EyeOfSauron.MyUserControl
 {
@@ -56,6 +57,10 @@ namespace EyeOfSauron.MyUserControl
                 {
                     _viewModel.SelectedProductCardViewModel = _viewModel.ProductInfos.First();
                 }
+                else
+                {
+                    _viewModel.SelectedProductCardViewModel = null;
+                }
             }
 
             catch(TimeoutException e)
@@ -68,12 +73,10 @@ namespace EyeOfSauron.MyUserControl
             }
         }
 
-        public void GetExamMissions(User user)
+        public void SetExamMissions(List<ExamMissionCollection> examMissionWIPs)
         {
-            _viewModel.ExamMissionCardViewModels.Clear();
             try
             {
-                var examMissionWIPs = ExamMissionWIP.GetByUser(user.Id);
                 foreach (var item in examMissionWIPs)
                 {
                     _viewModel.ExamMissionCardViewModels.Add(item);
@@ -82,8 +85,11 @@ namespace EyeOfSauron.MyUserControl
                 {
                     _viewModel.SelectedExamMissionCardViewModel = _viewModel.ExamMissionCardViewModels.First();
                 }
+                else
+                {
+                    _viewModel.SelectedExamMissionCardViewModel = null;
+                }
             }
-
             catch (TimeoutException e)
             {
                 MessageBox.Show(e.Message);
@@ -100,7 +106,7 @@ namespace EyeOfSauron.MyUserControl
             _viewModel.SelectedProductCardViewModel = viewModel;
         }
 
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        public void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             _viewModel.IsMissionFreshAllowable = false;
             dispatcherTimer.Start();
@@ -129,7 +135,7 @@ namespace EyeOfSauron.MyUserControl
         private void ExamMissionSelectBuuttonClick(object sender, RoutedEventArgs e)
         {
 
-            ExamMissionWIP? viewModel = ((Button)sender).DataContext as ExamMissionWIP;
+            ExamMissionCollection? viewModel = ((Button)sender).DataContext as ExamMissionCollection;
             _viewModel.SelectedExamMissionCardViewModel = viewModel;
         }
 

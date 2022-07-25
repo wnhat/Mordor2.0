@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using CoreClass.Model;
 using EyeOfSauron.ViewModel;
 using MaterialDesignThemes.Wpf;
+using MongoDB.Driver;
 
 namespace EyeOfSauron.MyUserControl
 {
@@ -28,21 +29,19 @@ namespace EyeOfSauron.MyUserControl
             CollectionSettingViewDialog.DialogClosing += new DialogClosingEventHandler(PushSettingDialogClosingEventHandler);
         }
 
-        private void MenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
+        private async void ExamPush(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (CollectionInfoList.SelectedItem != null)
+            if (viewModel.SelectPanelMissionCollectionInfo != null)
             {
-                var a = viewModel.SelectPanelMissionCollectionInfo;
-                PushExamMissionDialog pushExamMissionDialog = new(a);
-                DialogHost.Show(pushExamMissionDialog, "CollectionSettingViewDialog");
+                PushExamMissionDialog pushExamMissionDialog = new(viewModel.SelectPanelMissionCollectionInfo);
+                await DialogHost.Show(pushExamMissionDialog, "CollectionSettingViewDialog");
             }
             else
             {
-                DialogHost.Show(new MessageAcceptDialog { Message = { Text = "未选定任何任务集" } }, "CollectionSettingViewDialog");
+                await DialogHost.Show(new MessageAcceptDialog { Message = { Text = "未选定任何任务集" } }, "CollectionSettingViewDialog");
             }
-
         }
-        private void PushSettingDialogClosingEventHandler(object sender, DialogClosingEventArgs e)
+        private async void PushSettingDialogClosingEventHandler(object sender, DialogClosingEventArgs e)
         {
             if (!Equals(e.Parameter, true))
             {
@@ -57,18 +56,21 @@ namespace EyeOfSauron.MyUserControl
                     var dialogViewModel = Dialog.viewModel;
                     if (viewModel.SelectPanelMissionCollectionInfo != null)
                     {
-                        string? CollectionName = viewModel.SelectPanelMissionCollectionInfo._id?.CollectionName;
-                        List<ExamMissionWIP> ExamMissionWIPs = new();
-                        foreach (var item in dialogViewModel.SelectedUsers)
+                        string? CollectionName = viewModel.SelectPanelMissionCollectionInfo.MissionCollection.CollectionName;
+                        await PanelSample.UpdateProperty("MissionCollection.CollectionName", CollectionName, "MissionCollection.MissionType", MissionType.ExamMission);
+                        if (dialogViewModel.SelectedUsers.Count > 0)
                         {
-                            ExamMissionWIPs.Add(new(item, CollectionName));
+                            foreach (var item in dialogViewModel.SelectedUsers)
+                            {
+                                ExamMissionCollection.UpdateOrAdd(new ExamMissionCollection(item, CollectionName));
+                            }
                         }
-                        ExamMissionWIP.DelectMany(CollectionName);
-                        if (ExamMissionWIPs.Count > 0) 
+                        else
                         {
-                            ExamMissionWIP.AddMany(ExamMissionWIPs);
+                            await PanelSample.UpdateProperty("MissionCollection.CollectionName", CollectionName, "MissionCollection.MissionType", MissionType.Sample);
                         }
                     }
+                    await viewModel.RefreshCollectView();
                 }
             }
         }

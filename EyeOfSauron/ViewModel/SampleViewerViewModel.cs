@@ -145,11 +145,11 @@ namespace EyeOfSauron.ViewModel
         {
             string buff = AddCollectionDialog_ComboxText;
             SampleCollection.Clear();
-            var Missions = PanelSample.GetMissionCollection();
+            var Missions = PanelSample.GetMissionCountCollectionByType(MissionType.Sample);
             foreach (var item in Missions)
             {
                 var missionCollectionInfo = BsonSerializer.Deserialize<MissionCollectionInfo>(item);
-                var missionName = missionCollectionInfo._id.CollectionName;
+                var missionName = missionCollectionInfo.MissionCollection.CollectionName;
                 SampleCollection.Add(new(missionName));
             }
             AddCollectionDialog_ComboxText = buff;
@@ -209,7 +209,7 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref sampleCollection, value);
         }
 
-        public SamplePanelListViewModel SelectedSamplePanelListViewMode
+        public SamplePanelListViewModel SelectedSamplePanelListViewModel
         {
             get => selectedSamplePanelListViewModel;
             set => SetProperty(ref selectedSamplePanelListViewModel, value);

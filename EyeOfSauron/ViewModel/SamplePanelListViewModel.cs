@@ -40,7 +40,8 @@ namespace EyeOfSauron.ViewModel
             List<PanelSample>? samples;
             if (collectionName == string.Empty)
             {
-                samples = await PanelSample.GetSamples();
+                //samples = await PanelSample.GetSamples();
+                samples = new List<PanelSample>();
             }
             else
             {

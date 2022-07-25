@@ -26,10 +26,14 @@ namespace EyeOfSauron.ViewModel
         }
         public CollectionSettingViewModel()
         {
-            var missionCollectionInfos = PanelSample.GetSampleCount();
-            foreach(var item in missionCollectionInfos)
+            _ = RefreshCollectView();
+        }
+        public async Task RefreshCollectView()
+        {
+            PanelMissionCollectionInfos.Clear();
+            var missionCollectionInfos = await PanelSample.GetMissionCountCollection();
+            foreach (var item in missionCollectionInfos)
             {
-                //var b = item.GetValue("MissionCollection");
                 var missionCollectionInfo = BsonSerializer.Deserialize<MissionCollectionInfo>(item);
                 PanelMissionCollectionInfos.Add(missionCollectionInfo);
             }
@@ -41,10 +45,26 @@ namespace EyeOfSauron.ViewModel
         }
     }
 
-    public class MissionCollectionInfo
+    public class MissionCollectionInfo:ViewModelBase
     {
-        public MissionCollection? _id { get; set; }//MongoDB 聚合查询结果的属性名必须为”_id“,此类用于反序列化查询结果
-        public int Count { get; set; }
+        public MissionCollection _id;//MongoDB 聚合查询结果的属性名必须为”_id“,此类用于反序列化查询结果
+
+        public int count;
+
+        public MissionCollection MissionCollection
+        {
+            get => _id; 
+            set => SetProperty(ref _id, value);
+        }
+        public int Count 
+        {
+            get => count;
+            set => SetProperty(ref count, value);
+        }
+        public MissionCollectionInfo()
+        {
+            _id = new();
+        }
     }
     public class NotfoundException : Exception 
     {

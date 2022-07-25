@@ -14,15 +14,15 @@ namespace CoreClass.Model
         public static IMongoCollection<ExamMissionResult> Collection = DBconnector.DICSDB.GetCollection<ExamMissionResult>("ExamMissionResult");
         [BsonId]
         public ObjectId Id;
-        public ObjectId UserId { get; private set; }
-        public ObjectId PanelSampleId { get; private set; }
-        public string CollectionName { get; private set; }
-
-        public DateTime DBInTime = DateTime.Now;
-
-        public DateTime LastModifyTime = DateTime.Now;
-
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime dbInTime = DateTime.Now;
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime lastModifyTime = DateTime.Now;
         private Defect resultDefect;
+        public ObjectId PanelSampleId { get; private set; }
+        public ExamMissionCollection ExamMissionCollection { get; private set; }
+        public double TactTime { get; private set; }
+        public DicsEqp Eqp { get; private set; }
         public Defect ResultDefect
         {
             get => resultDefect;
@@ -30,9 +30,16 @@ namespace CoreClass.Model
             {
                 resultDefect = value;
                 PanelSample panelSample = PanelSample.GetSample(PanelSampleId);
-                if (panelSample != null && panelSample.MutiDefect.DefectList.Contains(ResultDefect))
+                if(panelSample != null)
                 {
-                    IsCorrect = true;
+                    if(panelSample.MutiDefect == null)
+                    {
+                        IsCorrect = resultDefect == null;
+                    }
+                    else
+                    {
+                        IsCorrect = panelSample.MutiDefect.DefectList.Contains(ResultDefect);
+                    }
                 }
                 else IsCorrect = false;
             }
@@ -40,29 +47,34 @@ namespace CoreClass.Model
         public bool IsChecked { get; set; }
         public bool IsCorrect { get; private set; }
 
-        public ExamMissionResult(ExamMissionWIP examMissionWIP, ObjectId panelSampleId)
+        public ExamMissionResult(ExamMissionCollection examMissionCollection, ObjectId panelSampleId)
         {
-            UserId = examMissionWIP.UserID;
-            CollectionName = examMissionWIP.MissionCollectionName;
+            ExamMissionCollection = examMissionCollection;
             PanelSampleId = panelSampleId;
-        }
 
+        }
+        public void SetResult(Defect resultDefect, DicsEqp dicsEqp, double tactTime)
+        {
+            ResultDefect = resultDefect;
+            Eqp = dicsEqp;
+            TactTime = tactTime;
+            IsChecked = true;
+        }
         public static void AddOne(ExamMissionResult examMissionResult)
         {
             Collection.InsertOneAsync(examMissionResult);
         }
-        public static async void AddMany(List<ExamMissionResult> examMissionResult)
+        public static async Task AddMany(List<ExamMissionResult> examMissionResult)
         {
             await Collection.InsertManyAsync(examMissionResult);
         }
 
-        public static ExamMissionResult GetOneAndUpdate(ObjectId userId, string collectionName)
+        public static ExamMissionResult GetOneAndUpdate(ExamMissionCollection examMissionCollection)
         {
             var filter = Builders<ExamMissionResult>.Filter.And(
-                Builders<ExamMissionResult>.Filter.Eq(x => x.UserId, userId),
-                Builders<ExamMissionResult>.Filter.Eq(x => x.CollectionName, collectionName),
+                Builders<ExamMissionResult>.Filter.Eq(x => x.ExamMissionCollection, examMissionCollection),
                 Builders<ExamMissionResult>.Filter.Eq(x => x.IsChecked, false));
-            var update = Builders<ExamMissionResult>.Update.Set(x => x.LastModifyTime, DateTime.Now).Set(x => x.IsChecked, true);
+            var update = Builders<ExamMissionResult>.Update.Set(x => x.lastModifyTime, DateTime.Now).Set(x => x.IsChecked, true);
             ExamMissionResult mission = Collection.FindOneAndUpdate(filter, update);
             if (mission == null)
             {
@@ -80,7 +92,7 @@ namespace CoreClass.Model
             var mission = Collection.Find(fileter).FirstOrDefault();
             return mission;
         }
-
+        
         /// <summary>
         /// Update value of the specific property;
         /// </summary>
@@ -93,25 +105,41 @@ namespace CoreClass.Model
             var update = Builders<ExamMissionResult>.Update.Set("$LastModifyTime", DateTime.Now).Set(string.Format("${0}", propValueKeyValuePair.Key), propValueKeyValuePair.Value);
             Collection.UpdateOneAsync(filter, update);
         }
+
         public static void UpdateProperties(ObjectId Id, List<KeyValuePair<string, object>> propValueKeyValuePairs)
         {
             var filter = Builders<ExamMissionResult>.Filter.Eq(x => x.Id, Id);
-            var update = Builders<ExamMissionResult>.Update.Set(x => x.LastModifyTime, DateTime.Now);
+            var update = Builders<ExamMissionResult>.Update.Set(x => x.lastModifyTime, DateTime.Now);
             foreach (KeyValuePair<string, object> item in propValueKeyValuePairs)
             {
-                update = update.Set(string.Format("${0}", item.Key), item.Value);
+                update = update.Set(item.Key, item.Value);
             }
-            
+
             Collection.UpdateOneAsync(filter, update);
         }
 
-        public static async Task<BsonDocument> GetRemainMissionCount(ObjectId userId, string collectionName)
+        public static async Task<BsonDocument> GetRemainMissionCount(ExamMissionCollection examMissionCollection)
         {
             ProjectionDefinition<ExamMissionResult> group = "{_id : '$Info', count : {$sum : 1}}";
             var result = Collection.Aggregate()
-                .Match(x => x.UserId == userId && x.IsChecked == false && x.CollectionName == collectionName)
+                .Match(x => x.ExamMissionCollection == examMissionCollection && x.IsChecked == false)
                 .Group(group);
             return await result.FirstOrDefaultAsync();
+        }
+
+        public static List<BsonDocument> GetAccuracyValue(ObjectId id)
+        {
+            var filter = Builders<ExamMissionResult>.Filter.And(
+                Builders<ExamMissionResult>.Filter.Eq(x => x.ExamMissionCollection.Id, id),
+                Builders<ExamMissionResult>.Filter.Eq(x => x.IsChecked, true));
+
+            ProjectionDefinition<ExamMissionResult> group = "{_id : '$IsCorrect',count : {$sum : 1}}";
+            var agg = Collection.Aggregate()
+                .Match(filter)
+                .Group(group)
+                .Sort("{_id: 1 }");
+            var result = agg.ToList();
+            return result;
         }
     }
 }

@@ -47,11 +47,11 @@ namespace EyeOfSauron.ViewModel
                 _ => selectedUsers_Selected != null);
             if (missionCollectionInfo != null)
             {
-                var b = ExamMissionWIP.GetUserByCollectionName(missionCollectionInfo._id.CollectionName);
-                foreach(var item in b)
+                var userIds = ExamMissionCollection.GetUserByCollectionName(missionCollectionInfo.MissionCollection.CollectionName);
+                foreach(var item in userIds)
                 {
-                    var a = item.GetValue("_id").AsObjectId;
-                    selectedUsers.Add(UserDbClass.GetUser(a));
+                    var userId = item.GetValue("_id").AsObjectId;
+                    selectedUsers.Add(UserDbClass.GetUser(userId));
                 }
                 var userList = UserDbClass.GetAllUsers();
                 foreach (var user in userList)
@@ -104,6 +104,5 @@ namespace EyeOfSauron.ViewModel
         {
             get;
         }
-
     }
 }

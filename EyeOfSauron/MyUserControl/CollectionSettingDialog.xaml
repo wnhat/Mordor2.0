@@ -33,7 +33,7 @@
                             <GridView>
                                 <GridViewColumn
                                     Width="170"
-                                    DisplayMemberBinding="{Binding _id.CollectionName}"
+                                    DisplayMemberBinding="{Binding MissionCollection.CollectionName}"
                                     Header="CollectionName" />
                                 <GridViewColumn
                                     Width="110"
@@ -41,13 +41,13 @@
                                     Header="Count" />
                                 <GridViewColumn
                                     Width="110"
-                                    DisplayMemberBinding="{Binding _id.MissionType}"
+                                    DisplayMemberBinding="{Binding MissionCollection.MissionType}"
                                     Header="Type" />
                             </GridView>
                         </ListView.View>
                         <ListView.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Click="MenuItem_Click" Header="推送考试" />
+                                <MenuItem Click="ExamPush" Header="推送考试" />
                                 <MenuItem
                                     materialDesign:DialogHost.DialogClosingAttached="MessageDialogClosingEventHandler"
                                     materialDesign:DialogHost.DialogOpenedAttached="MessageDialogOpenedEventHandler"

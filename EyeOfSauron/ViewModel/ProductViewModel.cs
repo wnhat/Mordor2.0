@@ -11,9 +11,9 @@ namespace EyeOfSauron.ViewModel
 
         private ProductCardViewModel? selectedProductCardViewModel;
 
-        private ObservableCollection<ExamMissionWIP> examMissionCardViewModels = new();
+        private ObservableCollection<ExamMissionCollection> examMissionCardViewModels = new();
 
-        private ExamMissionWIP? selectedExamMissionCardViewModel;
+        private ExamMissionCollection? selectedExamMissionCardViewModel;
 
         private ControlTableItem controlTabSelectedIndex = ControlTableItem.ProductMission;
 
@@ -47,12 +47,12 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref productCardViewModels, value);
         }
 
-        public ExamMissionWIP? SelectedExamMissionCardViewModel
+        public ExamMissionCollection? SelectedExamMissionCardViewModel
         {
             get => selectedExamMissionCardViewModel;
             set => SetProperty(ref selectedExamMissionCardViewModel, value);
         }
-        public ObservableCollection<ExamMissionWIP> ExamMissionCardViewModels
+        public ObservableCollection<ExamMissionCollection> ExamMissionCardViewModels
         {
             get => examMissionCardViewModels;
             set => SetProperty(ref examMissionCardViewModels, value);

@@ -43,7 +43,7 @@
             </ListView.View>
             <ListView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="修改" >
+                    <MenuItem Header="修改" Click="Updata">
                         <MenuItem.Icon>
                             <materialDesign:PackIcon Kind="Pencil" />
                         </MenuItem.Icon>

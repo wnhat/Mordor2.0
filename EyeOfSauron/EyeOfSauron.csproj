@@ -38,6 +38,9 @@
     <Compile Update="MyUserControl\DefectSelectView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="MyUserControl\InformationView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="MyUserControl\SamplePanelListView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -69,6 +72,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MyUserControl\CollectionSettingDialog.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MyUserControl\InformationView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

@@ -20,6 +20,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System.Windows.Threading;
 using CoreClass;
+using MaterialDesignThemes.Wpf;
 
 namespace EyeOfSauron.MyUserControl
 {
@@ -35,7 +36,25 @@ namespace EyeOfSauron.MyUserControl
             InitializeComponent();
             viewModel = new();
             DataContext = viewModel;
+            viewModel.PanelList = new();
+            viewModel.CollectionName = string.Empty;
+            viewModel.SelectedItem = null;
         }
 
+        private void Updata(object sender, RoutedEventArgs e)
+        {
+            //if (viewModel.SelectedItem != null)
+            //{
+            //    var filter = Builders<PanelSample>.Filter.Eq("PanelID", "712B260002C2ABE09");
+            //    var panelSample = PanelSample.Collection.Find(filter).First();
+            //    var id = panelSample.Id;
+            //    var update = Builders<PanelSample>.Update.Set(x => x.LastModifyTime, DateTime.Now).Set("MissionCollection.CollectionName", "NoteUpdataTest");
+            //    PanelSample.Collection.UpdateOne(filter, update);
+            //}
+            //else
+            //{
+            //    DialogHost.Show(new MessageAcceptDialog { Message = { Text = "未选定任何任务集" } }, "CollectionSettingViewDialog");
+            //}
+        }
     }
 }

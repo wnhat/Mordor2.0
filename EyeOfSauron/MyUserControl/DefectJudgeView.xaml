@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
     d:DataContext="{d:DesignInstance Type=viewModel:DefectJudgeViewModel}"
+    
     mc:Ignorable="d">
     <StackPanel Width="150" VerticalAlignment="Top">
         <Button
