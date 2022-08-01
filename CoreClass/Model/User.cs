@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace CoreClass.Model
 {
+    [BsonIgnoreExtraElements]
     public class User
     {
         [BsonId]

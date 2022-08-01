@@ -28,14 +28,15 @@ namespace Sauron
         }
         public static void Run()
         {
-            Log.Testlogger.Information("测试：sql server服务器启动；");
+            Log.Logger.Information("sql server服务器启动；");
             Task.Run(OldDBconnector.MainCycle);
-            Log.Testlogger.Information("测试：服务器启动");
+            Log.Logger.Information("自动任务添加服务启动");
+            Task.Run(MesMissionStorage.AddAutoMission);
             poller.Run();
         }
         static void MissionAdd(object sender, NetMQTimerEventArgs eventArgs)
         {
-            Task.Run(MesMissionStorage.AddAutoMission);
+            
         }
         static void OnMessageArrive(object sender, NetMQSocketEventArgs eventArgs)
         {
@@ -48,7 +49,7 @@ namespace Sauron
             ReturnMessage.Append(0);
             eventArgs.Socket.SendMultipartMessage(ReturnMessage);
             
-            Log.Testlogger.Information("测试：收到judge");
+            //Log.Testlogger.Information("测试：收到judge");
             // 转换为自定义Message类型;
             BaseMessage switchmessage = new BaseMessage(messageIn);
             if (switchmessage.TheMessageType == MessageType.CLIENT_SEND_MISSION_RESULT)
@@ -57,7 +58,7 @@ namespace Sauron
                 // 完成检查任务；
                 manager.FinishMission(message.Judge, message.Mission);
             }
-            Log.Testlogger.Information("测试：judge完成");
+            //Log.Testlogger.Information("测试：judge完成");
         }
         // refesh defect list every 5 minutes;
         public static void RefreshDefectList(object sender, NetMQTimerEventArgs eventArgs)

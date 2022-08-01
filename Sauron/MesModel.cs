@@ -70,6 +70,7 @@ namespace Sauron
         }
         public void AddJudge(OperatorJudge judge, InspectMission inspectMission)
         {
+            Log.Testlogger.Information("判定：panelid {0}", inspectMission.PanelID);
             // 检查任务是否完成；
             var mission = missions.Where(x => x.PanelId == inspectMission.PanelID).FirstOrDefault();
             if (mission == null)
@@ -95,10 +96,10 @@ namespace Sauron
                 // 当任务需要匹配多人检查结果时，更新inspectmission 数据库信息；
                 if (finished)
                 {
-                    if (mission.Judge.judges.Count>1)
-                    {
-                        Log.Testlogger.Information("多次判定：{@panel}", mission);
-                    }
+                    //if (mission.Judge.judges.Count>1)
+                    //{
+                    //    Log.Testlogger.Information("多次判定：{@panel}", mission);
+                    //}
                     InspectMission.SetFinishedMission(inspectMission);
 
                     // check if all missions are finished;
@@ -155,7 +156,7 @@ namespace Sauron
             {
                 try
                 {
-                    MesConnector.FinishInspect(this);
+                    //MesConnector.FinishInspect(this);
                     Log.Testlogger.Information("测试：完成lot {0}", this.CoverTrayId);
                     SetMeslotFinished();
                 }
@@ -210,17 +211,21 @@ namespace Sauron
             PanelId = panelid;
 
             // 用于当任务缺少必要项目时进行记录；
-            if (mission == null)
-            {
-                Judge.AddInspectMissionNullDefect();
-            }
             if (history == null)
             {
                 Judge.AddHistoryNotFoundDefect();
             }
+            if (mission == null)
+            {
+                Judge.AddInspectMissionNullDefect();
+            }
             if (history.MergeToolJudge == JudgeGrade.E)
             {
                 Judge.AddAETJudgeDefect();
+            }
+            if (history.MtpJudge == JudgeGrade.E || history.MtpJudge == JudgeGrade.PASS)
+            {
+                Judge.AddMTPJudgeDefect();
             }
         }
         public bool Finished { get { return Judge.finished; } }
@@ -270,7 +275,7 @@ namespace Sauron
                         }
                         else
                         {
-                            return JudgeGrade.F;
+                            return JudgeGrade.F; 
                         }
                     }
                     else if (history.MergeToolJudge == JudgeGrade.T)
@@ -320,6 +325,7 @@ namespace Sauron
                     }
                     else
                     {
+                        // 
                         return DefultJudge;
                     }
                 }
@@ -414,6 +420,7 @@ namespace Sauron
             // if have two judge , reinspect;
             else if (judges.Count == 2)
             {
+                // keep unfinished;
                 return finished;
             }
             else
@@ -476,11 +483,17 @@ namespace Sauron
             judges.Add(judge);
             FinishJudge(JudgeGrade.E, Defect.InspectMissionNull, User.AutoJudgeUser.Account, User.AutoJudgeUser.Username);
         }
-        internal void AddAETJudgeDefect()
+        public void AddAETJudgeDefect()
         {
             OperatorJudge judge = new OperatorJudge(Defect.AETEjudge, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, null,0);
             judges.Add(judge);
             FinishJudge(JudgeGrade.E, Defect.AETEjudge, User.AutoJudgeUser.Account, User.AutoJudgeUser.Username);
+        }
+        public void AddMTPJudgeDefect()
+        {
+            OperatorJudge judge = new OperatorJudge(Defect.MTPPTNjudge, User.AutoJudgeUser.Username, User.AutoJudgeUser.Account, null, 0);
+            judges.Add(judge);
+            FinishJudge(JudgeGrade.E, Defect.MTPPTNjudge, User.AutoJudgeUser.Account, User.AutoJudgeUser.Username);
         }
     }
 }

@@ -100,13 +100,13 @@ namespace CoreClass.Model
                 return new Defect("AETEjudge", "DE00003");
             }
         }
-        public static void AddDefect(Defect defect)
+        [JsonIgnore]
+        public static Defect MTPPTNjudge
         {
-            DefectsList.Add(defect);
-        }
-        public static void RemoveDefect(Defect defect)
-        {
-            DefectsList.Remove(defect);
+            get
+            {
+                return new Defect("MTPPTN", "DE00004");
+            }
         }
         // get defect by defect code;
         public static Defect GetDefectByCode(string defectCode)
