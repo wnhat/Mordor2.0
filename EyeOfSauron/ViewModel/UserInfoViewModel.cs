@@ -5,11 +5,14 @@ using MongoDB.Driver;
 using System.Security.Cryptography;
 using CoreClass;
 using CoreClass.Model;
+using System.Windows;
 
 namespace EyeOfSauron.ViewModel
 {
     public class UserInfoViewModel : ViewModelBase
     {
+        public event RoutedEventHandler? LoginEvent;
+        public event RoutedEventHandler? LogoutEvent;
         private User? user;
 
         public UserInfoViewModel()
@@ -22,7 +25,7 @@ namespace EyeOfSauron.ViewModel
             this.user = user;
         }
 
-        public User User
+        public User? User
         {
             get => user;
             set => SetProperty(ref user, value);
@@ -59,6 +62,7 @@ namespace EyeOfSauron.ViewModel
         public void Logout()
         {
             //Incase view binding error,show something after logedout;
+            LogoutEvent?.Invoke(User, new());
             User = User.AutoJudgeUser;
         }
     }

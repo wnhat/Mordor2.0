@@ -6,6 +6,8 @@ using MongoDB.Driver;
 using EyeOfSauron.ViewModel;
 using CoreClass.Service;
 using System.Windows.Threading;
+using CoreClass.Model;
+using System.Collections.Generic;
 
 namespace EyeOfSauron.MyUserControl
 {
@@ -40,28 +42,71 @@ namespace EyeOfSauron.MyUserControl
             // Get the remaining mission quantity to set viewmodel;
             _viewModel.ProductInfos.Clear();
             //Issue: Thread will be waiting here if DICSDB no connection;
-            var remainMissionCount = await RemainService.GetRemainMissionCount();
-            foreach (var item in remainMissionCount)
+            try
             {
-                // Convert the first BsonElement in the item to ProductInfo;
-                var buffer = item.GetValue("_id").AsObjectId;
-                var productInfo = new ProductInfoService().GetProductInfo(buffer).Result;
-                int count = item.GetValue("count").ToInt32();
-                _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfo, count)));
+                var remainMissionCount = await RemainService.GetRemainMissionCount();
+                foreach (var item in remainMissionCount)
+                {
+                    // Convert the first BsonElement in the item to ProductInfo;
+                    var productObjectId = item.GetValue("_id").AsObjectId;
+                    var productInfo = new ProductInfoService().GetProductInfo(productObjectId).Result;
+                    int count = item.GetValue("count").ToInt32();
+                    _viewModel.ProductInfos.Add(new ProductCardViewModel(new(productInfo, count)));
+                }
+                if (_viewModel.ProductInfos.Count > 0)
+                {
+                    _viewModel.SelectedProductCardViewModel = _viewModel.ProductInfos.First();
+                }
+                else
+                {
+                    _viewModel.SelectedProductCardViewModel = null;
+                }
             }
-            if (_viewModel.ProductInfos.Count > 0)
+
+            catch(TimeoutException e)
             {
-                _viewModel.SelectedProductCardViewModel = _viewModel.ProductInfos.First();
+                MessageBox.Show(e.Message);
+            }
+            catch (TypeInitializationException)
+            {
+                MessageBox.Show("DICSDB no connection");
+            }
+        }
+
+        public void SetExamMissions(List<ExamMissionCollection> examMissionWIPs)
+        {
+            try
+            {
+                foreach (var item in examMissionWIPs)
+                {
+                    _viewModel.ExamMissionCardViewModels.Add(item);
+                }
+                if (_viewModel.ExamMissionCardViewModels.Count > 0)
+                {
+                    _viewModel.SelectedExamMissionCardViewModel = _viewModel.ExamMissionCardViewModels.First();
+                }
+                else
+                {
+                    _viewModel.SelectedExamMissionCardViewModel = null;
+                }
+            }
+            catch (TimeoutException e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            catch (TypeInitializationException)
+            {
+                MessageBox.Show("DICSDB no connection");
             }
         }
 
         private void ProductSelectBuuttonClick(object sender, RoutedEventArgs e)
         {
-            ProductCardViewModel viewModel = ((Button)sender).DataContext as ProductCardViewModel;
+            ProductCardViewModel? viewModel = ((Button)sender).DataContext as ProductCardViewModel;
             _viewModel.SelectedProductCardViewModel = viewModel;
         }
 
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        public void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             _viewModel.IsMissionFreshAllowable = false;
             dispatcherTimer.Start();
@@ -70,7 +115,7 @@ namespace EyeOfSauron.MyUserControl
             MainWindow.Snackbar.MessageQueue?.Enqueue("Mission Refresh Successfully");
         }
 
-        private void RefreshProgressValueUpdate(object sender, EventArgs e)
+        private void RefreshProgressValueUpdate(object? sender, EventArgs e)
         {
             if (!_viewModel.IsMissionFreshAllowable)
             {
@@ -85,6 +130,20 @@ namespace EyeOfSauron.MyUserControl
                 _viewModel.IsMissionFreshAllowable = true;
                 dispatcherTimer.Stop();
             }
+        }
+
+        private void ExamMissionSelectBuuttonClick(object sender, RoutedEventArgs e)
+        {
+
+            ExamMissionCollection? viewModel = ((Button)sender).DataContext as ExamMissionCollection;
+            _viewModel.SelectedExamMissionCardViewModel = viewModel;
+        }
+
+        private void ExamMissionRefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            _viewModel.IsMissionFreshAllowable = false;
+            dispatcherTimer.Start();
+            progressStartTime = DateTime.Now;
         }
     }
 }

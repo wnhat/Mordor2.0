@@ -11,8 +11,8 @@ namespace EyeOfSauron.MyUserControl
     public partial class DefectJudgeView : UserControl
     {
         public delegate void ValuePassHandler(object sender, DefectJudgeArgs e);
-        
-        public event ValuePassHandler? DefectJudgeEvent;
+
+        public event RoutedEventHandler? DefectJudgedEvent;
 
         private readonly DefectJudgeViewModel viewModel;      
 
@@ -25,21 +25,22 @@ namespace EyeOfSauron.MyUserControl
 
         private void JudgeButtonClick(object sender, RoutedEventArgs e)
         {
-            Defect defect;
-            if ((sender as Button).Content == "S")
+            Defect? defect;
+            Button button = (Button)sender;
+            if (button.Content.ToString() == "S")
             {
                 defect = null;
             }
-            else if ((sender as Button).Content == "E")
+            else if (button.Content.ToString() == "E")
             {
-                defect = Defect.OperaterEjudge;
+                defect = Defect.GetDefectByCode("DE00002");
             }
             else
             {
-                defect = (sender as Button).DataContext as Defect;
+                Defect? buffer = button.DataContext as Defect;
+                defect = Defect.GetDefectByCode(buffer?.DefectCode);
             }
-            DefectJudgeArgs defectJudgeArgs = new(defect);
-            DefectJudgeEvent?.Invoke(this, defectJudgeArgs);
+            DefectJudgedEvent?.Invoke(defect, new());
         }
     }
 

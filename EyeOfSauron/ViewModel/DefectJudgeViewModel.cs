@@ -2,6 +2,7 @@
 using CoreClass;
 using CoreClass.Model;
 using System.Windows.Controls;
+using System;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -11,9 +12,20 @@ namespace EyeOfSauron.ViewModel
         public DefectJudgeViewModel()
         {
             //convert Parameter.CodeNameList to ObservableCollection<Defect>
-            foreach (var defect in Parameter.CodeNameList)
+            try
             {
-                DefectJudgeList.Add(defect);
+                foreach (var defect in Parameter.CodeNameList)
+                {
+                    DefectJudgeList.Add(defect);
+                }
+            }
+            catch(TypeInitializationException e)
+            {
+                throw e;
+            }
+            catch (TimeoutException e)
+            {
+                throw e;
             }
         }
         public ObservableCollection<Defect> DefectJudgeList

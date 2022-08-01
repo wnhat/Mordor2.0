@@ -9,30 +9,44 @@ namespace EyeOfSauron.ViewModel
 {
     public class PanelListViewModel : ViewModelBase
     {
-        private ObservableCollection<PanelSampleContainer> panelList = new();
-        public ObservableCollection<PanelSampleContainer> PanelList
+        private ObservableCollection<PanelViewContainer> panelList = new();
+        private PanelViewContainer? selectedItem;
+        public PanelListViewModel()
+        {
+            OpenPathCommand = new CommandImplementation(OpenPath);
+        }
+
+        public CommandImplementation OpenPathCommand { get; }
+        public ObservableCollection<PanelViewContainer> PanelList
         {
             get => panelList;
             set => SetProperty(ref panelList, value);
         }
-        public PanelSampleContainer selectedItem = new();
-        public PanelSampleContainer SelectedItem
+        public PanelViewContainer? SelectedItem
         {
             get => selectedItem;
             set => SetProperty(ref selectedItem, value);
         }
+        public void OpenPath(object o)
+        {
+            if (SelectedItem != null)
+            {
+                string path = (string)o;
+                System.Diagnostics.Process.Start("explorer.exe", path);
+            }
+        }
     }
-    public class PanelSampleContainer
+    public class PanelViewContainer
     {
-        public PanelSampleContainer() { }
-        public PanelSampleContainer(string s)
+        public PanelViewContainer(PanelMission panelMission)
         {
-            PanelId = s;
-        }
-        public string? PanelId
-        {
-            get ;
-            set ;
-        }
+            PanelId = panelMission.AetResult.PanelId;
+            //UTC+8:00
+            InspDate = panelMission.AetResult.history.InspDate.AddHours(8);
+            PanelMission = panelMission;
+        }            
+        public string PanelId { get; private set; }
+        public DateTime InspDate { get; private set; }
+        public PanelMission PanelMission { get; private set; }
     }
 }

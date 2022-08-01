@@ -5,14 +5,14 @@
     xmlns:Converter="clr-namespace:EyeOfSauron.Converter"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:EyeOfSauron"
-    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:uc="clr-namespace:EyeOfSauron.MyUserControl"
     xmlns:viewmodel="clr-namespace:EyeOfSauron.ViewModel"
     Title="SampleManager"
-    Width="1400"
-    Height="900"
+    Width="1600"
+    Height="1000"
     MinWidth="800"
     MinHeight="600"
     d:DataContext="{d:DesignInstance Type=viewmodel:SampleViewerViewModel}"
@@ -20,8 +20,14 @@
     WindowStartupLocation="CenterScreen"
     WindowState="Maximized"
     mc:Ignorable="d">
+
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding InspImageView.DataContext.InspImage.RefreshImageCommand}" Gesture="Tab" />
+    </Window.InputBindings>
     <Window.Resources>
-        <ResourceDictionary />
+        <ResourceDictionary>
+            <Converter:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
+        </ResourceDictionary>
     </Window.Resources>
 
     <materialDesign:DialogHost
@@ -32,9 +38,7 @@
         <materialDesign:DialogHost.DialogContent>
             <StackPanel Margin="16">
                 <TextBlock Text="Add Panel ID" />
-                <TextBlock
-                    x:Name="DialogMessage"
-                    Margin="0,8,0,0"/>
+                <TextBlock x:Name="DialogMessage" Margin="0,8,0,0" />
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                     <Button
                         Margin="0,8,8,0"
@@ -83,17 +87,19 @@
                     DockPanel.Dock="Top"
                     Mode="PrimaryMid">
                     <DockPanel>
-                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                            <Label
-                                VerticalAlignment="Center"
-                                HorizontalContentAlignment="Center"
-                                Content="{Binding DataContext.PanelId, ElementName=ImageView,FallbackValue={}}"
-                                MouseDoubleClick="PanelidLableMouseDoubleClick"
-                                ToolTip="Double Click to Copy" />
+                        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                             <TextBlock
                                 VerticalAlignment="Center"
-                                FontSize="20"
+                                FontSize="14"
                                 Text="{Binding DateTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" />
+                            <Separator Width="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                            <Button
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Center"
+                                Content="{Binding InspImageView.DataContext.PanelId, FallbackValue=PanelID}"
+                                MouseDoubleClick="PanelidLableMouseDoubleClick"
+                                Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                                ToolTip="Double Click to Copy" />
                         </StackPanel>
                         <ToggleButton
                             x:Name="ColorToolToggleButton"
@@ -102,58 +108,112 @@
                             DockPanel.Dock="Right"
                             IsChecked="False"
                             Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
-                        <!--  Fill the middle  -->
+                        <!--  Fill middle area  -->
                         <TextBlock VerticalAlignment="Center" />
-                       
+
                     </DockPanel>
                 </materialDesign:ColorZone>
+                <ProgressBar
+                    Margin="0,0,0,0"
+                    DockPanel.Dock="Top"
+                    Visibility="{Binding LoadMissionProgressValue, Converter={StaticResource EnumToVisibilityConverter}}"
+                    Value="{Binding LoadMissionProgressValue, FallbackValue=10}" />
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
-                        <!--  LastRowHeight=0 to show Snackbar  -->
-                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Viewbox
-                            Margin="10,10,10,10"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Top"
-                            Stretch="None">
-                            <materialDesign:Card UniformCornerRadius="6">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <uc:PanelListView x:Name="ResultPanelList" />
-                                </Grid>
-                            </materialDesign:Card>
-                        </Viewbox>
-                        <Viewbox
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Viewbox Margin="10,10,5,10" Stretch="None">
+                                <materialDesign:Card UniformCornerRadius="6">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <ContentPresenter x:Name="ResultPanelList" Content="{Binding PanelListView}" />
+                                    </Grid>
+                                </materialDesign:Card>
+                            </Viewbox>
+                        </Grid>
+                        <materialDesign:DialogHost
+                            x:Name="InspViewDialogHost"
                             Grid.Column="1"
-                            Margin="10,10,10,10"
-                            Stretch="Fill">
-                            <uc:InspImageView x:Name="ImageView" />
-                            <!--<ContentPresenter Content="{Binding InspImageView}" />-->
-                        </Viewbox>
+                            Identifier="InspViewDialogHost">
+                            <Grid Margin="10,10,10,10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <materialDesign:Card
+                                    Height="80"
+                                    Margin="0,0,0,10"
+                                    UniformCornerRadius="6">
+                                    <StackPanel
+                                        Margin="10,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        Orientation="Horizontal">
+                                        <ComboBox
+                                            x:Name="MissionCollectionComboBox"
+                                            Margin="5,0,5,0"
+                                            IsEditable="True"
+                                            materialDesign:HintAssist.Hint="MissionCollection"
+                                            materialDesign:HintAssist.HintOpacity=".26"
+                                            DisplayMemberPath="CollectionName"
+                                            ItemsSource="{Binding SampleCollection}"
+                                            SelectedItem="{Binding SelectedSamplePanelListViewModel, Mode=TwoWay}"
+                                            SelectionChanged="MissionCollectionComboBox_SelectionChanged"
+                                            Text="{Binding AddCollectionDialog_ComboxText, Mode=TwoWay}" />
+                                        <Button
+                                            Margin="5,0,5,0"
+                                            Click="AddCollectionButton_Click"
+                                            Content="{materialDesign:PackIcon Kind=DatabasePlus,
+                                                                              Size=22}"
+                                            Focusable="False"
+                                            IsTabStop="False"
+                                            ToolTip="添加至任务集" />
+                                        <Button
+                                            Margin="5,0,5,0"
+                                            Command="{Binding RefreshMissionCollection}"
+                                            Content="{materialDesign:PackIcon Kind=Refresh,
+                                                                              Size=22}"
+                                            IsTabStop="False"
+                                            ToolTip="刷新" />
+                                        <Button
+                                            Margin="5,0,5,0"
+                                            Click="CollectionSetting_Click"
+                                            Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                                            Content="{materialDesign:PackIcon Kind=Cog,
+                                                                              Size=22}"
+                                            Focusable="False"
+                                            IsTabStop="False"
+                                            ToolTip="设置" />
+                                    </StackPanel>
+                                </materialDesign:Card>
+                                <ContentPresenter
+                                    x:Name="ImageView"
+                                    Grid.Row="1"
+                                    Content="{Binding InspImageView}" />
+                            </Grid>
+                        </materialDesign:DialogHost>
                     </Grid>
-
                     <materialDesign:Snackbar
                         x:Name="MainSnackbar"
-                        Grid.Row="2"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Bottom"
+                        IsTabStop="False"
                         MessageQueue="{materialDesign:MessageQueue}" />
                 </Grid>
             </DockPanel>
-
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>
 </Window>

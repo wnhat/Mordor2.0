@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Windows;
-using EyeOfSauron.ViewModel;
 using CoreClass.Model;
 using MaterialDesignThemes.Wpf;
 using EyeOfSauron.MyUserControl;
+using EyeOfSauron.ViewModel;
+using System.Net;
 
 namespace EyeOfSauron
 {
@@ -12,15 +13,17 @@ namespace EyeOfSauron
     /// </summary>
     public partial class LogininWindow : Window
     {
-        public delegate void ValuePassHandler(object sender, AccountAuthenticateEventArgs e);
-        public event ValuePassHandler? AccountAuthenticateEvent ;
+        public event RoutedEventHandler? UserAuthenticateEvent;
         private readonly UserInfoViewModel _viewModel;
+        private readonly MessageAcceptDialog messageAcceptDialog = new();
 
         public LogininWindow()
         {
             _viewModel = new UserInfoViewModel();
             DataContext = _viewModel;
             InitializeComponent();
+            LoginWindowDialogHost.DialogClosing += new DialogClosingEventHandler(DialogClosing);
+            
         }
         
         private void LoginButtonClick(object sender, RoutedEventArgs e)
@@ -29,30 +32,38 @@ namespace EyeOfSauron
             switch (authenticateResult)
             {
                 case AuthenticateResult.Success:
-                    AccountAuthenticateEventArgs arges = new(_viewModel.User);
-                    AccountAuthenticateEvent?.Invoke(this, arges);
+                    UserAuthenticateEvent?.Invoke(_viewModel.User, new());
                     break;
                 case AuthenticateResult.EmptyInput:
                     break;
                 case AuthenticateResult.AccountNotExist:
-                    DialogHost.Show(new MessageAcceptDialog { Message = { Text = "用户不存在" } }, "LoginWindowDialogHost");
+                    messageAcceptDialog.Message.Text = "用户不存在";
+                    DialogHost.Show(messageAcceptDialog, "LoginWindowDialogHost");
                     break;
                 case AuthenticateResult.PasswordError:
-                    DialogHost.Show(new MessageAcceptDialog { Message = { Text = "密码错误" } }, "LoginWindowDialogHost");
+                    messageAcceptDialog.Message.Text = "密码错误";
+                    DialogHost.Show(messageAcceptDialog, "LoginWindowDialogHost");
                     break;
                 default:
                     break;
             }
         }
-    }
 
-    public class AccountAuthenticateEventArgs : EventArgs
-    {
-        public User User { get; set; }
-
-        public AccountAuthenticateEventArgs(User user)
+        private void DialogClosing(object sender, DialogClosingEventArgs e)
         {
-            this.User = user;
+            var a = (DialogHost)sender;
+            var b = a.DialogContent;
+            if(b is MessageAcceptDialog)
+            {
+                if (!Equals(e.Parameter, true))
+                {
+                    e.Cancel();
+                }
+            }
+            else
+            {
+                e.Cancel();
+            }
         }
     }
 }

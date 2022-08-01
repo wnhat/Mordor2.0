@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
-using System.Threading.Tasks;
 using System.Drawing;
 using CoreClass.Model;
 
@@ -17,7 +15,7 @@ namespace CoreClass
         readonly Graphics graphics;
         public DetailDefectContours(params string[] data)
         {
-            // 绑定画布
+            //绑定画布
             graphics = Graphics.FromImage(defectMap);
             //添加背景颜色
             SolidBrush solidBrush = new SolidBrush(Color.FromArgb(69, 99, 73));
@@ -40,7 +38,7 @@ namespace CoreClass
                 string s = L.ElementAt(i);
                 if (s.StartsWith("Cell_X"))//记录cell尺寸
                 {
-                    string[] cellSizeInfo = s.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] cellSizeInfo = s.Replace(" ","").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                     scaleX = Convert.ToDouble(cellSizeInfo[0].Substring(7)) / (double)cellX;
                     scaleY = Convert.ToDouble(cellSizeInfo[1].Substring(7)) / (double)cellY;
                 }
@@ -57,7 +55,7 @@ namespace CoreClass
                     }
                     points.Clear();
                 }
-                else
+                else if( s != "" )
                 {
                     string[] pointLocation = s.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                     int pointX = Convert.ToInt32(pointLocation[0]);
@@ -79,7 +77,7 @@ namespace CoreClass
                         pointY += 5;
                     }
                     points.Add(new Point(pointX, pointY));
-                    if (i == L.Count() - 1)
+                    if (i == L.Count() - 2)
                     {
                         DrawDefectMap(points.ToArray());
                     }
@@ -93,7 +91,7 @@ namespace CoreClass
         private void DrawDefectMap(Point[] pointList)
         {
             Pen defectDrawPen = new(Color.White);
-            defectDrawPen.Width = (float)1.6;
+            defectDrawPen.Width = (float)2.0;
             if (pointList.Length > 2)
             {
                 graphics.DrawPolygon(defectDrawPen, pointList);
@@ -114,5 +112,5 @@ namespace CoreClass
             ImageContainer imageContainer = new("Contours", GetByte());
             return imageContainer;
         }
-    }
+    }      
 }

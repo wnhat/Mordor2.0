@@ -1,0 +1,27 @@
+﻿<UserControl
+    x:Class="EyeOfSauron.MyUserControl.DefectSelectView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:EyeOfSauron.MyUserControl"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
+    d:DataContext="{d:DesignInstance Type=viewModel:DefectJudgeViewModel}"
+    mc:Ignorable="d">
+    <materialDesign:Card Width="500" UniformCornerRadius="6">
+        <StackPanel VerticalAlignment="Top">
+            <ListBox
+                x:Name="DefectSelectListBox"
+                DisplayMemberPath="DefectName"
+                ItemsSource="{Binding DefectJudgeList}"
+                Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineListBox}" />
+            <Button
+                Margin="0,0,0,10"
+                HorizontalAlignment="Center"
+                Click="Button_Click"
+                Content="清除"
+                Style="{StaticResource MaterialDesignFlatDarkButton}" />
+        </StackPanel>
+    </materialDesign:Card>
+</UserControl>

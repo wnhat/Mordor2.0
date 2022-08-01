@@ -20,7 +20,7 @@
     AutomationProperties.Name="{Binding Title, RelativeSource={RelativeSource Self}}"
     Background="{DynamicResource MaterialDesignPaper}"
     Closing="Window_Closing"
-    KeyDown="Window_KeyDown"
+    IsTabStop="False"
     Style="{StaticResource MaterialDesignWindow}"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     WindowStartupLocation="CenterScreen"
@@ -29,7 +29,9 @@
     <Window.CommandBindings>
         <CommandBinding Command="Copy" Executed="OnCopy" />
     </Window.CommandBindings>
-
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding InspImageView.DataContext.InspImage.RefreshImageCommand}" Gesture="Tab" />
+    </Window.InputBindings>
     <Window.Resources>
         <ResourceDictionary>
             <Converter:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
@@ -41,6 +43,7 @@
     <materialDesign:DialogHost
         DialogTheme="Inherit"
         Identifier="MainWindowDialog"
+        x:Name="MainWindowDialog"
         SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
         <materialDesign:DrawerHost IsRightDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <materialDesign:DrawerHost.RightDrawerContent>
@@ -67,30 +70,25 @@
                     Mode="PrimaryMid">
                     <DockPanel>
                         <StackPanel Orientation="Horizontal">
-                            <!--<Button
-                                Margin="16,0,0,0"
-                                materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
-                                Click="LoginButton_Click"
-                                Content="{materialDesign:PackIcon Kind=Account,
-                                                                  Size=24}"
-                                Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
-                                Style="{StaticResource MaterialDesignToolButton}"
-                                ToolTip="Login" />-->
 
                             <materialDesign:Chip
                                 Click="LoginButton_Click"
                                 Content="{Binding UserInfo.User.Username, FallbackValue=UserName}"
                                 Icon="{Binding UserInfo.User.UserIcon, FallbackValue=U}"
                                 IconBackground="{DynamicResource PrimaryHueLightBrush}"
-                                IconForeground="{DynamicResource PrimaryHueLightForegroundBrush}" />
-                            <materialDesign:PopupBox PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
+                                IconForeground="{DynamicResource PrimaryHueLightForegroundBrush}"
+                                IsTabStop="False" />
+                            <materialDesign:PopupBox
+                                IsTabStop="False"
+                                PlacementMode="BottomAndAlignRightEdges"
+                                StaysOpen="False">
                                 <materialDesign:PopupBox.ToggleContent>
                                     <materialDesign:PackIcon Kind="ChevronDown" />
                                 </materialDesign:PopupBox.ToggleContent>
                                 <StackPanel>
                                     <Button
                                         HorizontalAlignment="Center"
-                                        Click="LoginButton_Click"
+                                        Click="UserChangeButton_Click"
                                         Content="{materialDesign:PackIcon Kind=AccountCircle}"
                                         ToolTip="User Change" />
                                     <Button
@@ -100,17 +98,20 @@
                                         ToolTip="Logout" />
                                 </StackPanel>
                             </materialDesign:PopupBox>
-
                             <Button
                                 VerticalAlignment="Center"
                                 HorizontalContentAlignment="Center"
                                 Content="{Binding InspImageView.DataContext.PanelId, FallbackValue={}}"
+                                IsTabStop="False"
                                 MouseDoubleClick="PanelidLableMouseDoubleClick"
                                 Style="{StaticResource MaterialDesignFlatMidBgButton}"
                                 ToolTip="Double Click to Copy"
                                 Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}" />
 
-                            <Separator Width="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                            <Separator
+                                Width="2"
+                                IsTabStop="False"
+                                Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                             <TextBlock
                                 VerticalAlignment="Center"
                                 FontSize="14"
@@ -123,8 +124,9 @@
                             Click="ColorToolToggleButton_OnClick"
                             DockPanel.Dock="Right"
                             IsChecked="False"
+                            IsTabStop="False"
                             Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
-
+                        
                         <materialDesign:Badged
                             x:Name="EndInspButton"
                             Margin="10,0,20,0"
@@ -133,10 +135,11 @@
                             Badge="{Binding InspImageView.DataContext.RemainingCount, FallbackValue=0}"
                             BadgeColorZoneMode="PrimaryLight"
                             DockPanel.Dock="Right"
-                            Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}">
+                            Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay, FallbackValue=Collapsed}">
                             <Button
                                 Command="{Binding EndInspCommand}"
                                 Content="End Insp"
+                                IsTabStop="False"
                                 Style="{StaticResource MaterialDesignRaisedLightButton}" />
                         </materialDesign:Badged>
 
@@ -151,8 +154,9 @@
                             Visibility="{Binding OnShowView, Converter={StaticResource EnumToVisibilityConverter}, Mode=TwoWay}">
                             <Button
                                 Command="{Binding StartInspCommand}"
-                                CommandParameter="{Binding ProductSelectView.DataContext.SelectedProductCardViewModel.ProductInfo.Key}"
+                                CommandParameter="{Binding ProductSelectView.DataContext.ControlTabSelectedIndex}"
                                 Content="Start Insp"
+                                IsTabStop="False"
                                 Style="{StaticResource MaterialDesignRaisedLightButton}" />
                         </materialDesign:Badged>
 
@@ -162,10 +166,12 @@
                             VerticalAlignment="Center"
                             Content="{Binding ProductSelectView.DataContext.SelectedProductCardViewModel.ProductInfo.Key.Name, FallbackValue=MODEL}"
                             DockPanel.Dock="Right"
+                            IsTabStop="False"
                             Style="{StaticResource MaterialDesignFlatLightBgButton}" />
                         <Separator
                             Width="2"
                             DockPanel.Dock="Right"
+                            IsTabStop="False"
                             Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                         <Button
                             Margin="0,0,10,0"
@@ -174,27 +180,28 @@
                             Click="SampleViewButton_Click"
                             Content="SampleView"
                             DockPanel.Dock="Right"
+                            IsTabStop="False"
                             Style="{StaticResource MaterialDesignRaisedLightButton}" />
                         <TextBlock Text="" />
                     </DockPanel>
                 </materialDesign:ColorZone>
+                <ProgressBar IsIndeterminate="True" Visibility="Collapsed" />
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Viewbox
-                        x:Name="MainScrollViewer"
+                    <Grid
+                        x:Name="MainContent"
                         Grid.Column="0"
                         Margin="0,5,0,0"
                         VerticalAlignment="Top"
-                        materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True"
-                        Stretch="{Binding OnShowView, Converter={StaticResource EnumToStretchConverter}}">
+                        materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True">
                         <ContentPresenter Content="{Binding MainContent}" />
-                    </Viewbox>
+                    </Grid>
                     <Viewbox
                         x:Name="DefectJudgeViewbox"
                         Grid.Column="1"
@@ -204,9 +211,9 @@
                     </Viewbox>
                     <materialDesign:Snackbar
                         x:Name="MainSnackbar"
-                        Width="Auto"
-                        HorizontalAlignment="Center"
                         VerticalAlignment="Bottom"
+                        HorizontalContentAlignment="Center"
+                        IsTabStop="False"
                         MessageQueue="{materialDesign:MessageQueue}" />
                 </Grid>
             </DockPanel>

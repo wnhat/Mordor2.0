@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.Linq;
 using CoreClass.Model;
+using CoreClass;
+using System.Windows.Controls;
+using System.Windows;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -13,13 +16,23 @@ namespace EyeOfSauron.ViewModel
         {
             DetailDefectList = new();
             InspImage = new();
+            LayoutPresets = new();
         }
-        
+        public LayoutPresets LayoutPresets { get;}
+
         private string panelId = "";
         
         private ProductInfo? productInfo;
 
+        private UserControl extendedUserControl = new();
+
         private int remainingCount;
+
+        public UserControl ExtendedUserControl
+        {
+            get => extendedUserControl;
+            set => SetProperty(ref extendedUserControl, value);
+        }
 
         public string PanelId
         {
@@ -46,36 +59,29 @@ namespace EyeOfSauron.ViewModel
 
     public class InspImageViewModel : ViewModelBase
     {
-        
-        
         public int refreshPage = 0;
+
+        public int pagePatternCount = 3;
 
         public bool isVisible = false;
 
-        private BitmapImage defaultImage = new();
-
         private BitmapImageContainer? defectMapImage;
-
-        static readonly Uri _defaultImageUri = new(@"D:\DICS Software\DefaultSample\AVI\Orign\DefaultSample\00_DUST_CAM00.bmp", UriKind.Absolute);
 
         private ObservableCollection<BitmapImageContainer>? inspImages;
 
-        public List<ImageContainer> resultImageDataList = new();
+        private BitmapImageContainer defaultImage;
 
-        public List<ImageContainer> defectImageDataList = new();
+        public List<ImageContainer> resultImageDataList = new();
 
         public InspImageViewModel()
         {
-            defaultImage.BeginInit();
-            defaultImage.UriSource = _defaultImageUri;
-            defaultImage.EndInit();
-            defaultImage.Freeze();
             inspImages = new ObservableCollection<BitmapImageContainer>
             {
-                new BitmapImageContainer(new ImageContainer()),
-                new BitmapImageContainer(new ImageContainer()),
-                new BitmapImageContainer(new ImageContainer())
+                new BitmapImageContainer(ImageContainer.GetDefault),
+                new BitmapImageContainer(ImageContainer.GetDefault),
+                new BitmapImageContainer(ImageContainer.GetDefault)
             };
+            defaultImage = new BitmapImageContainer(ImageContainer.GetDefault);
             RefreshImageCommand = new(
                 _ => RefreshImageMethod(),
                 _ => resultImageDataList != null);
@@ -93,7 +99,7 @@ namespace EyeOfSauron.ViewModel
             set => SetProperty(ref inspImages, value);
         }
 
-        public BitmapImage DefaultImage
+        public BitmapImageContainer DefaultImage
         {
             get => defaultImage;
             set => SetProperty(ref defaultImage, value);
@@ -113,13 +119,13 @@ namespace EyeOfSauron.ViewModel
             {
                 return;
             }
-            if (refreshPage < resultImageDataList.ToArray().Length)
+            if ((refreshPage + InspImages.Count) <= resultImageDataList.ToArray().Length)
             {
                 for (int i = 0; i < InspImages.Count; i++)
                 {
                     InspImages[i] = new BitmapImageContainer(resultImageDataList[refreshPage + i]);
                 }
-                refreshPage += 3;
+                refreshPage += pagePatternCount;
             }
             else
             {
@@ -152,46 +158,78 @@ namespace EyeOfSauron.ViewModel
             get => aetDetailDefects;
             set => SetProperty(ref aetDetailDefects, value);
         }
-
     }
 
-    public sealed class AetDetailDefect : ViewModelBase
+    public sealed class AetDetailDefect
     {
-        private string defectNo = "";
-
-        private string name = "";
-
-        private BitmapImage detailDefectImage = new();
-
-        public AetDetailDefect(string name, string defectNo)
+        public AetDetailDefect(DefectInfo defectInfo, BitmapImage bitmapImage)
         {
-            Name = name;
-            DefectNo = defectNo;
-        }
-
-        public AetDetailDefect(string name, string defectNo, BitmapImage bitmapImage)
-        {
-            Name = name;
-            DefectNo = defectNo;
+            DefectInfo = defectInfo;
             DetailDefectImage = bitmapImage;
         }
+        public DefectInfo DefectInfo { get; private set; }
+        public BitmapImage DetailDefectImage { get; private set; }
+    }
 
-        public string Name
+    public class LayoutPresets : ViewModelBase
+    {
+        private int imageBox1_RowSpan = 1;
+        private int imageBox1_Height = 1000;
+        private Visibility imageBox2_Visibility = Visibility.Visible;
+        private Visibility imageBox3_Visibility = Visibility.Visible;
+        private Orientation stackPanel1_Orientation = Orientation.Vertical;
+        public int ImageBox1_RowSpan
         {
-            get => name;
-            set => SetProperty(ref name, value);
+            get => imageBox1_RowSpan;
+            set => SetProperty(ref imageBox1_RowSpan, value>=2?2:1);
         }
-
-        public string DefectNo
+        public int ImageBox1_Height
         {
-            get => defectNo;
-            set => SetProperty(ref defectNo, value);
+            get => imageBox1_Height;
+            set => SetProperty(ref imageBox1_Height, value>1000? value : 1000);
         }
-
-        public BitmapImage DetailDefectImage
+        public Visibility ImageBox2_Visibility
         {
-            get => detailDefectImage;
-            set => SetProperty(ref detailDefectImage, value);
+            get => imageBox2_Visibility;
+            set => SetProperty(ref imageBox2_Visibility, value == Visibility.Collapsed? Visibility.Collapsed: Visibility.Visible);
+        }
+        public Visibility ImageBox3_Visibility
+        {
+            get => imageBox3_Visibility;
+            set => SetProperty(ref imageBox3_Visibility, value == Visibility.Collapsed ? Visibility.Collapsed : Visibility.Visible);
+        }
+        public Orientation StackPanel1_Orientation
+        {
+            get => stackPanel1_Orientation;
+            set => SetProperty(ref stackPanel1_Orientation, value == Orientation.Horizontal ? Orientation.Horizontal : Orientation.Vertical);
+        }
+        public void SetInspImageLayout(int imageCount)
+        {
+            switch (imageCount)
+            {
+                default:
+                case 3:
+                    imageBox1_RowSpan = 1;
+                    ImageBox1_Height = 1000;
+                    ImageBox2_Visibility = Visibility.Visible;
+                    ImageBox3_Visibility = Visibility.Visible;
+                    StackPanel1_Orientation = Orientation.Vertical;
+                    break;
+                case 2:
+                    imageBox1_RowSpan = 1;
+                    ImageBox1_Height = 1500;
+                    ImageBox2_Visibility = Visibility.Visible;
+                    ImageBox3_Visibility = Visibility.Collapsed;
+                    StackPanel1_Orientation = Orientation.Horizontal;
+                    break;
+                case 1:
+                    imageBox1_RowSpan = 2;
+                    ImageBox1_Height = 1800;
+                    ImageBox2_Visibility = Visibility.Collapsed;
+                    ImageBox3_Visibility = Visibility.Collapsed;
+                    StackPanel1_Orientation = Orientation.Vertical;
+                    break;
+            }
         }
     }
 }

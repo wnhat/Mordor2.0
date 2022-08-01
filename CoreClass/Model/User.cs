@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -101,6 +102,22 @@ namespace CoreClass.Model
                 return user.Username == Username;
             }
             else return false;
+        }
+    }
+
+    public static class UserDbClass
+    {
+        private static readonly IMongoCollection<User> Collection = DBconnector.DICSDB.GetCollection<User>("User");
+        public static User GetUser(ObjectId id)
+        {
+            var result = Collection.Find(x => x.Id == id).First();
+            return result;
+        }
+        public static List<User> GetAllUsers()
+        {
+            var filter = new BsonDocument();
+            var result = Collection.Find(filter).ToList();
+            return result;
         }
     }
 }

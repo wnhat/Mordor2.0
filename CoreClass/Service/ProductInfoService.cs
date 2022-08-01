@@ -38,6 +38,12 @@ namespace CoreClass.Service
                 return products; 
             });
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Task<ProductInfo> GetProductInfo(ObjectId id)
         {
             return Task.Run(() => {

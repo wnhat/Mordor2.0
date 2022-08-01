@@ -15,18 +15,18 @@ namespace EyeOfSauron.Converter
                 throw new NotImplementedException();
             }
             Visibility output;
-            switch (value)
+            if (value is double)
             {
-                case ViewName.InspImageView:
-                case ViewName.Null:
-                    output = Visibility.Collapsed;
-                    break;
-                case ViewName.ProductSelectView:
-                    output = Visibility.Visible;
-                    break;
-                default:
-                    output = Visibility.Collapsed;
-                    break;
+                output = (double)value == 0 ? Visibility.Collapsed : Visibility.Visible;
+            }
+            else
+            {
+                output = value switch
+                {
+                    ViewName.InspImageView or ViewName.Null => Visibility.Collapsed,
+                    ViewName.ProductSelectView => Visibility.Visible,
+                    _ => Visibility.Collapsed,
+                };
             }
             return output;
         }
