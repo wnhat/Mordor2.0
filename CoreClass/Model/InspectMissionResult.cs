@@ -20,8 +20,8 @@ namespace CoreClass.Model
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime DBInTime { get; }
-        public ObjectId InspMissionId { get; }
-        public double TactTime { get;}
+        public ObjectId InspMissionId { get; private set; }
+        public double TactTime { get; private set; }
         public User User { get; private set; }
         public Defect ResultDefect { get; private set; }
         public DicsEqp Eqp { get; set; }

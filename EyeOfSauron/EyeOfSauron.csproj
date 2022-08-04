@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="CalcBinding" Version="2.5.2" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-beta.330" />
     <PackageReference Include="MaterialDesignThemes" Version="4.4.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.15.1" />
     <PackageReference Include="NetMQ" Version="4.0.1.8" />

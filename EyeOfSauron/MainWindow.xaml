@@ -41,9 +41,9 @@
     </Window.Resources>
 
     <materialDesign:DialogHost
+        x:Name="MainWindowDialog"
         DialogTheme="Inherit"
         Identifier="MainWindowDialog"
-        x:Name="MainWindowDialog"
         SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
         <materialDesign:DrawerHost IsRightDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <materialDesign:DrawerHost.RightDrawerContent>
@@ -69,6 +69,7 @@
                     DockPanel.Dock="Top"
                     Mode="PrimaryMid">
                     <DockPanel>
+
                         <StackPanel Orientation="Horizontal">
 
                             <materialDesign:Chip
@@ -113,9 +114,77 @@
                                 IsTabStop="False"
                                 Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                             <TextBlock
+                                Margin="0,0,0,5"
                                 VerticalAlignment="Center"
                                 FontSize="14"
                                 Text="{Binding DateTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" />
+                        </StackPanel>
+
+                        <StackPanel
+                            Margin="10,0,0,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Border
+                                BorderBrush="{DynamicResource PrimaryHueDarkBrush}"
+                                BorderThickness="1"
+                                ClipToBounds="True">
+                                <StackPanel Orientation="Vertical" Margin="5,0,5,0">
+                                    <TextBlock
+                                        Margin="0,5,0,5"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                        Text="TactTime" />
+                                    <TextBlock
+                                        Margin="0,5,0,5"
+                                        Width="AUTO"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                        Text="{Binding information.TactTime,FallbackValue=0}" />
+                                </StackPanel>
+                            </Border>
+                            <Border
+                                Margin="5,0,0,0"
+                                BorderBrush="{DynamicResource PrimaryHueDarkBrush}"
+                                BorderThickness="1"
+                                ClipToBounds="True">
+                                <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock
+                                            Margin="0,5,0,5"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                            Text="平均TT" />
+                                        <TextBlock
+                                            Margin="0,5,0,5"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                            Text="数量" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock
+                                            Width="60"
+                                            Margin="0,5,0,5"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            TextAlignment="Center"
+                                            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                            Text="{Binding information.AverageTactTime,FallbackValue=0}" />
+                                        <TextBlock
+                                            Width="60"
+                                            Margin="0,5,0,5"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            TextAlignment="Center"
+                                            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                            Text="{Binding information.InspCount,FallbackValue=0}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
                         </StackPanel>
 
                         <ToggleButton
@@ -126,7 +195,7 @@
                             IsChecked="False"
                             IsTabStop="False"
                             Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
-                        
+
                         <materialDesign:Badged
                             x:Name="EndInspButton"
                             Margin="10,0,20,0"

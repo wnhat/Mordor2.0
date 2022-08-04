@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using CoreClass.Model;
+using MaterialDesignThemes.Wpf;
+using EyeOfSauron.MyUserControl;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -23,6 +25,10 @@ namespace EyeOfSauron.ViewModel
             get => panelList;
             set => SetProperty(ref panelList, value);
         }
+        public CommandImplementation ItemDeleteCommand
+        {
+            get;
+        }
 
         private SamplePanelContainer? selectedItem;
         public SamplePanelContainer? SelectedItem
@@ -33,6 +39,7 @@ namespace EyeOfSauron.ViewModel
         public SamplePanelListViewModel(string collectionName = "")
         {
             GetSamples(collectionName);
+            ItemDeleteCommand = new(_ => { ItemDelete(); }, _ => SelectedItem != null) ;
         }
 
         public async void GetSamples(string collectionName)
@@ -56,6 +63,29 @@ namespace EyeOfSauron.ViewModel
                 }
                 CollectionName = collectionName;
             }
+        }
+        private void ItemDelete()
+        {
+            if (ItemDeleteCommand_CanExec())
+            {
+                PanelSample.PanelSampleDelete(SelectedItem.PanelSample.Id);
+            }
+        }
+        private bool ItemDeleteCommand_CanExec()
+        {
+            var diaResult = DialogHost.Show(new MessageAcceptCancelDialog { Message = { Text = string.Format("确认删除样本：{0}", SelectedItem.PanelSample.PanelID) } }, "SamplePanelListDialog").Result;
+            if (diaResult is bool result)
+            {
+                if (result)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
         }
     }
 

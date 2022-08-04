@@ -21,6 +21,8 @@ using MongoDB.Driver;
 using System.Windows.Threading;
 using CoreClass;
 using MaterialDesignThemes.Wpf;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
 
 namespace EyeOfSauron.MyUserControl
 {

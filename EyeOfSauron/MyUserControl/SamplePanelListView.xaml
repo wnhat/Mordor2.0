@@ -21,45 +21,52 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <ListView
-            x:Name="PanelSampleList"
-            d:ItemsSource="{d:SampleData ItemCount=5}"
-            FontSize="18"
-            ItemsSource="{Binding PanelList}"
-            SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding PanelSample.PanelID}" Header="PanelID" />
-                    <GridViewColumn DisplayMemberBinding="{Binding PanelSample.MissionCollection.CollectionName}" Header="任务集" />
-                    <GridViewColumn DisplayMemberBinding="{Binding PanelSample.MutiDefect.DefectName}" Header="DefectName" />
-                    <GridViewColumn DisplayMemberBinding="{Binding PanelSample.SampleGrade}" Header="Grade" />
-                    <GridViewColumn DisplayMemberBinding="{Binding PanelSample.Note}" Header="备注" />
-                </GridView>
-            </ListView.View>
-            <ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="修改" Click="Updata">
-                        <MenuItem.Icon>
-                            <materialDesign:PackIcon Kind="Pencil" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="删除" >
-                        <MenuItem.Icon>
-                            <materialDesign:PackIcon Kind="DeleteForever" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="复制">
-                        <MenuItem.Icon>
-                            <materialDesign:PackIcon Kind="ContentCopy" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </ListView.ContextMenu>
-        </ListView>
-    </Grid>
+    <materialDesign:DialogHost
+        x:Name="SamplePanelListDialog"
+        DialogMargin="8"
+        Identifier="SamplePanelListDialog"
+        Style="{StaticResource MaterialDesignEmbeddedDialogHost}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ListView
+                x:Name="PanelSampleList"
+                d:ItemsSource="{d:SampleData ItemCount=5}"
+                FontSize="18"
+                ItemsSource="{Binding PanelList}"
+                SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn DisplayMemberBinding="{Binding PanelSample.PanelID}" Header="PanelID" />
+                        <GridViewColumn DisplayMemberBinding="{Binding PanelSample.MissionCollection.CollectionName}" Header="任务集" />
+                        <GridViewColumn DisplayMemberBinding="{Binding PanelSample.MutiDefect.DefectName}" Header="DefectName" />
+                        <GridViewColumn DisplayMemberBinding="{Binding PanelSample.SampleGrade}" Header="Grade" />
+                        <GridViewColumn DisplayMemberBinding="{Binding PanelSample.Note}" Header="备注" />
+                    </GridView>
+                </ListView.View>
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Click="Updata" Header="修改">
+                            <MenuItem.Icon>
+                                <materialDesign:PackIcon Kind="Pencil" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Command="{Binding ItemDeleteCommand}" Header="删除">
+                            <MenuItem.Icon>
+                                <materialDesign:PackIcon Kind="DeleteForever" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="复制">
+                            <MenuItem.Icon>
+                                <materialDesign:PackIcon Kind="ContentCopy" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+            </ListView>
+        </Grid>
+    </materialDesign:DialogHost>
+
 </UserControl>

@@ -5,6 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using CoreClass.Model;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.Defaults;
+using System.Windows.Threading;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -13,6 +17,7 @@ namespace EyeOfSauron.ViewModel
         private double tactTime;
         private double avgTactTime;
         private int inspCount;
+        private readonly DispatcherTimer dispatcherTimer = new();
         public DateTime tactStartTime = DateTime.Now;
         public TimeSpan TactTimeSpan { get; set; }
         public TimeSpan TotalTactTimeSpan { get; set; }
@@ -40,10 +45,49 @@ namespace EyeOfSauron.ViewModel
                 AverageTactTime = (double)Math.Round((decimal)(TotalTactTimeSpan.TotalMilliseconds / inspCount / 1000), 2);
             }
         }
+        private readonly Random _random = new();
+        public ObservableCollection<ISeries> Series { get; set; } = new();
+        private LineSeries<double> LineSeries { get; } = new();
+        public ObservableCollection<double> SeriesValues { get; set; } = new ObservableCollection<double> { 2, 1, 2, 3, 4, 3, 6, 5, 8, 7, 10, 9 };
+
+        public InformationViewModel()
+        {
+            dispatcherTimer.Interval = TimeSpan.FromMilliseconds(100);
+            dispatcherTimer.Tick += new EventHandler(TactTimeTick);
+            AddLineDataCommand = new(
+                _ =>
+                {
+                    LineSeries<double> LineSeries = new() { Values = new ObservableCollection<double> { _random.Next(1, 10), _random.Next(1, 10), _random.Next(1, 10), _random.Next(1, 10), _random.Next(1, 10), _random.Next(1, 10), _random.Next(1, 10), _random.Next(1, 10), _random.Next(1, 10), _random.Next(1, 10) } };
+                    Series.Add(LineSeries);
+                });
+            DelLineDataCommand = new(
+                _=>
+                {
+                    Series.RemoveAt(Series.Count-1);
+                },
+                _=> Series.Count>0
+                );
+            LineSeries.Values = SeriesValues;
+            Series.Add(LineSeries);
+        }
+        public CommandImplementation AddLineDataCommand { get; }
+        public CommandImplementation DelLineDataCommand { get; }
         public void TactTimeTick(object? sender, EventArgs e)
         {
             TactTimeSpan = DateTime.Now - tactStartTime;
             TactTime = TactTimeSpan.TotalMilliseconds / 1000;
+        }
+        public void StartTick()
+        {
+            tactStartTime = DateTime.Now;
+            dispatcherTimer.Start();
+        }
+        public void ResetTact()
+        {
+            TactTime = 0;
+            InspCount = 0;
+            AverageTactTime = 0;
+            TotalTactTimeSpan = TimeSpan.Zero;
         }
     }
 }

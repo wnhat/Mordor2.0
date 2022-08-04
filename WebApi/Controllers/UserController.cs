@@ -31,9 +31,7 @@ namespace WebApi.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public UserController(
-            IUserService userService,
-            IMapper mapper)
+        public UserController( IUserService userService, IMapper mapper)
         {
             _userService = userService;
             _mapper = mapper;

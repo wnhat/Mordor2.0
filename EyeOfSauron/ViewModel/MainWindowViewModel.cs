@@ -49,7 +49,6 @@ namespace EyeOfSauron.ViewModel
                         DateTime = DateTime.Now;
                     }), 
                     Dispatcher.CurrentDispatcher);
-            inspImageView._viewModel.ExtendedUserControl = informationView;
         }
         public DicsEqp? Eqp = null;
         private Mission? mission;
@@ -57,7 +56,7 @@ namespace EyeOfSauron.ViewModel
         private UserInfoViewModel userInfo = new();
         private ProductSelectView productSelectView = new ();
         private InspImageView inspImageView = new ();
-        private InformationView informationView = new();
+        public readonly InformationViewModel information = new();
         private DefectJudgeView defectJudgeView = new();
         private UserControl mainContent = new();
         private ColorTool colorTool = new();
@@ -148,11 +147,11 @@ namespace EyeOfSauron.ViewModel
                             {
                                 try
                                 {
-                                    productInfo.InspPatternCount = 3;//This value should be set when the productInfo initializing
-                                    SetInspImageLayout(productInfo.InspPatternCount);
+                                    productInfo.InspPatternCount = PatternCount.Three;//This value should be set when the productInfo initializing
+                                    SetInspImageLayout((int)productInfo.InspPatternCount);
                                     mission = new(productInfo);
                                     LoadOnInspPanelMission();
-                                    informationView.StartTick();
+                                    information.StartTick();
                                     mission.FillPreDownloadMissionQueue();
                                 }
                                 catch (MissionEmptyException ex)
@@ -187,7 +186,7 @@ namespace EyeOfSauron.ViewModel
                                         {
                                             SetInspImageLayout(3);
                                             mission = new(examMission, ControlTableItem.ExamMission);
-                                            informationView.StartTick();
+                                            information.StartTick();
                                             LoadOnInspPanelMission();
                                             mission.FillPreDownloadMissionQueue();
                                         }
@@ -310,18 +309,18 @@ namespace EyeOfSauron.ViewModel
         {
             Defect defect = (Defect)sender;
             bool IsServerConnected;
-            var tactTime = informationView.viewModel.TactTimeFullPrecision;
-            informationView.viewModel.TactTime = 0;
-            informationView.viewModel.TotalTactTimeSpan += informationView.viewModel.TactTimeSpan;
-            informationView.viewModel.InspCount += 1;
-            informationView.viewModel.tactStartTime = DateTime.Now;
+            var tactTime = information.TactTimeFullPrecision;
+            information.TactTime = 0;
+            information.TotalTactTimeSpan += information.TactTimeSpan;
+            information.InspCount += 1;
+            information.tactStartTime = DateTime.Now;
             switch (mission.MissionType)
             {
                 default:
                 case ControlTableItem.ProductMission:
                     IsServerConnected = SeverConnector.SendPanelMissionResult(new OperatorJudge(defect, UserInfo.User.Username, UserInfo.User.Account, UserInfo.User.Id, 1), mission.onInspPanelMission.inspectMission);
                     InspectMissionResult.InsertOne(new(mission.onInspPanelMission.inspectMission.ID, UserInfo.User.Id,Eqp,defect,tactTime));
-                    IsServerConnected = true;
+                    //IsServerConnected = true;
                     break;
                 case ControlTableItem.ExamMission:
                     mission.onInspPanelMission.examMission?.SetResult(defect, Eqp , tactTime);

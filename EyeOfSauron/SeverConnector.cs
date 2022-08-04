@@ -13,8 +13,8 @@ namespace EyeOfSauron
 
         static SeverConnector()
         {
-            //Request.Connect("tcp://172.16.210.22:5555");
-            Request.Connect("tcp://127.0.0.1:5555");
+            Request.Connect("tcp://172.16.210.22:5555");
+            //Request.Connect("tcp://127.0.0.1:5555");
 
         }
 
