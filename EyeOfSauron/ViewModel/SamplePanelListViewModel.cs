@@ -29,6 +29,10 @@ namespace EyeOfSauron.ViewModel
         {
             get;
         }
+        public CommandImplementation ItemUpdateCommand
+        {
+            get;
+        }
 
         private SamplePanelContainer? selectedItem;
         public SamplePanelContainer? SelectedItem
@@ -40,6 +44,7 @@ namespace EyeOfSauron.ViewModel
         {
             GetSamples(collectionName);
             ItemDeleteCommand = new(_ => { ItemDelete(); }, _ => SelectedItem != null) ;
+            ItemUpdateCommand = new(_ => { ItemUpdate(); }, _ => SelectedItem != null);
         }
 
         public async void GetSamples(string collectionName)
@@ -68,9 +73,10 @@ namespace EyeOfSauron.ViewModel
         {
             if (ItemDeleteCommand_CanExec())
             {
-                PanelSample.PanelSampleDelete(SelectedItem.PanelSample.Id);
+                PanelSample.DeleteInfo(SelectedItem.PanelSample.Id);
             }
         }
+
         private bool ItemDeleteCommand_CanExec()
         {
             var diaResult = DialogHost.Show(new MessageAcceptCancelDialog { Message = { Text = string.Format("确认删除样本：{0}", SelectedItem.PanelSample.PanelID) } }, "SamplePanelListDialog").Result;
@@ -86,6 +92,11 @@ namespace EyeOfSauron.ViewModel
                 }
             }
             return false;
+        }
+
+        private void ItemUpdate()
+        {
+            DialogHost.Show(new MessageAcceptCancelDialog(), "SamplePanelListDialog");
         }
     }
 

@@ -9,7 +9,7 @@
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:uc="clr-namespace:EyeOfSauron.MyUserControl"
     xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
-    Title="Eye of sauron"
+    Title="Eye Of Sauron"
     Width="1600"
     Height="1080"
     MinWidth="800"
@@ -64,7 +64,7 @@
             </materialDesign:DrawerHost.RightDrawerContent>
             <DockPanel>
                 <materialDesign:ColorZone
-                    Padding="12"
+                    Padding="6"
                     materialDesign:ShadowAssist.ShadowDepth="Depth2"
                     DockPanel.Dock="Top"
                     Mode="PrimaryMid">
@@ -108,16 +108,29 @@
                                 Style="{StaticResource MaterialDesignFlatMidBgButton}"
                                 ToolTip="Double Click to Copy"
                                 Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}" />
-
                             <Separator
                                 Width="2"
                                 IsTabStop="False"
                                 Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                            <!--<StackPanel VerticalAlignment="Center">
+                                <TextBlock
+                                    Margin="0,5,0,5"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="14"
+                                    Text="{Binding DateTime, StringFormat={}{0:yyyy-MM-dd}, FallbackValue=2022-08-01}" />
+                                <TextBlock
+                                    Margin="0,5,0,5"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="14"
+                                    Text="{Binding DateTime, StringFormat={}{0:HH:mm:ss}, FallbackValue=00:00:00}" />
+                            </StackPanel>-->
                             <TextBlock
                                 Margin="0,0,0,5"
                                 VerticalAlignment="Center"
                                 FontSize="14"
-                                Text="{Binding DateTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" />
+                                Text="{Binding DateTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}, FallbackValue=2022-08-01 00:00:00}" />
                         </StackPanel>
 
                         <StackPanel
@@ -129,20 +142,22 @@
                                 BorderBrush="{DynamicResource PrimaryHueDarkBrush}"
                                 BorderThickness="1"
                                 ClipToBounds="True">
-                                <StackPanel Orientation="Vertical" Margin="5,0,5,0">
+                                <StackPanel Margin="5,0,5,0" Orientation="Vertical">
                                     <TextBlock
                                         Margin="0,5,0,5"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
+                                        FontSize="14"
                                         Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                                         Text="TactTime" />
                                     <TextBlock
-                                        Margin="0,5,0,5"
                                         Width="AUTO"
+                                        Margin="0,5,0,5"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
+                                        FontSize="14"
                                         Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                        Text="{Binding information.TactTime,FallbackValue=0}" />
+                                        Text="{Binding information.TactTimeSpan, StringFormat={}{0:ss:ff}, FallbackValue=00:00}" />
                                 </StackPanel>
                             </Border>
                             <Border
@@ -150,20 +165,22 @@
                                 BorderBrush="{DynamicResource PrimaryHueDarkBrush}"
                                 BorderThickness="1"
                                 ClipToBounds="True">
-                                <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
+                                <StackPanel Margin="5,0,5,0" Orientation="Horizontal">
                                     <StackPanel Orientation="Vertical">
                                         <TextBlock
                                             Margin="0,5,0,5"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
+                                            FontSize="14"
                                             Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                            Text="平均TT" />
+                                            Text="AVG_TT" />
                                         <TextBlock
                                             Margin="0,5,0,5"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
+                                            FontSize="14"
                                             Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                            Text="数量" />
+                                            Text="Count" />
                                     </StackPanel>
                                     <StackPanel Orientation="Vertical">
                                         <TextBlock
@@ -171,18 +188,43 @@
                                             Margin="0,5,0,5"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            TextAlignment="Center"
+                                            FontSize="14"
                                             Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                            Text="{Binding information.AverageTactTime,FallbackValue=0}" />
+                                            Text="{Binding information.AverageTactTime, StringFormat={}{0:ss:ff}, FallbackValue=00:00}"
+                                            TextAlignment="Center" />
                                         <TextBlock
                                             Width="60"
                                             Margin="0,5,0,5"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            TextAlignment="Center"
+                                            FontSize="14"
                                             Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                            Text="{Binding information.InspCount,FallbackValue=0}" />
+                                            Text="{Binding information.InspCount, FallbackValue=0}"
+                                            TextAlignment="Center" />
                                     </StackPanel>
+                                </StackPanel>
+                            </Border>
+                            <Border
+                                Margin="5,0,0,0"
+                                BorderBrush="{DynamicResource PrimaryHueDarkBrush}"
+                                BorderThickness="1"
+                                ClipToBounds="True">
+                                <StackPanel Margin="5,0,5,0" Orientation="Vertical">
+                                    <TextBlock
+                                        Margin="0,5,0,5"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        FontSize="14"
+                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                        Text="当前任务限时" />
+                                    <TextBlock
+                                        Width="AUTO"
+                                        Margin="0,5,0,5"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="14"
+                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                        Text="{Binding information.MissionRemainingTime, StringFormat={}{0:HH:mm:ss}, FallbackValue=00:00:00}" />
                                 </StackPanel>
                             </Border>
                         </StackPanel>

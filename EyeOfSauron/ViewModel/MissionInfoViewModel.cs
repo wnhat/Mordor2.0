@@ -73,6 +73,27 @@ namespace EyeOfSauron.ViewModel
 
         public List<ImageContainer> resultImageDataList = new();
 
+        public ObservableCollection<string> imageGroupName = new();
+        public string? ImageGroup { get; set; }
+        public List<ImageContainer> ResultImageDataList
+        {
+            get => resultImageDataList;
+            set
+            {
+                SetProperty(ref resultImageDataList, value);
+                int page = (int)Math.Ceiling((double)(resultImageDataList.Count / InspImages.Count));
+                ImageGroupName.Clear();
+                for(int i = 1; i <= page; i++)
+                {
+                    ImageGroupName.Add( "Pattern Group Page"+ page.ToString());
+                }
+            }
+        }
+        public ObservableCollection<string> ImageGroupName
+        {
+            get => imageGroupName;
+            set => SetProperty(ref imageGroupName, value);
+        }
         public InspImageViewModel()
         {
             inspImages = new ObservableCollection<BitmapImageContainer>

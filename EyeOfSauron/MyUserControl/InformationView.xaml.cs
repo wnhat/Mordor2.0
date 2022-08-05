@@ -31,22 +31,13 @@ namespace EyeOfSauron.MyUserControl
     /// </summary>
     public partial class InformationView : UserControl
     {
-        public readonly InformationViewModel viewModel;
-        private readonly DispatcherTimer dispatcherTimer = new();
+        //public readonly InformationViewModel viewModel;
 
         public InformationView()
         {
             InitializeComponent();
-            viewModel = new();
-            DataContext = viewModel;
-            dispatcherTimer.Interval = TimeSpan.FromMilliseconds(100);
-            dispatcherTimer.Tick += new EventHandler(viewModel.TactTimeTick);
-        }
-
-        public void StartTick()
-        {
-            viewModel.tactStartTime = DateTime.Now;
-            dispatcherTimer.Start();
+            //viewModel = new();
+            //DataContext = viewModel;
         }
     }
 }

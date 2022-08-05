@@ -26,6 +26,7 @@
                     <ItemsControl
                         x:Name="productItemsControl"
                         HorizontalAlignment="Center"
+                        d:ItemsSource="{d:SampleData ItemCount=3}"
                         ItemsSource="{Binding ProductInfos}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -126,7 +127,10 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding ExamMissionCardViewModels}">
+                        <ItemsControl
+                            HorizontalAlignment="Center"
+                            d:ItemsSource="{d:SampleData ItemCount=3}"
+                            ItemsSource="{Binding ExamMissionCardViewModels}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel IsItemsHost="True" />
@@ -172,8 +176,13 @@
                                                     Margin="0,150,0,0"
                                                     Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
                                                     Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                                    Text=""
-                                                    TextAlignment="Center" />
+                                                    TextAlignment="Center">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}预计考试时间：{0}Mins">
+                                                            <Binding Path="MissionTimeLimit.TotalMinutes" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
                                                 <TextBlock
                                                     Width="200"
                                                     Height="20"

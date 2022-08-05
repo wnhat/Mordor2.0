@@ -214,6 +214,7 @@ namespace EyeOfSauron
 
         private void FinishMission(object sender, RoutedEventArgs e)
         {
+            //Finish exam mission
             if(sender is ObjectId collectionId)
             {
                 var result = ExamMissionResult.GetAccuracyValue(collectionId);

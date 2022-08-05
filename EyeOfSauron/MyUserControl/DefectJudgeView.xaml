@@ -8,7 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModel="clr-namespace:EyeOfSauron.ViewModel"
     d:DataContext="{d:DesignInstance Type=viewModel:DefectJudgeViewModel}"
-    
     mc:Ignorable="d">
     <StackPanel Width="150" VerticalAlignment="Top">
         <Button
@@ -19,7 +18,8 @@
             Click="JudgeButtonClick"
             Content="S"
             FontWeight="Bold"
-            Style="{StaticResource MaterialDesignRaisedLightButton}" IsTabStop="False" />
+            IsTabStop="False"
+            Style="{StaticResource MaterialDesignRaisedLightButton}" />
         <Button
             Width="140"
             Height="120"
@@ -28,8 +28,12 @@
             Click="JudgeButtonClick"
             CommandParameter="{Binding RelativeSource={x:Static RelativeSource.Self}}"
             Content="E"
-            FontWeight="Bold" IsTabStop="False" />
-        <ItemsControl ItemsSource="{Binding DefectJudgeList}" IsTabStop="False">
+            FontWeight="Bold"
+            IsTabStop="False" />
+        <ItemsControl
+            d:ItemsSource="{d:SampleData ItemCount=5}"
+            IsTabStop="False"
+            ItemsSource="{Binding DefectJudgeList}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid Columns="1" />
@@ -44,7 +48,8 @@
                         materialDesign:ButtonAssist.CornerRadius="5"
                         Click="JudgeButtonClick"
                         Content="{Binding DefectName}"
-                        FontWeight="Bold" IsTabStop="False" />
+                        FontWeight="Bold"
+                        IsTabStop="False" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

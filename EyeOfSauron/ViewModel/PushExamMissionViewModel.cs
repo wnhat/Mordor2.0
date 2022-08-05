@@ -11,17 +11,16 @@ namespace EyeOfSauron.ViewModel
 {
     public class PushExamMissionViewModel : ViewModelBase
     {
-        private DateTime _date;
-        private DateTime _time;
         private ObservableCollection<User> allUsers = new();
         private User? allUsers_Selected;
         private ObservableCollection<User> selectedUsers = new();
         private User? selectedUsers_Selected;
+        private TimeSpan timeLimitPerPanel = TimeSpan.FromSeconds(10);
+        private TimeSpan timeLimitPerMission;
+        private readonly int missionCount;
 
         public PushExamMissionViewModel(MissionCollectionInfo missionCollectionInfo)
         {
-            Date = DateTime.Now;
-            Time = DateTime.Now;
             AddUserToSelected = new CommandImplementation(
                 _ => 
                 {
@@ -47,6 +46,7 @@ namespace EyeOfSauron.ViewModel
                 _ => selectedUsers_Selected != null);
             if (missionCollectionInfo != null)
             {
+                missionCount = missionCollectionInfo.Count;
                 var userIds = ExamMissionCollection.GetUserByCollectionName(missionCollectionInfo.MissionCollection.CollectionName);
                 foreach(var item in userIds)
                 {
@@ -62,19 +62,22 @@ namespace EyeOfSauron.ViewModel
                     }
                 }
             }
-            else throw new Exception(message: "Error");
+            else throw new Exception(message: "missionCollectionInfo is null");
         }
-
-        public DateTime Date
+        public TimeSpan TimeLimitPerPanel
         {
-            get => _date;
-            set => SetProperty(ref _date, value);
+            get => timeLimitPerPanel;
+            set
+            {
+                value = value > TimeSpan.FromSeconds(100)? TimeSpan.FromSeconds(100):value;
+                SetProperty(ref timeLimitPerPanel, value);
+                TimeLimitPerMission = TimeSpan.FromSeconds((timeLimitPerPanel * missionCount).TotalSeconds);
+            }
         }
-
-        public DateTime Time
+        public TimeSpan TimeLimitPerMission
         {
-            get => _time;
-            set => SetProperty(ref _time, value);
+            get => timeLimitPerMission;
+            set => SetProperty(ref timeLimitPerMission, value);
         }
         public ObservableCollection<User> AllUsers
         {

@@ -62,7 +62,7 @@ namespace EyeOfSauron.MyUserControl
                         {
                             foreach (var item in dialogViewModel.SelectedUsers)
                             {
-                                ExamMissionCollection.UpdateOrAdd(new ExamMissionCollection(item, CollectionName));
+                                ExamMissionCollection.UpdateOrAdd(new ExamMissionCollection(item, CollectionName, dialogViewModel.TimeLimitPerMission));
                             }
                         }
                         else
