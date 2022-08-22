@@ -7,6 +7,7 @@ using CoreClass.Model;
 using CoreClass;
 using System.Windows.Controls;
 using System.Windows;
+using MaterialDesignThemes.Wpf;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -73,8 +74,26 @@ namespace EyeOfSauron.ViewModel
 
         public List<ImageContainer> resultImageDataList = new();
 
-        public ObservableCollection<string> imageGroupName = new();
-        public string? ImageGroup { get; set; }
+        private readonly PackIconKind[] imageGroupIconArray = 
+            {
+            PackIconKind.Numeric1BoxOutline, 
+            PackIconKind.Numeric2BoxOutline, 
+            PackIconKind.Numeric3BoxOutline, 
+            PackIconKind.Numeric4BoxOutline, 
+            PackIconKind.Numeric5BoxOutline, 
+            PackIconKind.Numeric6BoxOutline, 
+            PackIconKind.Numeric7BoxOutline,
+            PackIconKind.Numeric8BoxOutline,
+            PackIconKind.Numeric8BoxOutline,
+            PackIconKind.Numeric9BoxOutline,
+            PackIconKind.Numeric8BoxOutline,
+            PackIconKind.Numeric8BoxOutline,
+            PackIconKind.Numeric8BoxOutline,
+        };
+
+        public ObservableCollection<PackIconKind> imageGroupIcons = new();
+        public PackIconKind? ImageGroup { get; set; }
+        
         public List<ImageContainer> ResultImageDataList
         {
             get => resultImageDataList;
@@ -82,17 +101,17 @@ namespace EyeOfSauron.ViewModel
             {
                 SetProperty(ref resultImageDataList, value);
                 int page = (int)Math.Ceiling((double)(resultImageDataList.Count / InspImages.Count));
-                ImageGroupName.Clear();
-                for(int i = 1; i <= page; i++)
+                ImageGroupIcons.Clear();
+                foreach(var item in imageGroupIconArray.Take(page))
                 {
-                    ImageGroupName.Add( "Pattern Group Page"+ page.ToString());
+                    ImageGroupIcons.Add(item);
                 }
             }
         }
-        public ObservableCollection<string> ImageGroupName
+        public ObservableCollection<PackIconKind> ImageGroupIcons
         {
-            get => imageGroupName;
-            set => SetProperty(ref imageGroupName, value);
+            get => imageGroupIcons;
+            set => SetProperty(ref imageGroupIcons, value);
         }
         public InspImageViewModel()
         {
@@ -106,6 +125,20 @@ namespace EyeOfSauron.ViewModel
             RefreshImageCommand = new(
                 _ => RefreshImageMethod(),
                 _ => resultImageDataList != null);
+            PreOneImageCommand = new(
+                _ =>
+                {
+                    refreshPage -= pagePatternCount;
+                    refreshPage -= pagePatternCount;
+                    RefreshImageMethod();
+                },
+                _ => refreshPage > InspImages.Count);
+            NextOneImageCommand =new(
+                _ =>
+                {
+                    RefreshImageMethod();
+                },
+                _ => (refreshPage + InspImages.Count) <= resultImageDataList.ToArray().Length);
         }
 
         public bool ImageLableIsVisible
@@ -133,7 +166,9 @@ namespace EyeOfSauron.ViewModel
         }
 
         public CommandImplementation RefreshImageCommand { get; }
-        
+        public CommandImplementation PreOneImageCommand { get; }
+        public CommandImplementation NextOneImageCommand { get; }
+
         public void RefreshImageMethod()
         {
             if (resultImageDataList.Count == 0)

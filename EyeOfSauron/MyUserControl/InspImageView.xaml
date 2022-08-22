@@ -22,6 +22,8 @@
     </UserControl.Resources>
     <UserControl.InputBindings>
         <KeyBinding Key="Tab" Command="{Binding InspImage.RefreshImageCommand}" />
+        <KeyBinding Key="Left" Command="{Binding InspImage.PreOneImageCommand}" />
+        <KeyBinding Key="Right" Command="{Binding InspImage.NextOneImageCommand}" />
     </UserControl.InputBindings>
     <Viewbox
         KeyDown="UserControl_KeyDown"
@@ -35,23 +37,39 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ListBox
-                Grid.Row="0"
-                Margin="5,0,5,0"
-                d:ItemsSource="{d:SampleData ItemCount=5}"
-                ItemsSource="{Binding InspImage.imageGroupName}"
-                SelectedItem="{Binding InspImage.ImageGroup,Mode=TwoWay}">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Rows="1" HorizontalAlignment="Stretch" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}" TextAlignment="Center" HorizontalAlignment="Center"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <DockPanel Grid.Row="0" Margin="5,0,5,0">
+                <Button
+                    Width="500"
+                    DockPanel.Dock="Left"
+                    Command="{Binding InspImage.PreOneImageCommand}"
+                      Style="{StaticResource MaterialDesignFlatButton}">
+                    <materialDesign:PackIcon Kind="ArrowLeft" />
+                </Button>
+                <Button
+                    Width="500"
+                    DockPanel.Dock="Right"
+                    Command="{Binding InspImage.NextOneImageCommand}"
+                    Style="{StaticResource MaterialDesignOutlinedButton}">
+                    <materialDesign:PackIcon Kind="ArrowRight" />
+                </Button>
+                <ListBox
+                    Margin="5,0,5,0"
+                    d:ItemsSource="{d:SampleData ItemCount=5}"
+                    ItemsSource="{Binding InspImage.ImageGroupIcons}"
+                    HorizontalContentAlignment="Center"
+                    SelectedItem="{Binding InspImage.ImageGroup, Mode=TwoWay}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid HorizontalAlignment="Stretch"  Rows="1" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <materialDesign:PackIcon Kind="{Binding}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
             <DockPanel Grid.Row="1">
                 <Grid
                     Grid.Column="1"

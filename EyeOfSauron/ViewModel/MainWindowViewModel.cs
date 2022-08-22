@@ -37,7 +37,7 @@ namespace EyeOfSauron.ViewModel
             }
             MainContent = ProductSelectView;
             DefectJudgeView.DefectJudgedEvent += new RoutedEventHandler(DefectJudge);
-            information.CountDownFinishEvent += new EventHandler(ExamCountDownFinish);
+            Information.CountDownFinishEvent += new EventHandler(ExamCountDownFinish);
             StartInspCommand = new CommandImplementation(StartInsp);
             EndInspCommand = new CommandImplementation(_ => EndInsp(), _=> productSelectView._viewModel.ControlTabSelectedIndex != ControlTableItem.ExamMission);
             _ = new DispatcherTimer(
@@ -55,12 +55,12 @@ namespace EyeOfSauron.ViewModel
         private UserInfoViewModel userInfo = new();
         private ProductSelectView productSelectView = new ();
         private InspImageView inspImageView = new ();
-        public readonly InformationViewModel information = new();
         private DefectJudgeView defectJudgeView = new();
         private UserControl mainContent = new();
         private ColorTool colorTool = new();
         private DateTime dateTime = DateTime.Now;
         private ViewName onShowView = ViewName.ProductSelectView;
+        public InformationViewModel Information { get; } = new();
         public CommandImplementation StartInspCommand { get; }
         public CommandImplementation EndInspCommand { get; }
 
@@ -145,13 +145,13 @@ namespace EyeOfSauron.ViewModel
                                     SetInspImageLayout((int)productInfo.InspPatternCount);
                                     mission = new(productInfo);
                                     LoadOnInspPanelMission();
-                                    information.StartTick();
+                                    Information.StartTick();
                                     mission.FillPreDownloadMissionQueue();
                                 }
                                 catch (MissionEmptyException ex)
                                 {
                                     await DialogHost.Show(new MessageAcceptDialog { Message = { Text = ex.Message } }, "MainWindowDialog");
-                                    information.TicktStopAndReset();
+                                    Information.TicktStopAndReset();
                                     SetProductSelectView();
                                 }
                             }
@@ -184,17 +184,17 @@ namespace EyeOfSauron.ViewModel
                                             SetInspImageLayout(3);
                                             mission = new(examMission, ControlTableItem.ExamMission);
                                             //设置考试任务时间限制
-                                            information.MissionTimeLimit = examMission.MissionTimeLimit;
+                                            Information.MissionTimeLimit = examMission.MissionTimeLimit;
                                             LoadOnInspPanelMission();
                                             
-                                            information.StartTick();
+                                            Information.StartTick();
                                             mission.FillPreDownloadMissionQueue();
                                         }
                                         catch (MissionEmptyException ex)
                                         {
                                             await DialogHost.Show(new MessageAcceptDialog { Message = { Text = ex.Message } }, "MainWindowDialog");
                                             ExamMissionCollection.FinishOneMission(examMission.Id);
-                                            information.TicktStopAndReset();
+                                            Information.TicktStopAndReset();
                                             SetProductSelectView();
                                         }
                                     }
@@ -301,7 +301,7 @@ namespace EyeOfSauron.ViewModel
             {
                 if (value)
                 {
-                    information.TicktStopAndReset();
+                    Information.TicktStopAndReset();
                     SetProductSelectView();
                 }
             }
@@ -311,11 +311,11 @@ namespace EyeOfSauron.ViewModel
         {
             Defect defect = (Defect)sender;
             bool IsServerConnected;
-            var tactTime = information.TactTimeFullPrecision;
-            information.TotalTactTimeSpan += information.TactTimeSpan;
-            information.TactTimeSpan = TimeSpan.Zero;
-            information.InspCount += 1;
-            information.tactStartTime = DateTime.Now;
+            var tactTime = Information.TactTimeFullPrecision;
+            Information.TotalTactTimeSpan += Information.TactTimeSpan;
+            Information.TactTimeSpan = TimeSpan.Zero;
+            Information.InspCount += 1;
+            Information.tactStartTime = DateTime.Now;
             switch (mission.MissionType)
             {
                 default:
@@ -324,8 +324,8 @@ namespace EyeOfSauron.ViewModel
                     InspectMissionResult.InsertOne(new(mission.onInspPanelMission.inspectMission.ID, UserInfo.User.Id,Eqp,defect,tactTime));
                     break;
                 case ControlTableItem.ExamMission:
-                    //mission.onInspPanelMission.examMission?.SetResult(defect, Eqp , tactTime); //Maybe nouse
-                    JudgeOnInspExamMission(defect, Eqp, tactTime, mission.onInspPanelMission.examMission.IsCorrect);
+                    mission.onInspPanelMission.examMission?.SetResult(defect, Eqp , tactTime); 
+                    JudgeOnInspExamMission();
                     IsServerConnected = true;
                     break;
             }
@@ -336,6 +336,7 @@ namespace EyeOfSauron.ViewModel
                 {
                     object eventSender = new();
                     await DialogHost.Show(new MessageAcceptDialog { Message = { Text = "There is no mission left" } }, "MainWindowDialog");
+                    Information.TicktStopAndReset();
                     switch (mission.MissionType)
                     {
                         default: break;
@@ -353,29 +354,32 @@ namespace EyeOfSauron.ViewModel
             }
         }
         
-        private void ExamCountDownFinish(object? sender, EventArgs e)
+        private async void ExamCountDownFinish(object? sender, EventArgs e)
         {
             //Finish remaining exam missions;
-            JudgeOnInspExamMission(Defect.GetDefectByName("OperaterEjudge"),Eqp,0,false);
+            mission.onInspPanelMission.examMission?.SetResult(Defect.GetDefectByName("OperaterEjudge"), Eqp, 0);
+            JudgeOnInspExamMission();
             while (mission.NextMission())
             {
-                JudgeOnInspExamMission(Defect.GetDefectByName("OperaterEjudge"), Eqp, 0, false);
+                mission.onInspPanelMission.examMission?.SetResult(Defect.GetDefectByName("OperaterEjudge"), Eqp, 0);
+                JudgeOnInspExamMission();
             }
-
             ExamMissionCollection.FinishOneMission(mission.ExamMissionWIP.Id);
+            Information.TicktStopAndReset();
+            await DialogHost.Show(new MessageAcceptDialog { Message = { Text = "考试时间结束" } }, "MainWindowDialog");
             MissionFinishedEvent?.Invoke(mission.ExamMissionWIP.Id, new());
-            DialogHost.Show(new MessageAcceptDialog { Message = { Text = "考试时间结束" } }, "MainWindowDialog");
         }
-        private void JudgeOnInspExamMission(Defect defect,DicsEqp dicsEqp,double tactTime,bool isCorrect)
+        private void JudgeOnInspExamMission()
         {
-            if (mission.onInspPanelMission.examMission != null)
+            var a = mission.onInspPanelMission.examMission;
+            if (a != null)
             {
                 List<KeyValuePair<string, object>> properties = new();
-                properties.Add(new KeyValuePair<string, object>("ResultDefect", defect));
+                properties.Add(new KeyValuePair<string, object>("ResultDefect", a.ResultDefect));
                 properties.Add(new KeyValuePair<string, object>("IsChecked", true));
-                properties.Add(new KeyValuePair<string, object>("Eqp", dicsEqp));
-                properties.Add(new KeyValuePair<string, object>("TactTime", tactTime));
-                properties.Add(new KeyValuePair<string, object>("IsCorrect", isCorrect));
+                properties.Add(new KeyValuePair<string, object>("Eqp", a.Eqp));
+                properties.Add(new KeyValuePair<string, object>("TactTime", a.TactTime));
+                properties.Add(new KeyValuePair<string, object>("IsCorrect", a.IsCorrect));
                 ExamMissionResult.UpdateProperties(mission.onInspPanelMission.examMission.Id, properties);
             }
         }

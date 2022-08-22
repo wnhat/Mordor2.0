@@ -16,7 +16,6 @@ namespace EyeOfSauron.ViewModel
     {
         public event EventHandler? CountDownFinishEvent;
         private readonly DispatcherTimer dispatcherTimer = new();
-        private double avgTactTime;
         private int inspCount;
         private TimeSpan tactTimeSpan;
         private TimeSpan avgTactTimeSpan;
@@ -44,19 +43,17 @@ namespace EyeOfSauron.ViewModel
         {
             get => (double)Math.Round((decimal)(TactTimeSpan.TotalMilliseconds / 1000), 0);
         }
-        public double AverageTactTime
-        {
-            get => avgTactTime;
-            set => SetProperty(ref avgTactTime, value);
-        }
+
         public int InspCount
         {
             get => inspCount;
             set
             {
                 SetProperty(ref inspCount, value);
-                AvgTactTimeSpan = TotalTactTimeSpan / inspCount;
-                AverageTactTime = (double)Math.Round((decimal)(TotalTactTimeSpan.TotalMilliseconds / inspCount / 1000), 2);
+                if(value > 0)
+                {
+                    AvgTactTimeSpan = TotalTactTimeSpan / inspCount;
+                }
             }
         }
         public TimeSpan MissionTimeLimit { get; set; } = TimeSpan.Zero;
@@ -134,7 +131,6 @@ namespace EyeOfSauron.ViewModel
             dispatcherTimer.Tick -= MissionTimeLimitTick;
             dispatcherTimer.Stop();
             InspCount = 0;
-            AverageTactTime = 0;
             TactTimeSpan = TimeSpan.Zero;
             TotalTactTimeSpan = TimeSpan.Zero;
             AvgTactTimeSpan = TimeSpan.Zero;

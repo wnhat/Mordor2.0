@@ -31,6 +31,8 @@
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Command="{Binding InspImageView.DataContext.InspImage.RefreshImageCommand}" Gesture="Tab" />
+        <KeyBinding Command="{Binding InspImageView.DataContext.InspImage.PreOneImageCommand}" Gesture="Left" />
+        <KeyBinding Command="{Binding InspImageView.DataContext.InspImage.NextOneImageCommand}" Gesture="Right" />
     </Window.InputBindings>
     <Window.Resources>
         <ResourceDictionary>
@@ -69,45 +71,46 @@
                     DockPanel.Dock="Top"
                     Mode="PrimaryMid">
                     <DockPanel>
-
                         <StackPanel Orientation="Horizontal">
-
-                            <materialDesign:Chip
-                                Click="LoginButton_Click"
-                                Content="{Binding UserInfo.User.Username, FallbackValue=UserName}"
-                                Icon="{Binding UserInfo.User.UserIcon, FallbackValue=U}"
-                                IconBackground="{DynamicResource PrimaryHueLightBrush}"
-                                IconForeground="{DynamicResource PrimaryHueLightForegroundBrush}"
-                                IsTabStop="False" />
-                            <materialDesign:PopupBox
-                                IsTabStop="False"
-                                PlacementMode="BottomAndAlignRightEdges"
-                                StaysOpen="False">
-                                <materialDesign:PopupBox.ToggleContent>
-                                    <materialDesign:PackIcon Kind="ChevronDown" />
-                                </materialDesign:PopupBox.ToggleContent>
-                                <StackPanel>
-                                    <Button
-                                        HorizontalAlignment="Center"
-                                        Click="UserChangeButton_Click"
-                                        Content="{materialDesign:PackIcon Kind=AccountCircle}"
-                                        ToolTip="User Change" />
-                                    <Button
-                                        HorizontalAlignment="Center"
-                                        Click="LogoutButton_Click"
-                                        Content="{materialDesign:PackIcon Kind=Logout}"
-                                        ToolTip="Logout" />
-                                </StackPanel>
-                            </materialDesign:PopupBox>
+                            <StackPanel Width="150" Orientation="Horizontal">
+                                <materialDesign:Chip
+                                    Click="LoginButton_Click"
+                                    Content="{Binding UserInfo.User.Username, FallbackValue=UserName}"
+                                    Icon="{Binding UserInfo.User.UserIcon, FallbackValue=U}"
+                                    IconBackground="{DynamicResource PrimaryHueLightBrush}"
+                                    IconForeground="{DynamicResource PrimaryHueLightForegroundBrush}"
+                                    IsTabStop="False" />
+                                <materialDesign:PopupBox
+                                    IsTabStop="False"
+                                    PlacementMode="BottomAndAlignRightEdges"
+                                    StaysOpen="False">
+                                    <materialDesign:PopupBox.ToggleContent>
+                                        <materialDesign:PackIcon Kind="ChevronDown" />
+                                    </materialDesign:PopupBox.ToggleContent>
+                                    <StackPanel>
+                                        <Button
+                                            HorizontalAlignment="Center"
+                                            Click="UserChangeButton_Click"
+                                            Content="{materialDesign:PackIcon Kind=AccountCircle}"
+                                            ToolTip="User Change" />
+                                        <Button
+                                            HorizontalAlignment="Center"
+                                            Click="LogoutButton_Click"
+                                            Content="{materialDesign:PackIcon Kind=Logout}"
+                                            ToolTip="Logout" />
+                                    </StackPanel>
+                                </materialDesign:PopupBox>
+                            </StackPanel>
                             <Button
+                                Width="180"
                                 VerticalAlignment="Center"
                                 HorizontalContentAlignment="Center"
-                                Content="{Binding InspImageView.DataContext.PanelId, FallbackValue={}}"
+                                Content="{Binding InspImageView.DataContext.PanelId, FallbackValue=PanelID}"
                                 IsTabStop="False"
                                 MouseDoubleClick="PanelidLableMouseDoubleClick"
                                 Style="{StaticResource MaterialDesignFlatMidBgButton}"
-                                ToolTip="Double Click to Copy"
-                                Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}" />
+                                ToolTip="Double Click to Copy" />
+                            <!--<Visibility="{Binding OnShowView, Converter={StaticResource InverseEnumToVisibilityConverter}, Mode=TwoWay}">-->
                             <Separator
                                 Width="2"
                                 IsTabStop="False"
@@ -127,106 +130,102 @@
                                     Text="{Binding DateTime, StringFormat={}{0:HH:mm:ss}, FallbackValue=00:00:00}" />
                             </StackPanel>-->
                             <TextBlock
-                                Margin="0,0,0,5"
                                 VerticalAlignment="Center"
                                 FontSize="14"
                                 Text="{Binding DateTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}, FallbackValue=2022-08-01 00:00:00}" />
                         </StackPanel>
-
+                        <Separator
+                            Width="2"
+                            IsTabStop="False"
+                            Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                         <StackPanel
                             Margin="10,0,0,0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Orientation="Horizontal">
-                            <Border
-                                BorderBrush="{DynamicResource PrimaryHueDarkBrush}"
-                                BorderThickness="1"
-                                ClipToBounds="True">
-                                <StackPanel Margin="5,0,5,0" Orientation="Vertical">
+                            <StackPanel Margin="5,0,5,0" Orientation="Vertical">
+                                <TextBlock
+                                    Margin="0,5,0,5"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    FontSize="14"
+                                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                    Text="TactTime" />
+                                <TextBlock
+                                    Width="AUTO"
+                                    Margin="0,5,0,5"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="14"
+                                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                    Text="{Binding Information.TactTimeSpan, StringFormat={}{0:mm}:{0:ss}, FallbackValue=00:00}" />
+                            </StackPanel>
+                            <Separator
+                                Width="2"
+                                IsTabStop="False"
+                                Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                            <StackPanel Margin="5,0,5,0" Orientation="Horizontal">
+                                <StackPanel Orientation="Vertical">
                                     <TextBlock
                                         Margin="0,5,0,5"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         FontSize="14"
                                         Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                        Text="TactTime" />
-                                    <TextBlock
-                                        Width="AUTO"
-                                        Margin="0,5,0,5"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        FontSize="14"
-                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                        Text="{Binding information.TactTimeSpan, StringFormat={}{0:ss:ff}, FallbackValue=00:00}" />
-                                </StackPanel>
-                            </Border>
-                            <Border
-                                Margin="5,0,0,0"
-                                BorderBrush="{DynamicResource PrimaryHueDarkBrush}"
-                                BorderThickness="1"
-                                ClipToBounds="True">
-                                <StackPanel Margin="5,0,5,0" Orientation="Horizontal">
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock
-                                            Margin="0,5,0,5"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                            Text="AVG_TT" />
-                                        <TextBlock
-                                            Margin="0,5,0,5"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                            Text="Count" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock
-                                            Width="60"
-                                            Margin="0,5,0,5"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                            Text="{Binding information.AverageTactTime, StringFormat={}{0:ss:ff}, FallbackValue=00:00}"
-                                            TextAlignment="Center" />
-                                        <TextBlock
-                                            Width="60"
-                                            Margin="0,5,0,5"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                            Text="{Binding information.InspCount, FallbackValue=0}"
-                                            TextAlignment="Center" />
-                                    </StackPanel>
-                                </StackPanel>
-                            </Border>
-                            <Border
-                                Margin="5,0,0,0"
-                                BorderBrush="{DynamicResource PrimaryHueDarkBrush}"
-                                BorderThickness="1"
-                                ClipToBounds="True">
-                                <StackPanel Margin="5,0,5,0" Orientation="Vertical">
+                                        Text="AVG_TT" />
                                     <TextBlock
                                         Margin="0,5,0,5"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         FontSize="14"
                                         Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                        Text="当前任务限时" />
+                                        Text="Count" />
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical">
                                     <TextBlock
-                                        Width="AUTO"
+                                        Width="60"
                                         Margin="0,5,0,5"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         FontSize="14"
                                         Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                        Text="{Binding information.MissionRemainingTime, StringFormat={}{0:HH:mm:ss}, FallbackValue=00:00:00}" />
+                                        Text="{Binding Information.AvgTactTimeSpan, StringFormat={}{0:ss}:{0:ff}, FallbackValue=00:00}"
+                                        TextAlignment="Center" />
+                                    <TextBlock
+                                        Width="60"
+                                        Margin="0,5,0,5"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="14"
+                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                        Text="{Binding Information.InspCount, FallbackValue=0}"
+                                        TextAlignment="Center" />
                                 </StackPanel>
-                            </Border>
+                            </StackPanel>
+                            <Separator
+                                Width="2"
+                                IsTabStop="False"
+                                Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                            <StackPanel Margin="5,0,5,0" Orientation="Horizontal">
+                                <TextBlock
+                                    Margin="0,5,0,5"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    FontSize="14"
+                                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                    Text="TimeLimit:" />
+                                <TextBlock
+                                    Width="AUTO"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource MaterialDesignHeadline4TextBlock}"
+                                    Text="{Binding Information.MissionRemainingTime, StringFormat={}{0:hh}:{0:mm}:{0:ss}, FallbackValue=00:00:00}" />
+                            </StackPanel>
+                            <Separator
+                                Width="2"
+                                IsTabStop="False"
+                                Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                         </StackPanel>
 
                         <ToggleButton

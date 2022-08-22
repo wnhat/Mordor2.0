@@ -178,7 +178,7 @@
                                                     Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                                                     TextAlignment="Center">
                                                     <TextBlock.Text>
-                                                        <MultiBinding StringFormat="{}预计考试时间：{0}Mins">
+                                                        <MultiBinding StringFormat="{}预计考试时间：{0:0}Mins">
                                                             <Binding Path="MissionTimeLimit.TotalMinutes" />
                                                         </MultiBinding>
                                                     </TextBlock.Text>

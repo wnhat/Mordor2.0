@@ -16,6 +16,7 @@ namespace EyeOfSauron.ViewModel
         private ObservableCollection<User> selectedUsers = new();
         private User? selectedUsers_Selected;
         private TimeSpan timeLimitPerPanel = TimeSpan.FromSeconds(10);
+        private double timeLimitSecPerPanel = 10;
         private TimeSpan timeLimitPerMission;
         private readonly int missionCount;
 
@@ -47,6 +48,7 @@ namespace EyeOfSauron.ViewModel
             if (missionCollectionInfo != null)
             {
                 missionCount = missionCollectionInfo.Count;
+                TimeLimitPerMission = TimeSpan.FromSeconds((timeLimitSecPerPanel * missionCount));
                 var userIds = ExamMissionCollection.GetUserByCollectionName(missionCollectionInfo.MissionCollection.CollectionName);
                 foreach(var item in userIds)
                 {
@@ -67,16 +69,20 @@ namespace EyeOfSauron.ViewModel
         public TimeSpan TimeLimitPerPanel
         {
             get => timeLimitPerPanel;
-            set
-            {
-                value = value > TimeSpan.FromSeconds(100)? TimeSpan.FromSeconds(100):value;
-                SetProperty(ref timeLimitPerPanel, value);
-                TimeLimitPerMission = TimeSpan.FromSeconds((timeLimitPerPanel * missionCount).TotalSeconds);
+            set => SetProperty(ref timeLimitPerPanel, value);
+        }
+        public double TimeLimitSecPerPanel
+        {
+            get => timeLimitSecPerPanel;
+            set 
+            { 
+                SetProperty(ref timeLimitSecPerPanel, value);
+                TimeLimitPerPanel = TimeSpan.FromSeconds(timeLimitSecPerPanel);
             }
         }
         public TimeSpan TimeLimitPerMission
         {
-            get => timeLimitPerMission;
+            get => TimeSpan.FromSeconds((timeLimitSecPerPanel * missionCount));
             set => SetProperty(ref timeLimitPerMission, value);
         }
         public ObservableCollection<User> AllUsers

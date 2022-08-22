@@ -95,30 +95,32 @@
             Orientation="Horizontal">
             <TextBlock VerticalAlignment="Center" Text="单张考试时间：" />
             <TextBox
-                Width="20"
+                Width="50"
                 VerticalAlignment="Center"
                 IsEnabled="{Binding Path=IsChecked, ElementName=IsEnableToggleButton}"
-                Text="{Binding TimeLimitPerPanel.TotalSeconds, Mode=TwoWay, FallbackValue=10, Converter={StaticResource IntToTimeSpanConverter}}"
-                TextAlignment="Center" />
+                Text="{Binding TimeLimitSecPerPanel,Mode=TwoWay}"
+                TextAlignment="Center" >
+            </TextBox>
             <TextBlock
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 Text="Sec" />
-            <ToggleButton x:Name="IsEnableToggleButton" Margin="5,0,0,0" />
+            <ToggleButton x:Name="IsEnableToggleButton" Margin="5,0,15,0" />
             <TextBlock
                 Margin="5,0,0,0"
                 VerticalAlignment="Center"
                 Text="总考试时间：" />
             <TextBox
-                Width="20"
+                Width="80"
                 VerticalAlignment="Center"
                 IsEnabled="False"
-                Text="{Binding TimeLimitPerMission.TotalMinutes, FallbackValue=10}"
-                TextAlignment="Center" />
-            <TextBlock
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Text="Min" />
+                TextAlignment="Center" >
+                <TextBox.Text>
+                    <MultiBinding StringFormat="{}{0:0}Mins">
+                        <Binding Path="TimeLimitPerMission.TotalMinutes" Mode="OneWay"/>
+                    </MultiBinding>
+                </TextBox.Text>
+            </TextBox>
         </StackPanel>
 
         <StackPanel

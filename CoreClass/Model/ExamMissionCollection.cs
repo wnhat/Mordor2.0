@@ -47,7 +47,7 @@ namespace CoreClass.Model
 
         public static void UpdateOrAdd(ExamMissionCollection examMissionCollection)
         {
-            var result = Collection.Find(x => x.UserID == examMissionCollection.Id && x.MissionCollectionName == examMissionCollection.MissionCollectionName && x.IsFinished == false).ToList();
+            var result = Collection.Find(x => x.UserID == examMissionCollection.UserID && x.MissionCollectionName == examMissionCollection.MissionCollectionName && x.IsFinished == false).ToList();
             if(!(result.Count > 0))
             {
                 AddOne(examMissionCollection);

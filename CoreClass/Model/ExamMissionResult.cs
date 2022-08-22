@@ -72,11 +72,11 @@ namespace CoreClass.Model
 
         public static ExamMissionResult GetOneAndUpdate(ExamMissionCollection examMissionCollection)
         {
-            var filter = Builders<ExamMissionResult>.Filter.And(
-                Builders<ExamMissionResult>.Filter.Eq(x => x.ExamMissionCollection, examMissionCollection),
-                Builders<ExamMissionResult>.Filter.Eq(x => x.IsChecked, false));
-            var update = Builders<ExamMissionResult>.Update.Set(x => x.lastModifyTime, DateTime.Now).Set(x => x.IsChecked, true);
-            ExamMissionResult mission = Collection.FindOneAndUpdate(filter, update);
+            //var filter = Builders<ExamMissionResult>.Filter.And(
+            //    Builders<ExamMissionResult>.Filter.Eq(x => x.ExamMissionCollection, examMissionCollection),
+            //    Builders<ExamMissionResult>.Filter.Eq(x => x.IsChecked, false));
+            //var update = Builders<ExamMissionResult>.Update.Set(x => x.lastModifyTime, DateTime.Now).Set(x => x.IsChecked, true);
+            //ExamMissionResult mission = Collection.FindOneAndUpdate(filter, update);
             //return mission;
             //Get one radnomly;
             var randomOne = Collection.AsQueryable().Where(x => x.ExamMissionCollection == examMissionCollection && x.IsChecked == false).Sample(1).FirstOrDefault();
@@ -86,8 +86,8 @@ namespace CoreClass.Model
             }
             else
             {
-                var filter1 = Builders<ExamMissionResult>.Filter.Eq(x => x.Id, randomOne.Id);
-                var update1 = Builders<ExamMissionResult>.Update.Set(x => x.lastModifyTime, DateTime.Now).Set(x => x.IsChecked, true);
+                var filter = Builders<ExamMissionResult>.Filter.Eq(x => x.Id, randomOne.Id);
+                var update = Builders<ExamMissionResult>.Update.Set(x => x.lastModifyTime, DateTime.Now).Set(x => x.IsChecked, true);
                 ExamMissionResult missionResult = Collection.FindOneAndUpdate(filter, update);
                 return missionResult;
             }

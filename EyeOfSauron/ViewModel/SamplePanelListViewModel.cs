@@ -71,27 +71,18 @@ namespace EyeOfSauron.ViewModel
         }
         private void ItemDelete()
         {
-            if (ItemDeleteCommand_CanExec())
-            {
+            //if (ItemDeleteCommand_CanExec())
+            //{
                 PanelSample.DeleteInfo(SelectedItem.PanelSample.Id);
-            }
+                PanelList.Remove(SelectedItem);
+            //}
         }
 
         private bool ItemDeleteCommand_CanExec()
         {
+            //ISSUE
             var diaResult = DialogHost.Show(new MessageAcceptCancelDialog { Message = { Text = string.Format("确认删除样本：{0}", SelectedItem.PanelSample.PanelID) } }, "SamplePanelListDialog").Result;
-            if (diaResult is bool result)
-            {
-                if (result)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            return false;
+            return (bool)(diaResult is bool? diaResult:false);
         }
 
         private void ItemUpdate()
