@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
@@ -12,24 +13,13 @@ namespace CutInspect
 {
     public static class ServerConnector
     {
-        static string ip = "10.141.34.78";
-        static int port = 28108;
-        static string part = "EAC";
-
-        static Uri uri = new UriBuilder(Uri.UriSchemeHttp, ip, port, part).Uri;
-
-        // ver 2
-        static string getImageInfo { get { return uri.ToString() + "/getImageInfo"; } }
-        static string modifyImageStatus { get { return uri.ToString() + "/modifyImageStatus"; } }
-        static string getImage { get { return uri.ToString() + "/getImage"; } }
-
         static RestClient restClient = new RestClient("http://10.141.34.78:28108/EAC/");
 
         static ServerConnector()
         {
             restClient.Options.MaxTimeout = 10000;
         }
-        public static JObject GetInfo(DateTime starttime,DateTime endtime)
+        public static InspectItem[] GetInfo(DateTime starttime,DateTime endtime)
         {            
             var request = new RestRequest("getImageInfo");
 
@@ -45,19 +35,31 @@ namespace CutInspect
                 }
                 else
                 {
-                JObject result = JObject.Parse(response.Content);
-                return result;
+                    string jsonstring = response.Content;
+                    InspectItem[] deserializedProduct = JsonConvert.DeserializeObject<InspectItem[]>(jsonstring);
+                    return deserializedProduct;
                 }
             }
             else
             {
                 throw new Exception("连接失败；");
             }
-            
         }
-        public static void GetGroupedData(JObject data)
+        public static List<GroupData> GetGroupedData(InspectItem[] data)
         {
+            List<GroupData> groupedData = new List<GroupData>();
+            var eqplist = from item in data
+                          group item.equipmentId by item.equipmentId into g
+                          select new { equipmentId = g.Key, Count = g.Count() };
 
+            foreach (var eq in eqplist)
+            {
+                var items = from item in data where item.equipmentId == eq.equipmentId select item;
+
+                var newgroup = new GroupData(eq.equipmentId, items.ToList());
+                groupedData.Add(newgroup);
+            }
+            return groupedData;
         }
         public static void SendResult(string id,int status)
         {

@@ -11,13 +11,24 @@ namespace CutInspect
     {
         public string EqpName;
         public List<InspectItem> InspectItems;
-        public int finishedItem { get; set; }
-        public int totalItems { get; set; }
+        public int finishedItem { get 
+            {
+                int count = 0;
+                foreach (var item in InspectItems)
+                {
+                    if (item.status == 1)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            } }
+        public int totalItems { get { return InspectItems.Count; } }
 
-        public GroupData(JObject data)
+        public GroupData(string EqpName,List<InspectItem> items)
         {
-            EqpName = data.GetValue("").ToString();
-            InspectItems = new List<InspectItem>();
+            this.EqpName = EqpName;
+            this.InspectItems = new List<InspectItem>();
         }
     }
 }
