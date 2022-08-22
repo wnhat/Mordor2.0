@@ -10,5 +10,6 @@ namespace CutInspect
     {
         public string? Id;
         public string? Eqp;
+        public int status;
     }
 }

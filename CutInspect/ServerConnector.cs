@@ -16,7 +16,6 @@ namespace CutInspect
         static int port = 28108;
         static string part = "EAC";
 
-
         static Uri uri = new UriBuilder(Uri.UriSchemeHttp, ip, port, part).Uri;
 
         // ver 2
@@ -24,27 +23,37 @@ namespace CutInspect
         static string modifyImageStatus { get { return uri.ToString() + "/modifyImageStatus"; } }
         static string getImage { get { return uri.ToString() + "/getImage"; } }
 
-        static RestClient restClient = new RestClient("http://10.141.34.78:28108/EAC/")
-        { 
-            
-        };
+        static RestClient restClient = new RestClient("http://10.141.34.78:28108/EAC/");
 
         static ServerConnector()
         {
-            restClient.Timeout = TimeSpan.FromSeconds(10);
+            restClient.Options.MaxTimeout = 10000;
         }
         public static JObject GetInfo(DateTime starttime,DateTime endtime)
         {            
-            var request = new RestRequest("getImageInfo", Method.Get);
+            var request = new RestRequest("getImageInfo");
 
             request.AddQueryParameter("startTime", starttime.ToString("yyyy-MM-dd HH:mm:ss"));
             request.AddQueryParameter("endTime", endtime.ToString("yyyy-MM-dd HH:mm:ss"));
 
             var response = restClient.Get(request);
-            Console.WriteLine(response.Content);
-
-            JObject result = JObject.Parse(response.Content);
-            return result;
+            if (response.IsSuccessful)
+            {
+                if (response.Content == null)
+                {
+                    throw new Exception("获取的产品信息为空；");
+                }
+                else
+                {
+                JObject result = JObject.Parse(response.Content);
+                return result;
+                }
+            }
+            else
+            {
+                throw new Exception("连接失败；");
+            }
+            
         }
         public static void GetGroupedData(JObject data)
         {
@@ -52,24 +61,40 @@ namespace CutInspect
         }
         public static void SendResult(string id,int status)
         {
-
+            var request = new RestRequest("modifyImageStatus",Method.Post);
+            request.AddBody("id", id);
+            request.AddBody("status", status.ToString());
+            var response = restClient.Post(request);
+            if (response.IsSuccessful)
+            {
+            }
+            else
+            {
+                throw new Exception("上传检查结果失败，请检查服务器连接；");
+            }
         }
         public static Stream GetImage(string id)
         {
-            var client = new HttpClient();
+            var request = new RestRequest("getImage");
 
-            Uri uri = GetImageUri(id);
-            HttpResponseMessage response = client.GetAsync(uri).Result;
+            request.AddQueryParameter("imageId", id);
 
-            response.EnsureSuccessStatusCode();
-            var responseBody = response.Content.ReadAsStream();
-            return responseBody;
-        }
-
-        static Uri GetImageUri(string id)
-        {
-            var builder = new UriBuilder(null,ip,port,part);
-            return builder.Uri;
+            var response = restClient.Get(request);
+            if (response.IsSuccessful)
+            {
+                if (response.RawBytes == null)
+                {
+                    throw new Exception("获取的图像为空；");
+                }
+                else
+                {
+                return new MemoryStream(response.RawBytes);
+                }
+            }
+            else
+            {
+                throw new Exception("连接失败；");
+            }
         }
     }
 }
