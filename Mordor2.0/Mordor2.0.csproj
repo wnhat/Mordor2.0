@@ -12,8 +12,9 @@
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="27.2.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.17.1" />
     <PackageReference Include="NetMQ" Version="4.0.1.8" />
-    <PackageReference Include="Serilog.Sinks.MongoDB" Version="5.1.2" />
+    <PackageReference Include="Serilog.Sinks.MongoDB" Version="5.1.5" />
   </ItemGroup>
 
   <ItemGroup>

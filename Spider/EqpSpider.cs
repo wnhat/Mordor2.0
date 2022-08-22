@@ -87,7 +87,7 @@ namespace Spider
                     var filter = Builders<EqpSpider>.Filter.Eq("EqpId", this.EqpId);
                     var update = Builders<EqpSpider>.Update.PopFirst("cellLogSpiders.PanelIdQueue");
                     var Result = Spiders.UpdateOne(filter, update);
-                    //之后运行的步骤报错时会导致部分ID丢失；
+                    // 之后运行的步骤报错时会导致部分ID丢失；
                     var pathcollection = FileManager.GetPanelPath(panel.PanelId);
 
                     if (pathcollection != null)
