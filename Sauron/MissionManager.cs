@@ -17,7 +17,7 @@ namespace Sauron
         {
             if (mission.Type == MissionType.MesMission)
             {
-                MesMissionStorage.AddJudge(judge, mission);
+                MesMissionStorage.AddJudge(judge, mission); 
             }
             else if (mission.Type == MissionType.S_GradeCheck)
             {
@@ -90,7 +90,6 @@ namespace Sauron
             // TODO:Delay时间使用数据库更新内容；Now default value is 120 min;
             TimeSpan AddTimeDelay = TimeSpan.FromMinutes(120);
             var products = ProductInfoCollection.Find(new BsonDocument()).ToList();
-            var MissionInitialTask = Task.Delay(60000).ContinueWith(taskdelay => InitialMesMission());
             foreach (var product in products)
             {
                 if (product.OnInspectTypes.Count() > 0 && DateTime.Now - product.LastAddTime > AddTimeDelay)
@@ -111,6 +110,7 @@ namespace Sauron
                                 {
                                     // 向数据库添加新的lot信息（仅包含mes信息，需要对lot进行初始化操作才能添加检查项目）;
                                     MesLot.Insert(newmissionlot);
+                                    break;
                                 }
                             }
                             catch (MesMessageException E)
@@ -127,6 +127,8 @@ namespace Sauron
                     }
                 }
             }
+            // 初始化刚刚添加的lot信息；
+            Task.Run(() => InitialMesMission());
         }
         
         public static void InitialMesMission()
@@ -170,6 +172,10 @@ namespace Sauron
         public static MesMission CreateMesMission(string panelid, ObjectId ProductId, ObjectId lotid)
         {
             PanelInspectHistory history = PanelInspectHistory.Get(panelid);
+            if (history == null)
+            {
+                return new MesMission(panelid, null, null);
+            }
             // 根据historyid 查找对应的检查结果文件；
             AETresult result = AETresult.Get(history.ID);
             if (result == null)

@@ -134,7 +134,7 @@ namespace Spider
         static public List<PanelPathContainer> GetPanelPath(string panelId)
         {
             List<PanelPathContainer> pathlist = new List<PanelPathContainer>();
-            // TODO: 当pathcontainer更新时，未完成的更新操作会阻断正在进行的enumration操作，导致部分ID查找不到；
+            // （已完成 添加 pathcontainer lock）当pathcontainer更新时，未完成的更新操作会阻断正在进行的enumration操作，导致部分ID查找不到；
             lock (PathContainer)
             {
                 foreach (var disk in PathContainer)

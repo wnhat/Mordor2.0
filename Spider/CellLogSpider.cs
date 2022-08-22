@@ -19,6 +19,7 @@ namespace Spider
     public class CellLogSpider
     {
         public DateTime SearchDate { get; private set; }
+        // TODO: 当数据上传中断多天后打开该程序会导致此队列长度超过mongodb 单个document大小限制（16MB）；
         public Queue<PanelInspectHistory> PanelIdQueue = new Queue<PanelInspectHistory>();
         public PC mainpc;
         public LogSpiderBase spider;
