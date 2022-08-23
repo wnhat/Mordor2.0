@@ -18,6 +18,7 @@ namespace CoreClass.Model
         public ObjectId Id;
         public ObjectId UserID { get; private set; }
         public bool IsFinished { get; set; }
+        public TimeSpan MissionTimeLimit { get; set; }
 
         private string missionCollectionName;
         public string MissionCollectionName 
@@ -31,11 +32,12 @@ namespace CoreClass.Model
         }
         public int MissionCount { get; private set; }
 
-        public ExamMissionCollection(User user, string MissionCollectionName)
+        public ExamMissionCollection(User user, string MissionCollectionName,TimeSpan timeSpan)
         {
             UserID = user.Id;
             this.MissionCollectionName = MissionCollectionName;
             IsFinished = false;
+            MissionTimeLimit = timeSpan;
         }
 
         public static void AddOne(ExamMissionCollection examMissionWIP)
@@ -45,7 +47,7 @@ namespace CoreClass.Model
 
         public static void UpdateOrAdd(ExamMissionCollection examMissionCollection)
         {
-            var result = Collection.Find(x => x.UserID == examMissionCollection.Id && x.MissionCollectionName == examMissionCollection.MissionCollectionName && x.IsFinished == false).ToList();
+            var result = Collection.Find(x => x.UserID == examMissionCollection.UserID && x.MissionCollectionName == examMissionCollection.MissionCollectionName && x.IsFinished == false).ToList();
             if(!(result.Count > 0))
             {
                 AddOne(examMissionCollection);
@@ -67,7 +69,7 @@ namespace CoreClass.Model
             return result;
         }
 
-        public static void FinishOne(ObjectId id)
+        public static void FinishOneMission(ObjectId id)
         {
             var filter = Builders<ExamMissionCollection>.Filter.Eq(x => x.Id, id);
             var update = Builders<ExamMissionCollection>.Update.Set(x => x.IsFinished, true);

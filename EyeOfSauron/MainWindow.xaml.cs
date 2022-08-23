@@ -40,6 +40,7 @@ namespace EyeOfSauron
             catch (Exception e)
             {
                 MessageBox.Show(e.Message);
+                Application.Current.Shutdown();
             }
         }
 
@@ -64,7 +65,7 @@ namespace EyeOfSauron
             }
             else
             {
-                DialogHost.Show(new MessageAcceptDialog { Message = { Text = "此设备未注册，请联系DICS管理员" } }, "MainWindowDialog");
+                DialogHost.Show(new MessageAcceptDialog { Message = { Text = "此设备未注册，请联系DICS管理员" } }, "LoginWindowDialogHost");
             }
         }
 
@@ -213,6 +214,7 @@ namespace EyeOfSauron
 
         private void FinishMission(object sender, RoutedEventArgs e)
         {
+            //Finish exam mission
             if(sender is ObjectId collectionId)
             {
                 var result = ExamMissionResult.GetAccuracyValue(collectionId);

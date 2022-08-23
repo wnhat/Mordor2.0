@@ -23,7 +23,10 @@
     WindowState="Normal"
     WindowStyle="ThreeDBorderWindow"
     mc:Ignorable="d">
-    <materialDesign:DialogHost DialogTheme="Inherit" Identifier="LoginWindowDialogHost" x:Name="LoginWindowDialogHost">
+    <materialDesign:DialogHost
+        x:Name="LoginWindowDialogHost"
+        DialogTheme="Inherit"
+        Identifier="LoginWindowDialogHost">
         <materialDesign:DrawerHost>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -125,10 +128,11 @@
                 <Button
                     Width="80"
                     Height="40"
+                    Margin="0,30,0,30"
                     HorizontalAlignment="Center"
                     Content="登录"
                     IsDefault="True"
-                    Style="{StaticResource MaterialDesignFlatButton}" Margin="0,30,0,30" />
+                    Style="{StaticResource MaterialDesignFlatButton}" />
             </Grid>
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>

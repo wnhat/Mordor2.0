@@ -14,6 +14,7 @@ namespace CoreClass
     public static class DBconnector
     {
         static string connectstring = "mongodb://172.16.200.101:27017";
+        //static string connectstring = "mongodb://localhost:27017";
         static MongoClient mongoClient = new MongoClient(connectstring);
         /// <summary>
         /// DICS 生产数据库
@@ -22,7 +23,7 @@ namespace CoreClass
         /// <summary>
         /// DICS 测试数据库
         /// </summary>
-        static IMongoDatabase DICSTest = mongoClient.GetDatabase("DICSTest");
+        //public static IMongoDatabase DICSDB = mongoClient.GetDatabase("DICSTest");
         static DBconnector()
         {
             // initial mongodb collection;

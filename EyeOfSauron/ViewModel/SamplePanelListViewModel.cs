@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using CoreClass.Model;
+using MaterialDesignThemes.Wpf;
+using EyeOfSauron.MyUserControl;
 
 namespace EyeOfSauron.ViewModel
 {
@@ -23,6 +25,14 @@ namespace EyeOfSauron.ViewModel
             get => panelList;
             set => SetProperty(ref panelList, value);
         }
+        public CommandImplementation ItemDeleteCommand
+        {
+            get;
+        }
+        public CommandImplementation ItemUpdateCommand
+        {
+            get;
+        }
 
         private SamplePanelContainer? selectedItem;
         public SamplePanelContainer? SelectedItem
@@ -33,6 +43,8 @@ namespace EyeOfSauron.ViewModel
         public SamplePanelListViewModel(string collectionName = "")
         {
             GetSamples(collectionName);
+            ItemDeleteCommand = new(_ => { ItemDelete(); }, _ => SelectedItem != null) ;
+            ItemUpdateCommand = new(_ => { ItemUpdate(); }, _ => SelectedItem != null);
         }
 
         public async void GetSamples(string collectionName)
@@ -56,6 +68,26 @@ namespace EyeOfSauron.ViewModel
                 }
                 CollectionName = collectionName;
             }
+        }
+        private void ItemDelete()
+        {
+            //if (ItemDeleteCommand_CanExec())
+            //{
+                PanelSample.DeleteInfo(SelectedItem.PanelSample.Id);
+                PanelList.Remove(SelectedItem);
+            //}
+        }
+
+        private bool ItemDeleteCommand_CanExec()
+        {
+            //ISSUE
+            var diaResult = DialogHost.Show(new MessageAcceptCancelDialog { Message = { Text = string.Format("确认删除样本：{0}", SelectedItem.PanelSample.PanelID) } }, "SamplePanelListDialog").Result;
+            return (bool)(diaResult is bool? diaResult:false);
+        }
+
+        private void ItemUpdate()
+        {
+            DialogHost.Show(new MessageAcceptCancelDialog(), "SamplePanelListDialog");
         }
     }
 

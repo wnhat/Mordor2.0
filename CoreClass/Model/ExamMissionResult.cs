@@ -6,6 +6,7 @@ using CoreClass.DICSEnum;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace CoreClass.Model
 {
@@ -71,26 +72,25 @@ namespace CoreClass.Model
 
         public static ExamMissionResult GetOneAndUpdate(ExamMissionCollection examMissionCollection)
         {
-            var filter = Builders<ExamMissionResult>.Filter.And(
-                Builders<ExamMissionResult>.Filter.Eq(x => x.ExamMissionCollection, examMissionCollection),
-                Builders<ExamMissionResult>.Filter.Eq(x => x.IsChecked, false));
-            var update = Builders<ExamMissionResult>.Update.Set(x => x.lastModifyTime, DateTime.Now).Set(x => x.IsChecked, true);
-            ExamMissionResult mission = Collection.FindOneAndUpdate(filter, update);
-            if (mission == null)
+            //var filter = Builders<ExamMissionResult>.Filter.And(
+            //    Builders<ExamMissionResult>.Filter.Eq(x => x.ExamMissionCollection, examMissionCollection),
+            //    Builders<ExamMissionResult>.Filter.Eq(x => x.IsChecked, false));
+            //var update = Builders<ExamMissionResult>.Update.Set(x => x.lastModifyTime, DateTime.Now).Set(x => x.IsChecked, true);
+            //ExamMissionResult mission = Collection.FindOneAndUpdate(filter, update);
+            //return mission;
+            //Get one radnomly;
+            var randomOne = Collection.AsQueryable().Where(x => x.ExamMissionCollection == examMissionCollection && x.IsChecked == false).Sample(1).FirstOrDefault();
+            if (randomOne == null)
             {
                 return null;
             }
             else
             {
-                return GetOne(mission.Id);
+                var filter = Builders<ExamMissionResult>.Filter.Eq(x => x.Id, randomOne.Id);
+                var update = Builders<ExamMissionResult>.Update.Set(x => x.lastModifyTime, DateTime.Now).Set(x => x.IsChecked, true);
+                ExamMissionResult missionResult = Collection.FindOneAndUpdate(filter, update);
+                return missionResult;
             }
-        }
-
-        public static ExamMissionResult GetOne(ObjectId id)
-        {
-            var fileter = Builders<ExamMissionResult>.Filter.Eq(x => x.Id, id);
-            var mission = Collection.Find(fileter).FirstOrDefault();
-            return mission;
         }
         
         /// <summary>

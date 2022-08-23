@@ -14,6 +14,7 @@
             <ListBox
                 x:Name="DefectSelectListBox"
                 DisplayMemberPath="DefectName"
+                 d:ItemsSource="{d:SampleData ItemCount=5}"
                 ItemsSource="{Binding DefectJudgeList}"
                 Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineListBox}" />
             <Button

@@ -146,7 +146,7 @@ namespace CoreClass.Model
         /// Set delete flag to True;
         /// </summary>
         /// <param name="panelSample"></param>
-        public static async void PanelSampleDelete(ObjectId Id)
+        public static async void DeleteInfo(ObjectId Id)
         {
             var filter = Builders<PanelSample>.Filter.Eq(x => x.Id, Id);
             var update = Builders<PanelSample>.Update.Set(x => x.LastModifyTime, DateTime.Now).Set(x => x.IsDeleted, true);

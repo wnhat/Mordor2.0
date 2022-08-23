@@ -60,8 +60,8 @@ namespace EyeOfSauron
         {
             lock (Predownloadlock)
             {
-                Task.Run(() =>
-                {
+                //Task.Run(() =>
+                //{
                     while (PreDownloadedPanelMissionQueue.Count <= 2)
                     //while (PreDownloadedPanelMissionQueue.Count <= Parameter.PreLoadQuantity)
                     {
@@ -70,7 +70,7 @@ namespace EyeOfSauron
                             break;
                         }
                     }
-                });
+                //});
             }
         }
 
@@ -96,7 +96,7 @@ namespace EyeOfSauron
                     }
                     else
                     {
-                        PanelMission panelMission = new(aetResult, inspectMission,null);
+                        PanelMission panelMission = new(aetResult, productInfo, inspectMission,null);
                         PreDownloadedPanelMissionQueue.Enqueue(panelMission);
                         return true;
                     }
@@ -121,7 +121,6 @@ namespace EyeOfSauron
                 default:
                     return false;
             }
-
         }
 
         /// <summary>
@@ -198,6 +197,16 @@ namespace EyeOfSauron
             IniDefectImageDataList(AetResult.DefectImages, AetResult.DefectCollection);
             InitialContoursImage();
         }
+        public PanelMission(AETresult result, ProductInfo productInfo, InspectMission? mission = null, ExamMissionResult? examMissionResult = null)
+        {
+            inspectMission = mission;
+            examMission = examMissionResult;
+            AetResult = result;
+            ProductInfo = productInfo;
+            IniResultImageDataList_ByProductInfo(AetResult.ResultImages);
+            IniDefectImageDataList(AetResult.DefectImages, AetResult.DefectCollection);
+            InitialContoursImage();
+        }
 
         private void InitialContoursImage()
         {
@@ -240,7 +249,31 @@ namespace EyeOfSauron
                 }
             }
         }
-        
+
+        public void IniResultImageDataList_ByProductInfo(ImageContainer[] resultImages)
+        {
+            List<string> imageNmaeIndex = new();
+
+            if (resultImages != null)
+            {
+                foreach (ImageContainer image in resultImages)
+                {
+                    imageNmaeIndex.Add(image.Name);
+                }
+            }
+            foreach (string ImageName in ProductInfo.OnInspectImageNameList)
+            {
+                if (imageNmaeIndex.Contains(ImageName))
+                {
+                    resultImageDataList.Add(resultImages[imageNmaeIndex.IndexOf(ImageName)]);
+                }
+                else
+                {
+                    resultImageDataList.Add(new ImageContainer(ImageName));
+                }
+            }
+        }
+
         public void IniDefectImageDataList(ImageContainer[] defectImages, List<DefectInfo> defectInfos)
         {
             if (defectImages == null)

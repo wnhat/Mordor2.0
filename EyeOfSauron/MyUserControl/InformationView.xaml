@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:EyeOfSauron.MyUserControl"
+    xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
@@ -28,37 +29,135 @@
         </Grid.RowDefinitions>
         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
             <StackPanel Orientation="Horizontal">
-                <materialDesign:Card Width="100" Height="50" Margin="0,0,5,0">
+                <materialDesign:Card
+                    Width="100"
+                    Height="50"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                    Margin="0,0,0,0">
                     <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                    Text="Button" />
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                        Text="TactTime" />
                 </materialDesign:Card>
-                <materialDesign:Card Width="100" Height="50" Margin="0,0,0,0">
+                <materialDesign:Card
+                    Width="100"
+                    Height="50"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                    Margin="0,0,0,0">
                     <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                    Text="{Binding TactTime}" />
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                        Text="{Binding TactTime}" />
                 </materialDesign:Card>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <materialDesign:Card Width="100" Height="50" Margin="5,0,5,0">
+                <materialDesign:Card
+                    Width="100"
+                    Height="50"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                    Margin="5,0,0,0">
                     <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                    Text="Button" />
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                        Text="AVG_Tact" />
                 </materialDesign:Card>
-                <materialDesign:Card Width="100" Height="50" Margin="0,0,0,0">
+                <materialDesign:Card
+                    Width="100"
+                    Height="50"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                    Margin="0,0,0,0">
                     <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                    Text="{Binding AverageTactTime}" />
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                        Text="{Binding AverageTactTime}" />
+                </materialDesign:Card>
+                <materialDesign:Card
+                    Width="100"
+                    Height="50"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                    Margin="0,0,0,0">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                        Text="{Binding InspCount}" />
                 </materialDesign:Card>
             </StackPanel>
         </StackPanel>
+        <!--<TabControl
+            Grid.Row="1"
+            Style="{StaticResource MaterialDesignNavigatilRailTabControl}"
+            TabStripPlacement="Right">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Width="auto" Height="auto">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            Kind="Folder" />
+                        <TextBlock HorizontalAlignment="Center" Text="Trend" />
+                    </StackPanel>
+                </TabItem.Header>
+                <StackPanel>
+                    <lvc:CartesianChart
+                    Width="500"
+                    Height="400"
+                    Series="{Binding Series}" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Command="{Binding AddLineDataCommand}" Margin="5,0,5,0"/>
+                        <Button Command="{Binding DelLineDataCommand}" />
+                    </StackPanel>
+                </StackPanel>
+
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Width="auto" Height="auto">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            Kind="ClockOutline" />
+                        <TextBlock HorizontalAlignment="Center" Text="Recent" />
+                    </StackPanel>
+                </TabItem.Header>
+                <TextBlock />
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Width="auto" Height="auto">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            Kind="Images" />
+                        <TextBlock HorizontalAlignment="Center" Text="Photos" />
+                    </StackPanel>
+                </TabItem.Header>
+                <TextBlock />
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Width="auto" Height="auto">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            Kind="MusicBoxMultiple" />
+                        <TextBlock HorizontalAlignment="Center" Text="Sounds" />
+                    </StackPanel>
+                </TabItem.Header>
+                <TextBlock>
+                    <Run Text="tab 4 content. Default look and behaviors." />
+                    <LineBreak />
+                    <LineBreak />
+                </TextBlock>
+            </TabItem>
+        </TabControl>-->
     </Grid>
 </UserControl>

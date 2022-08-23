@@ -23,7 +23,6 @@ namespace CoreClass.Model
         public string PrefixId { get; set; } //761L;
         [JsonProperty("name")]
         public string Name { get; set; }    //D2 Porto;
-        public string[] InspectImageNames { get; set; }
         [BsonRepresentation(BsonType.String)]
         [JsonProperty("producttype")]
         //[JsonConverter(typeof(StringEnumConverter))]
@@ -36,7 +35,9 @@ namespace CoreClass.Model
         [JsonProperty("img")]
         public ImageContainer Img { get; set; }
 
-        public int InspPatternCount { get; set; }
+        public  string[] OnInspectImageNameList { get; set; }
+        //单个页面Pattern个数
+        public PatternCount InspPatternCount { get; set; }
 
         // override object.Equals
         public override bool Equals(object obj)
@@ -77,5 +78,16 @@ namespace CoreClass.Model
             var result = Collection.Find(x => x.PrefixId == prefixId).FirstOrDefault();
             return result;
         }
+        public static ProductInfo GetProductInfo(ObjectId id)
+        {
+            var result = Collection.Find(x => x.Id == id).FirstOrDefault();
+            return result;
+        }
+    }
+    public enum PatternCount
+    {
+        Single = 1,
+        Two,
+        Three,
     }
 }
