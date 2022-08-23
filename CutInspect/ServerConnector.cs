@@ -64,8 +64,11 @@ namespace CutInspect
         public static void SendResult(string id,int status)
         {
             var request = new RestRequest("modifyImageStatus",Method.Post);
-            request.AddBody("id", id);
-            request.AddBody("status", status.ToString());
+            var jsonresult = new JObject();
+            jsonresult["id"] = id;
+            jsonresult["status"] = status;
+
+            request.AddJsonBody(jsonresult.ToString());
             var response = restClient.Post(request);
             if (response.IsSuccessful)
             {
