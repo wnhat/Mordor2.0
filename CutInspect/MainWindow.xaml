@@ -22,72 +22,17 @@
     Style="{StaticResource MaterialDesignWindow}"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     WindowStartupLocation="CenterScreen"
+    Icon="/Resources/CUT_APP.png"
     WindowState="Maximized"
     mc:Ignorable="d">
-    <!--<Window.Resources>
-        <Style x:Key="ListViewItemStyle" TargetType="{x:Type ListViewItem}">
-            <Setter Property="AllowDrop" Value="False" />
-            <Setter Property="RenderTransform">
-                <Setter.Value>
-                    <TranslateTransform X="0" Y="0" />
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListViewItem}">
-                        <Grid Margin="10,0,0,0">
-                            <Border
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="White"
-                                BorderBrush="#DDDDDD"
-                                BorderThickness="1">
-                                <Image
-                                    Width="800"
-                                    Height="600"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Source="{Binding BitmapImage}"
-                                    Stretch="Fill" />
-                            </Border>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>-->
-    <!--<Grid>
-        <Button Command="{Binding AddPicCommand}" />
-        <ListView
-            x:Name="listPic"
-            VerticalAlignment="Top"
-            d:ItemsSource="{d:SampleData ItemCount=3}"
-            ItemContainerStyle="{DynamicResource ListViewItemStyle}"
-            ItemsSource="{Binding BindItems}"
-            ScrollViewer.CanContentScroll="True"
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            ScrollViewer.VerticalScrollBarVisibility="Disabled"
-            SelectionMode="Single" Height="445">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListView.Template>
-                <ControlTemplate TargetType="{x:Type ListView}">
-                    <ScrollViewer>
-                        <ItemsPresenter />
-                    </ScrollViewer>
-                </ControlTemplate>
-            </ListView.Template>
-        </ListView>
-    </Grid>-->
     <Window.InputBindings />
     <Window.Resources>
         <ResourceDictionary>
             <BitmapImage x:Key="DefaultImage" UriSource="/Resources/DefaultImage.bmp" />
             <converter:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
             <converter:EnumToInverseBooleanConverter x:Key="EnumToInverseBooleanConverter" />
+            <converter:IntToResultStringConverter x:Key="IntToResultStringConverter" />
+            <converter:IntToBackgroundColorConverter x:Key="IntToBackgroundColorConverter" />
         </ResourceDictionary>
     </Window.Resources>
 
@@ -472,7 +417,10 @@
                                     </Grid>
                                 </materialDesign:Card>
                             </DockPanel>
-                            <materialDesign:Card Grid.Row="2" Height="150" Margin="10,5,5,5">
+                            <materialDesign:Card
+                                Grid.Row="2"
+                                Height="150"
+                                Margin="10,5,5,5">
                                 <ListView
                                     Margin="5,5,5,5"
                                     d:ItemsSource="{d:SampleData ItemCount=6}"
@@ -483,13 +431,13 @@
                                     <ListView.View>
                                         <GridView>
                                             <GridViewColumn DisplayMemberBinding="{Binding PanelInfo.ProductId}" Header="PanelId" />
-                                            <GridViewColumn Header="IsChecked">
+                                            <GridViewColumn Header="InspResult">
                                                 <GridViewColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <TextBlock
                                                             Width="100"
-                                                            Background="{StaticResource MaterialDesignDarkSeparatorBackground}"
-                                                            Text="{Binding PanelInfo.Status}"
+                                                            Background="{Binding PanelInfo.Status, Converter={StaticResource IntToBackgroundColorConverter}}"
+                                                            Text="{Binding PanelInfo.Status, Converter={StaticResource IntToResultStringConverter}}"
                                                             TextAlignment="Center" />
                                                     </DataTemplate>
                                                 </GridViewColumn.CellTemplate>

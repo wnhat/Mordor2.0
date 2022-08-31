@@ -11,4 +11,9 @@ namespace CutInspect.Model
         DAY,
         NIGHT,
     }
+    public enum JudgeResult
+    {
+        NG,
+        OK
+    }
 }
