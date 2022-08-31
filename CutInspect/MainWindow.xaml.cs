@@ -27,17 +27,12 @@ namespace CutInspect
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly Timer? UpdateScrollTimer = null;//消失状态计时器
-        private readonly Storyboard storyboard = new ();
-        public static Snackbar Snackbar = new();
         private readonly MainWindowViewModel _viewModel = new();
+
         public MainWindow()
         {
             InitializeComponent();
             DataContext = _viewModel;
-            Snackbar = MainSnackbar;
-            //_viewModel.BindItems.CollectionChanged += ListData_CollectionChanged;
-            //UpdateScrollTimer = new Timer(UpdateScrollTimerCallBack, null, 1000, Timeout.Infinite);
         }
 
         private void ColorToolToggleButton_OnClick(object sender, RoutedEventArgs e) => MainContent.Focus();
@@ -47,6 +42,16 @@ namespace CutInspect
             string? text = ((Button)sender).Content.ToString();
             Clipboard.SetDataObject(text);
             MainSnackbar.MessageQueue?.Enqueue("复制成功");
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _viewModel.ShowSelectedPanelMission();
+        }
+
+        private void FinishedListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _viewModel.ShowFinishedPanelMission();
         }
     }
 }

@@ -7,10 +7,18 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="MyUserControl\EqpMissionView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MyUserControl\ColorTool.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MyUserControl\EqpMissionView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="ViewModel\ThemeSettings.xaml">
