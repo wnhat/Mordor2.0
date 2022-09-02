@@ -10,7 +10,7 @@
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModel="clr-namespace:CutInspect.ViewModel"
     Title="MainWindow"
-    Width="1600"
+    Width="1920"
     Height="1080"
     MinWidth="800"
     MinHeight="500"
@@ -22,7 +22,6 @@
     Style="{StaticResource MaterialDesignWindow}"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     WindowStartupLocation="CenterScreen"
-    Icon="/Resources/CUT_APP.png"
     WindowState="Maximized"
     mc:Ignorable="d">
     <Window.InputBindings />
@@ -88,6 +87,7 @@
             </materialDesign:DrawerHost.RightDrawerContent>
             <DockPanel>
                 <materialDesign:ColorZone
+                    Height="40"
                     Padding="0"
                     materialDesign:ShadowAssist.ShadowDepth="Depth2"
                     DockPanel.Dock="Top"
@@ -146,10 +146,10 @@
                         <materialDesign:Card
                             Grid.Column="0"
                             Width="210"
-                            Height="AUTO"
                             Margin="5,5,5,5"
                             UniformCornerRadius="5">
                             <ListBox
+                                Height="1010"
                                 d:ItemsSource="{d:SampleData ItemCount=12}"
                                 ItemsSource="{Binding EqpMissionViewModels}"
                                 SelectedIndex="0"
@@ -211,16 +211,26 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
                         </materialDesign:Card>
-                        <Grid Grid.Column="1" VerticalAlignment="Top">
+                        <Grid
+                            Grid.Column="1"
+                            Width="1700"
+                            Height="1020"
+                            VerticalAlignment="Top">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="130" />
+                                <RowDefinition Height="500" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="880" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
                             <materialDesign:Card
-                                Width="1300"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Width="Auto"
                                 Height="120"
-                                Margin="10,5,5,5"
+                                Margin="5,0,5,0"
                                 UniformCornerRadius="5">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -279,12 +289,12 @@
                                             Height="45"
                                             Content="{materialDesign:PackIcon Kind=WhiteBalanceSunny}"
                                             IsChecked="{Binding DateTimePicker.WorkType, Converter={StaticResource EnumToBooleanConverter}}"
-                                            Style="{StaticResource MaterialDesignTabRadioButtonRight}" />
+                                            Style="{StaticResource MaterialDesignTabRadioButtonLeft}" />
                                         <RadioButton
                                             Height="45"
                                             Content="{materialDesign:PackIcon Kind=WeatherNight}"
                                             IsChecked="{Binding DateTimePicker.WorkType, Converter={StaticResource EnumToInverseBooleanConverter}}"
-                                            Style="{StaticResource MaterialDesignTabRadioButtonRight}" />
+                                            Style="{StaticResource MaterialDesignTabRadioButtonLeft}" />
                                     </StackPanel>
                                     <Grid Grid.Column="2">
                                         <Grid.RowDefinitions>
@@ -339,49 +349,67 @@
 
                                 </Grid>
                             </materialDesign:Card>
-                            <DockPanel Grid.Row="1">
+                            <materialDesign:Card
+                                Grid.Row="0"
+                                Grid.RowSpan="2"
+                                Height="620"
+                                Margin="10,5,5,0"
+                                VerticalAlignment="Top"
+                                UniformCornerRadius="5">
+                                <Canvas
+                                    x:Name="SmallBox"
+                                    Width="860"
+                                    Height="620"
+                                    MouseDown="SmallBox_MouseDown"
+                                    MouseMove="MoveRect_MouseMove"
+                                    MouseUp="SmallBox_MouseUp">
+                                    <Canvas.Background>
+                                        <ImageBrush
+                                            x:Name="FullSizeImageBox"
+                                            ImageSource="{Binding BitmapImage, FallbackValue={StaticResource DefaultImage}}"
+                                            Stretch="Fill" />
+                                    </Canvas.Background>
+                                    <Rectangle
+                                        x:Name="MoveRect"
+                                        Canvas.Left="0"
+                                        Canvas.Top="0"
+                                        Width="100"
+                                        Height="100"
+                                        Fill="White"
+                                        Opacity="0.3"
+                                        Stroke="Blue"
+                                        Visibility="Visible" />
+                                </Canvas>
+                            </materialDesign:Card>
+                            <DockPanel Grid.Row="1" Grid.Column="1">
                                 <materialDesign:Card
-                                    Margin="10,5,5,5"
+                                    Width="380"
+                                    Margin="5,5,5,5"
                                     DockPanel.Dock="Left"
                                     UniformCornerRadius="5">
-                                    <Image
-                                        x:Name="ImageBox1"
-                                        Width="860"
-                                        Height="720"
-                                        Source="{Binding BitmapImage, FallbackValue={StaticResource DefaultImage}}"
-                                        Stretch="Fill" />
-                                </materialDesign:Card>
-                                <materialDesign:Card Margin="5,5,5,5" UniformCornerRadius="5">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
-                                        <ListView
-                                            Height="500"
-                                            d:ItemsSource="{d:SampleData ItemCount=6}"
-                                            ItemsSource="{Binding SelectedEqpMission.PanelMissionOBCollection}"
-                                            SelectedItem="{Binding SelectedEqpMission.SelectPanelMission, Mode=TwoWay}"
-                                            SelectionChanged="ListView_SelectionChanged"
-                                            SelectionMode="Single">
-                                            <ListView.View>
-                                                <GridView>
-                                                    <GridViewColumn DisplayMemberBinding="{Binding PanelInfo.ProductId}" Header="PanelId" />
-                                                    <GridViewColumn Header="IsChecked">
-                                                        <GridViewColumn.CellTemplate>
-                                                            <DataTemplate>
-                                                                <TextBlock
-                                                                    Width="100"
-                                                                    Background="{StaticResource MaterialDesignDarkSeparatorBackground}"
-                                                                    Text="{Binding PanelInfo.Status}"
-                                                                    TextAlignment="Center" />
-                                                            </DataTemplate>
-                                                        </GridViewColumn.CellTemplate>
-                                                    </GridViewColumn>
-                                                </GridView>
-                                            </ListView.View>
-                                        </ListView>
+                                        <materialDesign:Card Margin="0,0,0,0">
+                                            <Canvas
+                                                x:Name="BigBox"
+                                                Width="350"
+                                                Height="350">
+                                                <Image
+                                                    x:Name="BigImg"
+                                                    Canvas.Left="0"
+                                                    Canvas.Top="0"
+                                                    Width="2408"
+                                                    Height="2016"
+                                                    Source="{Binding BitmapImage, FallbackValue={StaticResource DefaultImage}}" />
+                                                <Canvas.Clip>
+                                                    <RectangleGeometry Rect="0,0,350,350" />
+                                                </Canvas.Clip>
+                                            </Canvas>
+                                        </materialDesign:Card>
                                         <Grid Grid.Row="1">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />
@@ -411,40 +439,128 @@
                                                 <TextBlock Style="{StaticResource MaterialDesignHeadline3TextBlock}" Text="NG" />
                                             </Button>
                                         </Grid>
-                                        <StackPanel Grid.Row="2">
+                                        <!--<StackPanel Grid.Row="2">
                                             <Button Command="{Binding ShowFirstPanelMissionCommand}" />
-                                        </StackPanel>
+                                        </StackPanel>-->
                                     </Grid>
+                                </materialDesign:Card>
+                                <materialDesign:Card Margin="10,5,5,5" UniformCornerRadius="5">
+                                    <TabControl
+                                        VerticalAlignment="Top"
+                                        HorizontalContentAlignment="Stretch"
+                                        materialDesign:ColorZoneAssist.Mode="Standard"
+                                        materialDesign:NavigationRailAssist.ShowSelectionBackground="True"
+                                        materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
+                                        SnapsToDevicePixels="True"
+                                        Style="{StaticResource MaterialDesignNavigatilRailTabControl}"
+                                        TabStripPlacement="Top">
+                                        <TabItem>
+                                            <TabItem.Header>
+                                                <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="待完成" />
+                                            </TabItem.Header>
+                                            <ListView
+                                                Height="400"
+                                                d:ItemsSource="{d:SampleData ItemCount=6}"
+                                                ItemsSource="{Binding SelectedEqpMission.PanelMissionOBCollection}"
+                                                SelectedItem="{Binding SelectPanelMission, Mode=TwoWay}"
+                                                SelectionChanged="FinishedListView_SelectionChanged"
+                                                SelectionMode="Single">
+                                                <ListView.View>
+                                                    <GridView>
+                                                        <GridViewColumn DisplayMemberBinding="{Binding PanelInfo.ProductId}" Header="PanelId" />
+                                                        <GridViewColumn Header="IsChecked">
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock
+                                                                        Width="100"
+                                                                        Background="{StaticResource MaterialDesignDarkSeparatorBackground}"
+                                                                        Text="{Binding PanelInfo.Status}"
+                                                                        TextAlignment="Center" />
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                        <GridViewColumn DisplayMemberBinding="{Binding PanelInfo.StartTime, StringFormat={}{0:MM-dd HH:mm:ss}, FallbackValue=08-01 00:00:00}" Header="Date" />
+                                                    </GridView>
+                                                </ListView.View>
+                                            </ListView>
+                                        </TabItem>
+                                        <TabItem>
+                                            <TabItem.Header>
+                                                <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="已完成" />
+                                            </TabItem.Header>
+                                            <ListView
+                                                Height="400"
+                                                d:ItemsSource="{d:SampleData ItemCount=4}"
+                                                ItemsSource="{Binding FinishedPanelMIssion}"
+                                                SelectedItem="{Binding SelectPanelMission, Mode=TwoWay}"
+                                                SelectionChanged="FinishedListView_SelectionChanged"
+                                                SelectionMode="Single">
+                                                <ListView.View>
+                                                    <GridView>
+                                                        <GridViewColumn DisplayMemberBinding="{Binding PanelInfo.ProductId}" Header="PanelId" />
+                                                        <GridViewColumn Header="InspResult">
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock
+                                                                        Width="100"
+                                                                        Background="{Binding PanelInfo.Status, Converter={StaticResource IntToBackgroundColorConverter}}"
+                                                                        Text="{Binding PanelInfo.Status, Converter={StaticResource IntToResultStringConverter}}"
+                                                                        TextAlignment="Center" />
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                        <GridViewColumn DisplayMemberBinding="{Binding PanelInfo.StartTime, StringFormat={}{0:MM-dd HH:mm:ss}, FallbackValue=08-01 00:00:00}" Header="Date" />
+                                                    </GridView>
+                                                </ListView.View>
+                                            </ListView>
+                                        </TabItem>
+                                    </TabControl>
+
                                 </materialDesign:Card>
                             </DockPanel>
                             <materialDesign:Card
                                 Grid.Row="2"
-                                Height="150"
-                                Margin="10,5,5,5">
-                                <ListView
-                                    Margin="5,5,5,5"
-                                    d:ItemsSource="{d:SampleData ItemCount=6}"
-                                    ItemsSource="{Binding FinishedPanelMIssion}"
-                                    SelectedItem="{Binding SelectedEqpMission.SelectPanelMission, Mode=TwoWay}"
-                                    SelectionChanged="FinishedListView_SelectionChanged"
-                                    SelectionMode="Single">
-                                    <ListView.View>
-                                        <GridView>
-                                            <GridViewColumn DisplayMemberBinding="{Binding PanelInfo.ProductId}" Header="PanelId" />
-                                            <GridViewColumn Header="InspResult">
-                                                <GridViewColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <TextBlock
-                                                            Width="100"
-                                                            Background="{Binding PanelInfo.Status, Converter={StaticResource IntToBackgroundColorConverter}}"
-                                                            Text="{Binding PanelInfo.Status, Converter={StaticResource IntToResultStringConverter}}"
-                                                            TextAlignment="Center" />
-                                                    </DataTemplate>
-                                                </GridViewColumn.CellTemplate>
-                                            </GridViewColumn>
-                                        </GridView>
-                                    </ListView.View>
-                                </ListView>
+                                Grid.ColumnSpan="2"
+                                Height="Auto"
+                                Margin="10,5,5,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <materialDesign:Card
+                                        Grid.Column="0"
+                                        Width="{Binding Path=Width, ElementName=BigBox, FallbackValue=350}"
+                                        Height="{Binding Path=Height, ElementName=BigBox, FallbackValue=350}"
+                                        Margin="0,0,0,0">
+                                        <Image />
+                                    </materialDesign:Card>
+                                    <materialDesign:Card
+                                        Grid.Column="1"
+                                        Width="{Binding Path=Width, ElementName=BigBox, FallbackValue=350}"
+                                        Height="{Binding Path=Height, ElementName=BigBox, FallbackValue=350}"
+                                        Margin="0,5,0,0">
+                                        <Image />
+                                    </materialDesign:Card>
+                                    <materialDesign:Card
+                                        Grid.Column="2"
+                                        Width="{Binding Path=Width, ElementName=BigBox, FallbackValue=350}"
+                                        Height="{Binding Path=Height, ElementName=BigBox, FallbackValue=350}"
+                                        Margin="0,5,0,0">
+                                        <Image />
+                                    </materialDesign:Card>
+                                    <materialDesign:Card
+                                        Grid.Column="3"
+                                        Width="{Binding Path=Width, ElementName=BigBox, FallbackValue=380}"
+                                        Height="{Binding Path=Height, ElementName=BigBox, FallbackValue=380}"
+                                        Margin="0,5,0,0">
+                                        <Image />
+                                    </materialDesign:Card>
+                                </Grid>
                             </materialDesign:Card>
                         </Grid>
                     </Grid>

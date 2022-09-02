@@ -28,6 +28,7 @@ namespace CutInspect
     public partial class MainWindow : Window
     {
         private readonly MainWindowViewModel _viewModel = new();
+        private bool rect_MoveEnableFlag = false;
 
         public MainWindow()
         {
@@ -52,6 +53,77 @@ namespace CutInspect
         private void FinishedListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _viewModel.ShowFinishedPanelMission();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MoveRect_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (rect_MoveEnableFlag)
+            {
+                //获取鼠标指针到MoveRect的偏移量
+                double deltaV = e.GetPosition(MoveRect).Y - MoveRect.Height / 2;
+                double deltaH = e.GetPosition(MoveRect).X - MoveRect.Width / 2; ;
+                //计算MoveRect新位置
+                double newTop = deltaV + Canvas.GetTop(MoveRect);
+                double newLeft = deltaH + Canvas.GetLeft(MoveRect);
+                //左右边界处理，限制MoveRect 移动区域在SmallBox内
+                newLeft = newLeft <= 0 ? 0 : (newLeft >= (SmallBox.Width - MoveRect.Width) ? (SmallBox.Width - MoveRect.Width) : newLeft);
+                //上下边界处理，限制MoveRect 移动区域在SmallBox内
+                newTop = newTop <= 0 ? 0 : (newTop >= (SmallBox.Height - MoveRect.Height) ? (SmallBox.Height - MoveRect.Height) : newTop);
+                //设置MoveRect位置
+                Canvas.SetTop(MoveRect, newTop);
+                Canvas.SetLeft(MoveRect, newLeft);
+                SetBigImgPos();
+            }
+        }
+
+        private void SetBigImgPos()
+        {
+            //获取右侧大图框与透明矩形框的尺寸比率
+            double n = BigBox.Width / MoveRect.Width;
+
+            //获取半透明矩形框在左侧小图中的位置
+            double left = Canvas.GetLeft(MoveRect);
+            double top = Canvas.GetTop(MoveRect);
+
+            //计算和设置原图在右侧大图框中的Canvas.Left 和 Canvas.Top
+            Canvas.SetLeft(BigImg, -left * n);
+            Canvas.SetTop(BigImg, -top * n);
+        }
+
+        /// <summary>
+        /// 控制MoveRect在鼠标进入SmallImg区域后显示
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SmallBox_MouseEnter(object sender, MouseEventArgs e)
+        {
+            MoveRect.Visibility = Visibility.Visible;
+        }
+
+        /// <summary>
+        /// 控制MoveRect在鼠标移出SmallImg区域后隐藏
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SmallBox_MouseLeave(object sender, MouseEventArgs e)
+        {
+            MoveRect.Visibility = Visibility.Hidden;
+        }
+
+        private void SmallBox_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            rect_MoveEnableFlag = true;
+            MoveRect_MouseMove(sender, e);
+        }
+
+        private void SmallBox_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            rect_MoveEnableFlag = false;
         }
     }
 }

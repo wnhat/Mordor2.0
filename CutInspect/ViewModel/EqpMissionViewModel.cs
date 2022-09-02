@@ -77,17 +77,15 @@ namespace CutInspect.ViewModel
         }
         public void FillMissionViewCollection()
         {
-            Task.Run(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 while (PanelMissionOBCollection?.Count <= 20)
                 {
-                    if (missionQueue!=null && missionQueue.TryDequeue(out InspectItem? inspectItem))
+                    if (missionQueue != null && missionQueue.TryDequeue(out InspectItem? inspectItem))
                     {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            PanelMission a = new(inspectItem);
-                            PanelMissionOBCollection?.Add(new(inspectItem));
-                        });
+
+                        PanelMission a = new(inspectItem);
+                        PanelMissionOBCollection?.Add(new(inspectItem));
                     }
                     else
                     {
@@ -118,7 +116,7 @@ namespace CutInspect.ViewModel
         {
             if (other != null)
             {
-                var a = Convert.ToInt32(this.EqpName?[^2..]);
+                var a = Convert.ToInt32(EqpName?[^2..]);
                 var b = Convert.ToInt32(other.EqpName?[^2..]);
                 return a > b ? 1 : -1;
             }
@@ -151,6 +149,11 @@ namespace CutInspect.ViewModel
                     bitmapImage.EndInit();
                     bitmapImage.Freeze();
                     PanelImage = bitmapImage;
+                }
+                catch (NotSupportedException)
+                {
+                    PanelImage = null;
+                    return;
                 }
                 catch (Exception)
                 {

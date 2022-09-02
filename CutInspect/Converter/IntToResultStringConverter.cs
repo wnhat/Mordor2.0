@@ -13,11 +13,6 @@ namespace CutInspect.Converter
     {
         public object Convert(object value, Type type, object parameter, CultureInfo culture)
         {
-            if (value == null)
-            {
-                throw new NotImplementedException();
-            }
-
             string output = value switch
             {
                 1 => JudgeResult.OK.ToString(),

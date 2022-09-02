@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using CoreClass.Model;
@@ -16,6 +17,7 @@ namespace CutInspect.ViewModel
     public class MainWindowViewModel:ViewModelBase
     {
         private DateTime dateTime;
+        private object finishLock = new();
         private ColorTool colorTool = new();
         private DateTimePickerViewModel dateTimePicker = new();
         private ObservableCollection<EqpMissionViewModel> eqpMissionViewModels = new();
@@ -83,29 +85,35 @@ namespace CutInspect.ViewModel
 
         private void GetMission()
         {
-            var startTime = DateTimePicker.StartTime;
-            var endTime = DateTimePicker.EndTime;
-            try
+            EqpMissionViewModels.Clear();
+            Task.Run(() =>
             {
-                var allMissions = ServerConnector.GetInfo(startTime, endTime);
-                var missionGroup = ServerConnector.GetGroupedData(allMissions);
-                EqpMissionViewModels.Clear();
-                foreach (var mission in missionGroup)
+                var startTime = DateTimePicker.StartTime;
+                var endTime = DateTimePicker.EndTime;
+                try
                 {
-                    EqpMissionViewModel eqpMission = new(mission);
-                    eqpMission.FillMissionViewCollection();
-                    EqpMissionViewModels.Add(eqpMission);
-                    //TODO:排序
+                    var allMissions = ServerConnector.GetInfo(startTime, endTime);
+                    var missionGroup = ServerConnector.GetGroupedData(allMissions);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        foreach (var mission in missionGroup)
+                        {
+                            EqpMissionViewModel eqpMission = new(mission);
+                            eqpMission.FillMissionViewCollection();
+                            EqpMissionViewModels.Add(eqpMission);
+                            //TODO:排序
+                        }
+                        if (EqpMissionViewModels.Count >= 1)
+                        {
+                            SelectedEqpMission = EqpMissionViewModels[0];
+                        }
+                    });
                 }
-                if (EqpMissionViewModels.Count >= 1)
+                catch (Exception)
                 {
-                    SelectedEqpMission = EqpMissionViewModels[0];
+                    throw;
                 }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            });
         }
         public void ShowSelectedPanelMission()
         {
@@ -127,37 +135,48 @@ namespace CutInspect.ViewModel
         {
             if(o is bool result)
             {
-                var id = SelectedEqpMission?.SelectPanelMission?.PanelInfo?.Id;
-                if (id != null)
+                lock (finishLock)
                 {
-                    try
+                    var id = SelectedEqpMission?.SelectPanelMission?.PanelInfo?.Id;
+                    if (id != null)
                     {
-                        ServerConnector.SendResult(id, result == true ? 1 : 0);
-                        if (SelectedEqpMission.FinishPanelMission(out PanelMission? panelMission))
+                        Task.Run(() =>
                         {
-                            if(panelMission != null)
+                            try
                             {
-                                panelMission.Status = result == true ? 1 : 0;
-                                AddToFinishedCollection(panelMission);
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    ServerConnector.SendResult(id, result == true ? 1 : 0);
+                                    if (SelectedEqpMission.FinishPanelMission(out PanelMission? panelMission))
+                                    {
+                                        if (panelMission != null)
+                                        {
+                                            panelMission.PanelInfo.Status = result == true ? 1 : 0;
+                                            AddToFinishedCollection(panelMission);
+                                        }
+                                        ShowFirstPanelMission();
+                                    };
+                                });
                             }
-                            ShowFirstPanelMission();
-                        };
+                            catch (Exception)
+                            {
+                                throw;
+                            }
+                        });
                     }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
-                    
                 }
             }
         }
         public void AddToFinishedCollection(PanelMission panelMission)
         {
-            if(FinishedPanelMIssion.Count > 20)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                FinishedPanelMIssion.Remove(FinishedPanelMIssion[0]);
-            }
-            FinishedPanelMIssion.Add(panelMission);
+                if (FinishedPanelMIssion.Count > 15)
+                {
+                    FinishedPanelMIssion.Remove(FinishedPanelMIssion[0]);
+                }
+                FinishedPanelMIssion.Add(panelMission);
+            });
         }
     }
 }

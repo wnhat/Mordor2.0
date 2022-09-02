@@ -14,16 +14,11 @@ namespace CutInspect.Converter
     {
         public object Convert(object value, Type type, object parameter, CultureInfo culture)
         {
-            if (value == null)
+            SolidColorBrush output = value switch
             {
-                throw new NotImplementedException();
-            }
-
-            Color output = value switch
-            {
-                1 => Colors.CadetBlue,
-                0 => Colors.LightGray,
-                _ => Colors.WhiteSmoke,
+                1 => new SolidColorBrush(Colors.CadetBlue),
+                0 => new SolidColorBrush(Colors.LightGray),
+                _ => new SolidColorBrush(Colors.WhiteSmoke),
             };
             return output;
         }
