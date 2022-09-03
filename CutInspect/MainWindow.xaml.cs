@@ -42,7 +42,7 @@ namespace CutInspect
         {
             string? text = ((Button)sender).Content.ToString();
             Clipboard.SetDataObject(text);
-            MainSnackbar.MessageQueue?.Enqueue("复制成功");
+            MainSnackbar.MessageQueue?.Enqueue(string.Format("复制成功：{0}", text));
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -124,6 +124,25 @@ namespace CutInspect
         private void SmallBox_MouseUp(object sender, MouseButtonEventArgs e)
         {
             rect_MoveEnableFlag = false;
+        }
+
+        private void EqpMissionList_SelectChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _viewModel.ShowFirstPanelMission();
+        }
+
+        private void SmallBox_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if(e.Delta > 0)
+            {
+                _viewModel.MoveRectWidth = _viewModel.MoveRectWidth < 100 ? _viewModel.MoveRectWidth += 10 : 100;
+            }
+            else if(e.Delta < 0)
+            {
+                _viewModel.MoveRectWidth = _viewModel.MoveRectWidth>20 ? _viewModel.MoveRectWidth-=10 : 20;
+            }
+            rect_MoveEnableFlag = true;
+            MoveRect_MouseMove(sender, e);
         }
     }
 }

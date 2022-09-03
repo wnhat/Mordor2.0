@@ -2,6 +2,7 @@
     x:Class="CutInspect.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cal="clr-namespace:CalcBinding;assembly=CalcBinding"
     xmlns:converter="clr-namespace:CutInspect.Converter"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:CutInspect"
@@ -106,7 +107,7 @@
                                 Width="180"
                                 VerticalAlignment="Center"
                                 HorizontalContentAlignment="Center"
-                                Content="{Binding SelectedEqpMission.SelectMission.ProductId, FallbackValue=PanelID}"
+                                Content="{Binding SelectPanelMission.PanelInfo.ProductId, FallbackValue=PanelID}"
                                 FontSize="14"
                                 IsTabStop="False"
                                 MouseDoubleClick="PanelidLableMouseDoubleClick"
@@ -154,6 +155,7 @@
                                 ItemsSource="{Binding EqpMissionViewModels}"
                                 SelectedIndex="0"
                                 SelectedItem="{Binding SelectedEqpMission, Mode=TwoWay}"
+                                SelectionChanged="EqpMissionList_SelectChanged"
                                 Style="{StaticResource MaterialDesignToolVerticalToggleListBox}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -359,26 +361,30 @@
                                 <Canvas
                                     x:Name="SmallBox"
                                     Width="860"
-                                    Height="620"
+                                    Height="720"
                                     MouseDown="SmallBox_MouseDown"
                                     MouseMove="MoveRect_MouseMove"
+                                    MouseWheel="SmallBox_MouseWheel"
                                     MouseUp="SmallBox_MouseUp">
                                     <Canvas.Background>
                                         <ImageBrush
                                             x:Name="FullSizeImageBox"
-                                            ImageSource="{Binding BitmapImage, FallbackValue={StaticResource DefaultImage}}"
+                                            ImageSource="{Binding BitmapImage, FallbackValue={StaticResource DefaultImage}, TargetNullValue={StaticResource DefaultImage}}"
                                             Stretch="Fill" />
                                     </Canvas.Background>
                                     <Rectangle
                                         x:Name="MoveRect"
                                         Canvas.Left="0"
                                         Canvas.Top="0"
-                                        Width="100"
-                                        Height="100"
+                                        Width="{Binding MoveRectWidth, FallbackValue=100}"
+                                        Height="{Binding MoveRectWidth, FallbackValue=100}"
                                         Fill="White"
                                         Opacity="0.3"
                                         Stroke="Blue"
                                         Visibility="Visible" />
+                                    <Canvas.Clip>
+                                        <RectangleGeometry Rect="0,0,860,620" />
+                                    </Canvas.Clip>
                                 </Canvas>
                             </materialDesign:Card>
                             <DockPanel Grid.Row="1" Grid.Column="1">
@@ -402,9 +408,11 @@
                                                     x:Name="BigImg"
                                                     Canvas.Left="0"
                                                     Canvas.Top="0"
-                                                    Width="2408"
-                                                    Height="2016"
-                                                    Source="{Binding BitmapImage, FallbackValue={StaticResource DefaultImage}}" />
+                                                    Width="{cal:Binding (350*860)/MoveRectWidth,
+                                                                        FallbackValue=3010}"
+                                                    Height="{cal:Binding (350*720)/MoveRectWidth,
+                                                                         FallbackValue=2520}"
+                                                    Source="{Binding BitmapImage, FallbackValue={StaticResource DefaultImage}, TargetNullValue={StaticResource DefaultImage}}" />
                                                 <Canvas.Clip>
                                                     <RectangleGeometry Rect="0,0,350,350" />
                                                 </Canvas.Clip>
@@ -469,11 +477,33 @@
                                                 SelectionMode="Single">
                                                 <ListView.View>
                                                     <GridView>
-                                                        <GridViewColumn DisplayMemberBinding="{Binding PanelInfo.ProductId}" Header="PanelId" />
+                                                        <GridViewColumn Header="PanelId" DisplayMemberBinding="{Binding PanelInfo.ProductId}">
+                                                            <!--<GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <Button
+                                                                        Width="Auto"
+                                                                        Height="15"
+                                                                        MouseDoubleClick="PanelidLableMouseDoubleClick"
+                                                                        Padding="0"
+                                                                        Style="{StaticResource MaterialDesignFlatButton}">
+                                                                        <Button.Content>
+                                                                            <TextBlock
+                                                                                Foreground="{StaticResource MaterialDesignLightForeground}"
+                                                                                Width="120"
+                                                                                Padding="0"
+                                                                                Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                                                                Text="{Binding PanelInfo.ProductId}"
+                                                                                TextAlignment="Center" />
+                                                                        </Button.Content>
+                                                                    </Button>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>-->
+                                                        </GridViewColumn>
                                                         <GridViewColumn Header="IsChecked">
                                                             <GridViewColumn.CellTemplate>
                                                                 <DataTemplate>
                                                                     <TextBlock
+                                                                        VerticalAlignment="Center"
                                                                         Width="100"
                                                                         Background="{StaticResource MaterialDesignDarkSeparatorBackground}"
                                                                         Text="{Binding PanelInfo.Status}"
@@ -511,7 +541,7 @@
                                                                 </DataTemplate>
                                                             </GridViewColumn.CellTemplate>
                                                         </GridViewColumn>
-                                                        <GridViewColumn DisplayMemberBinding="{Binding PanelInfo.StartTime, StringFormat={}{0:MM-dd HH:mm:ss}, FallbackValue=08-01 00:00:00}" Header="Date" />
+                                                        <GridViewColumn DisplayMemberBinding="{Binding PanelInfo.UpdateDate, StringFormat={}{0:MM-dd HH:mm:ss}, FallbackValue=08-01 00:00:00}" Header="Date" />
                                                     </GridView>
                                                 </ListView.View>
                                             </ListView>
@@ -555,8 +585,8 @@
                                     </materialDesign:Card>
                                     <materialDesign:Card
                                         Grid.Column="3"
-                                        Width="{Binding Path=Width, ElementName=BigBox, FallbackValue=380}"
-                                        Height="{Binding Path=Height, ElementName=BigBox, FallbackValue=380}"
+                                        Width="{Binding Path=Width, ElementName=BigBox, FallbackValue=350}"
+                                        Height="{Binding Path=Height, ElementName=BigBox, FallbackValue=350}"
                                         Margin="0,5,0,0">
                                         <Image />
                                     </materialDesign:Card>

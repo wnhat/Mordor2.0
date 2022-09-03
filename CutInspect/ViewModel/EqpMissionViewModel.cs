@@ -95,21 +95,16 @@ namespace CutInspect.ViewModel
             });
         }
 
-        public bool FinishPanelMission(out PanelMission? panelMission)
+        public bool RemoveOneFromOBCollection(ref PanelMission selectedPanelMission)
         {
-            panelMission = null;
-            if (SelectPanelMission!=null)
-            {
-                panelMission = SelectPanelMission;
-                if (PanelMissionOBCollection.Remove(SelectPanelMission))
+                if (PanelMissionOBCollection.Remove(selectedPanelMission))
                 {
                     FillMissionViewCollection();
                     CheckedMissionCount = CheckedMissionCount >= 0 ? CheckedMissionCount-- : 0;
                     //PanelMissionFinishedEvent?.Invoke(SelectPanelMission, new());
                     return true;
                 }
-            }
-            return false;
+                return false;
         }
 
         public int CompareTo(EqpMissionViewModel? other)

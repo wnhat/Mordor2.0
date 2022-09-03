@@ -16,8 +16,9 @@ namespace CutInspect.ViewModel
 {
     public class MainWindowViewModel:ViewModelBase
     {
-        private DateTime dateTime;
         private object finishLock = new();
+        private DateTime dateTime;
+        private int moveRectWidth = 100;
         private ColorTool colorTool = new();
         private DateTimePickerViewModel dateTimePicker = new();
         private ObservableCollection<EqpMissionViewModel> eqpMissionViewModels = new();
@@ -29,6 +30,11 @@ namespace CutInspect.ViewModel
         {
             get => dateTime;
             set => SetProperty(ref dateTime, value);
+        }
+        public int MoveRectWidth
+        {
+            get => moveRectWidth;
+            set => SetProperty(ref moveRectWidth, value);
         }
         public ColorTool ColorTool
         {
@@ -72,7 +78,7 @@ namespace CutInspect.ViewModel
         {
             GetMissionCommand = new(_ => GetMission());//TODO：canexec方法；
             ShowFirstPanelMissionCommand = new(_=> ShowFirstPanelMission());
-            JudgeCommand = new(PanelMissionJudge,_=>true);
+            JudgeCommand = new(PanelMissionJudge,_=> SelectPanelMission!=null);
             _ = new DispatcherTimer(
                     TimeSpan.FromMilliseconds(1000),
                     DispatcherPriority.Normal,
@@ -117,7 +123,7 @@ namespace CutInspect.ViewModel
         }
         public void ShowSelectedPanelMission()
         {
-            BitmapImage = selectedEqpMission?.SelectPanelMission?.PanelImage;
+            BitmapImage = SelectPanelMission?.PanelImage;
         }
         public void ShowFinishedPanelMission()
         {
@@ -127,7 +133,7 @@ namespace CutInspect.ViewModel
         {
             if (SelectedEqpMission?.PanelMissionOBCollection?.Count >= 1)
             {
-                SelectedEqpMission.SelectPanelMission = SelectedEqpMission?.PanelMissionOBCollection[0];
+                SelectPanelMission = SelectedEqpMission?.PanelMissionOBCollection[0];
                 ShowSelectedPanelMission();
             }
         }
@@ -137,32 +143,35 @@ namespace CutInspect.ViewModel
             {
                 lock (finishLock)
                 {
-                    var id = SelectedEqpMission?.SelectPanelMission?.PanelInfo?.Id;
+                    var id = SelectPanelMission?.PanelInfo?.Id;
                     if (id != null)
                     {
-                        Task.Run(() =>
+                        if (SelectPanelMission != null && SelectedEqpMission != null)
                         {
-                            try
+                            PanelMission panelMission = SelectPanelMission;
+                            Task.Run(() =>
                             {
-                                Application.Current.Dispatcher.Invoke(() =>
+                                try
                                 {
                                     ServerConnector.SendResult(id, result == true ? 1 : 0);
-                                    if (SelectedEqpMission.FinishPanelMission(out PanelMission? panelMission))
-                                    {
-                                        if (panelMission != null)
-                                        {
-                                            panelMission.PanelInfo.Status = result == true ? 1 : 0;
-                                            AddToFinishedCollection(panelMission);
-                                        }
-                                        ShowFirstPanelMission();
-                                    };
-                                });
-                            }
-                            catch (Exception)
+                                }
+                                catch (Exception)
+                                {
+                                    throw;
+                                }
+                            });
+                            var isRemoved = SelectedEqpMission.RemoveOneFromOBCollection(ref panelMission);
+                            if (panelMission != null)
                             {
-                                throw;
+                                panelMission.PanelInfo.Status = result == true ? 1 : 0;
+                                panelMission.PanelInfo.UpdateDate = DateTime.Now;
+                                AddToFinishedCollection(panelMission);
                             }
-                        });
+                            if (isRemoved)
+                            {
+                                ShowFirstPanelMission();
+                            }
+                        }
                     }
                 }
             }
@@ -171,7 +180,7 @@ namespace CutInspect.ViewModel
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                if (FinishedPanelMIssion.Count > 15)
+                if (FinishedPanelMIssion.Count > 20)
                 {
                     FinishedPanelMIssion.Remove(FinishedPanelMIssion[0]);
                 }

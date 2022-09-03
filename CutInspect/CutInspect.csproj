@@ -12,10 +12,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\CUT_APP.png" />
+	  <None Remove="Resources\CUT_INSP.ico" />
+	  <None Remove="Resources\DefaultImage.bmp" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Content Include="CUT_INSP.ico" />
 	</ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CalcBinding" Version="2.5.2" />
     <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="108.0.2-alpha.0.6" />
@@ -24,6 +31,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CoreClass\CoreClass.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\CUT_APP.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\CUT_INSP.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\DefaultImage.bmp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +61,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +73,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

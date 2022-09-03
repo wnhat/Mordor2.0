@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CutInspect": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
