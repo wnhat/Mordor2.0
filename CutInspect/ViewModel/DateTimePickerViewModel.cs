@@ -45,7 +45,21 @@ namespace CutInspect.ViewModel
         public WorkType WorkType
         {
             get => workType;
-            set => SetProperty(ref workType, value);
+            set
+            {
+                SetProperty(ref workType, value);
+                switch (value)
+                {
+                    case WorkType.DAY:
+                        StartTime = PickedDate.Date + TimeSpan.FromHours(6);
+                        break;
+                    case WorkType.NIGHT:
+                        StartTime = PickedDate.Date + TimeSpan.FromHours(18);
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
         public CommandImplementation StepBackOneDayCommand { get; }
         public CommandImplementation StepOneDayCommand { get; }

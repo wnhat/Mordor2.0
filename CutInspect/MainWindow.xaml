@@ -362,6 +362,7 @@
                                     x:Name="SmallBox"
                                     Width="860"
                                     Height="720"
+                                    ClipToBounds="True"
                                     MouseDown="SmallBox_MouseDown"
                                     MouseMove="MoveRect_MouseMove"
                                     MouseWheel="SmallBox_MouseWheel"
@@ -408,6 +409,7 @@
                                                     x:Name="BigImg"
                                                     Canvas.Left="0"
                                                     Canvas.Top="0"
+                                                    Stretch="Fill"
                                                     Width="{cal:Binding (350*860)/MoveRectWidth,
                                                                         FallbackValue=3010}"
                                                     Height="{cal:Binding (350*720)/MoveRectWidth,

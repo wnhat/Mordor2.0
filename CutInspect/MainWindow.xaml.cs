@@ -83,14 +83,14 @@ namespace CutInspect
 
         private void SetBigImgPos()
         {
-            //获取右侧大图框与透明矩形框的尺寸比率
+            //获取右侧BigImg与MoveRect的比例
             double n = BigBox.Width / MoveRect.Width;
 
-            //获取半透明矩形框在左侧小图中的位置
+            //获取MoveRect在左侧SmallImg中的位置
             double left = Canvas.GetLeft(MoveRect);
             double top = Canvas.GetTop(MoveRect);
 
-            //计算和设置原图在右侧大图框中的Canvas.Left 和 Canvas.Top
+            //计算和设置BigImg在右侧Canvas中的位置
             Canvas.SetLeft(BigImg, -left * n);
             Canvas.SetTop(BigImg, -top * n);
         }

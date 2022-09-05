@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using CoreClass.Model;
 using CutInspect.Model;
 using CutInspect.MyUserControl;
+using MaterialDesignThemes.Wpf;
 
 namespace CutInspect.ViewModel
 {
@@ -92,6 +93,7 @@ namespace CutInspect.ViewModel
         private void GetMission()
         {
             EqpMissionViewModels.Clear();
+            var a = new ProgressMessageDialog();
             Task.Run(() =>
             {
                 var startTime = DateTimePicker.StartTime;
@@ -114,6 +116,14 @@ namespace CutInspect.ViewModel
                             SelectedEqpMission = EqpMissionViewModels[0];
                         }
                     });
+                }
+                catch(System.Net.Http.HttpRequestException ex)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        DialogHost.Show(new MessageAcceptDialog { Message = { Text = "服务器连接失败，请联系管理员" } }, "MainWindowDialog");
+                    });
+                    AppLogClass.Logger.Error(":服务器连接失败，异常信息：{0}", ex.Message);
                 }
                 catch (Exception)
                 {
