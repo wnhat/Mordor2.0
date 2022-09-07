@@ -21,27 +21,39 @@ namespace CutInspect
             restClient.Options.MaxTimeout = 10000;
         }
         public static InspectItem[] GetInfo(DateTime starttime,DateTime endtime)
-        {            
+        {
+
             var request = new RestRequest("getImageInfo");
             request.AddQueryParameter("startTime", starttime.ToString("yyyy-MM-dd HH:mm:ss"));
             request.AddQueryParameter("endTime", endtime.ToString("yyyy-MM-dd HH:mm:ss"));
-            var response = restClient.Get(request);
-            if (response.IsSuccessful)
+            try
             {
-                if (response.Content == null)
+                DateTime nowTime = DateTime.Now;
+                var response = restClient.Get(request);
+                TimeSpan execTime = DateTime.Now - nowTime;
+                if (response.IsSuccessful)
                 {
-                    throw new Exception("获取的产品信息为空；");
+                    if (response.Content == null)
+                    {
+                        throw new Exception(String.Format("获取的产品信息为空；执行时间：{0}", execTime.ToString()));
+                    }
+                    else
+                    {
+                        string jsonstring = response.Content;
+                        InspectItem[] deserializedProduct = JsonConvert.DeserializeObject<InspectItem[]>(jsonstring);
+                        ServerLogClass.Logger.Information("：获取任务成功（{0}--{1}）；执行时间：{0}",starttime.ToString(),endtime.ToString(), execTime.ToString());
+                        return deserializedProduct;
+                    }
                 }
                 else
                 {
-                    string jsonstring = response.Content;
-                    InspectItem[] deserializedProduct = JsonConvert.DeserializeObject<InspectItem[]>(jsonstring);
-                    return deserializedProduct;
+                    throw new Exception(String.Format("：获取任务失败（{0}--{1}），response不成功；执行时间：{2}", starttime.ToString(), endtime.ToString(), execTime.ToString()));
                 }
             }
-            else
+            catch (System.Net.Http.HttpRequestException ex)
             {
-                throw new Exception("连接失败；");
+                ServerLogClass.Logger.Error("：服务器连接失败，无法获取任务信息，异常信息：{0}",ex.Message);
+                throw;
             }
         }
         public static List<GroupData> GetGroupedData(InspectItem[] data)
@@ -81,25 +93,33 @@ namespace CutInspect
         }
         public static MemoryStream GetImage(string id)
         {
-            var request = new RestRequest("getImage");
-
-            request.AddQueryParameter("imageId", id);
-
-            var response = restClient.Get(request);
-            if (response.IsSuccessful)
+            try
             {
-                if (response.RawBytes == null)
+                DateTime nowTime = DateTime.Now;
+                var request = new RestRequest("getImage");
+                request.AddQueryParameter("imageId", id);
+                var response = restClient.Get(request);
+                TimeSpan execTime = DateTime.Now - nowTime;
+                if (response.IsSuccessful)
                 {
-                    throw new Exception("获取的图像为空；");
+                    if (response.RawBytes == null)
+                    {
+                        throw new Exception("获取的图像为空；");
+                    }
+                    else
+                    {
+                        return new MemoryStream(response.RawBytes);
+                    }
                 }
                 else
                 {
-                return new MemoryStream(response.RawBytes);
+                    throw new Exception("连接失败；");
                 }
             }
-            else
+            catch (System.Net.Http.HttpRequestException ex)
             {
-                throw new Exception("连接失败；");
+                ServerLogClass.Logger.Error("：服务器连接失败，无法获取图片信息，异常信息：{0}", ex.Message);
+                throw;
             }
         }
     }

@@ -17,4 +17,14 @@ namespace CutInspect.Model
                 .CreateLogger();
         }
     }
+    public class ServerLogClass
+    {
+        public static ILogger Logger;
+        static ServerLogClass()
+        {
+            Logger = new LoggerConfiguration()
+                .WriteTo.File(@"D:\CutInsp\LOG\Server\log-.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+        }
+    }
 }

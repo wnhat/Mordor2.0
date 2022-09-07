@@ -107,7 +107,7 @@
                                 Width="180"
                                 VerticalAlignment="Center"
                                 HorizontalContentAlignment="Center"
-                                Content="{Binding SelectPanelMission.PanelInfo.ProductId, FallbackValue=PanelID}"
+                                Content="{Binding SelectPanelMission.ProductId, FallbackValue=PanelID}"
                                 FontSize="14"
                                 IsTabStop="False"
                                 MouseDoubleClick="PanelidLableMouseDoubleClick"
@@ -348,7 +348,6 @@
                                                 Kind="Refresh" />
                                         </Button.Content>
                                     </Button>
-
                                 </Grid>
                             </materialDesign:Card>
                             <materialDesign:Card
@@ -365,8 +364,8 @@
                                     ClipToBounds="True"
                                     MouseDown="SmallBox_MouseDown"
                                     MouseMove="MoveRect_MouseMove"
-                                    MouseWheel="SmallBox_MouseWheel"
-                                    MouseUp="SmallBox_MouseUp">
+                                    MouseUp="SmallBox_MouseUp"
+                                    MouseWheel="SmallBox_MouseWheel">
                                     <Canvas.Background>
                                         <ImageBrush
                                             x:Name="FullSizeImageBox"
@@ -409,12 +408,12 @@
                                                     x:Name="BigImg"
                                                     Canvas.Left="0"
                                                     Canvas.Top="0"
-                                                    Stretch="Fill"
                                                     Width="{cal:Binding (350*860)/MoveRectWidth,
                                                                         FallbackValue=3010}"
                                                     Height="{cal:Binding (350*720)/MoveRectWidth,
                                                                          FallbackValue=2520}"
-                                                    Source="{Binding BitmapImage, FallbackValue={StaticResource DefaultImage}, TargetNullValue={StaticResource DefaultImage}}" />
+                                                    Source="{Binding BitmapImage, FallbackValue={StaticResource DefaultImage}, TargetNullValue={StaticResource DefaultImage}}"
+                                                    Stretch="Fill" />
                                                 <Canvas.Clip>
                                                     <RectangleGeometry Rect="0,0,350,350" />
                                                 </Canvas.Clip>
@@ -479,41 +478,21 @@
                                                 SelectionMode="Single">
                                                 <ListView.View>
                                                     <GridView>
-                                                        <GridViewColumn Header="PanelId" DisplayMemberBinding="{Binding PanelInfo.ProductId}">
-                                                            <!--<GridViewColumn.CellTemplate>
-                                                                <DataTemplate>
-                                                                    <Button
-                                                                        Width="Auto"
-                                                                        Height="15"
-                                                                        MouseDoubleClick="PanelidLableMouseDoubleClick"
-                                                                        Padding="0"
-                                                                        Style="{StaticResource MaterialDesignFlatButton}">
-                                                                        <Button.Content>
-                                                                            <TextBlock
-                                                                                Foreground="{StaticResource MaterialDesignLightForeground}"
-                                                                                Width="120"
-                                                                                Padding="0"
-                                                                                Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                                                                                Text="{Binding PanelInfo.ProductId}"
-                                                                                TextAlignment="Center" />
-                                                                        </Button.Content>
-                                                                    </Button>
-                                                                </DataTemplate>
-                                                            </GridViewColumn.CellTemplate>-->
+                                                        <GridViewColumn DisplayMemberBinding="{Binding ProductId}" Header="PanelId">
                                                         </GridViewColumn>
                                                         <GridViewColumn Header="IsChecked">
                                                             <GridViewColumn.CellTemplate>
                                                                 <DataTemplate>
                                                                     <TextBlock
-                                                                        VerticalAlignment="Center"
                                                                         Width="100"
+                                                                        VerticalAlignment="Center"
                                                                         Background="{StaticResource MaterialDesignDarkSeparatorBackground}"
-                                                                        Text="{Binding PanelInfo.Status}"
+                                                                        Text="{Binding Status}"
                                                                         TextAlignment="Center" />
                                                                 </DataTemplate>
                                                             </GridViewColumn.CellTemplate>
                                                         </GridViewColumn>
-                                                        <GridViewColumn DisplayMemberBinding="{Binding PanelInfo.StartTime, StringFormat={}{0:MM-dd HH:mm:ss}, FallbackValue=08-01 00:00:00}" Header="Date" />
+                                                        <GridViewColumn DisplayMemberBinding="{Binding StartTime, StringFormat={}{0:MM-dd HH:mm:ss}, FallbackValue=08-01 00:00:00}" Header="Date" />
                                                     </GridView>
                                                 </ListView.View>
                                             </ListView>
@@ -531,19 +510,19 @@
                                                 SelectionMode="Single">
                                                 <ListView.View>
                                                     <GridView>
-                                                        <GridViewColumn DisplayMemberBinding="{Binding PanelInfo.ProductId}" Header="PanelId" />
+                                                        <GridViewColumn DisplayMemberBinding="{Binding ProductId}" Header="PanelId" />
                                                         <GridViewColumn Header="InspResult">
                                                             <GridViewColumn.CellTemplate>
                                                                 <DataTemplate>
                                                                     <TextBlock
                                                                         Width="100"
-                                                                        Background="{Binding PanelInfo.Status, Converter={StaticResource IntToBackgroundColorConverter}}"
-                                                                        Text="{Binding PanelInfo.Status, Converter={StaticResource IntToResultStringConverter}}"
+                                                                        Background="{Binding Status, Converter={StaticResource IntToBackgroundColorConverter}}"
+                                                                        Text="{Binding Status, Converter={StaticResource IntToResultStringConverter}}"
                                                                         TextAlignment="Center" />
                                                                 </DataTemplate>
                                                             </GridViewColumn.CellTemplate>
                                                         </GridViewColumn>
-                                                        <GridViewColumn DisplayMemberBinding="{Binding PanelInfo.UpdateDate, StringFormat={}{0:MM-dd HH:mm:ss}, FallbackValue=08-01 00:00:00}" Header="Date" />
+                                                        <GridViewColumn DisplayMemberBinding="{Binding UpdateDate, StringFormat={}{0:MM-dd HH:mm:ss}, FallbackValue=08-01 00:00:00}" Header="Date" />
                                                     </GridView>
                                                 </ListView.View>
                                             </ListView>

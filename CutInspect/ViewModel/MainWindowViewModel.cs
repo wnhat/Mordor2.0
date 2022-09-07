@@ -90,46 +90,51 @@ namespace CutInspect.ViewModel
                     Dispatcher.CurrentDispatcher);
         }
 
-        private void GetMission()
+        private async void GetMission()
         {
             EqpMissionViewModels.Clear();
-            var a = new ProgressMessageDialog();
-            Task.Run(() =>
+            DialogHost.Show(new ProgressMessageDialog(), "MainWindowDialog");
+            await Task.Run(() =>
             {
                 var startTime = DateTimePicker.StartTime;
                 var endTime = DateTimePicker.EndTime;
                 try
                 {
                     var allMissions = ServerConnector.GetInfo(startTime, endTime);
+                    AppLogClass.Logger.Information(":AllMissions 获取成功");
                     var missionGroup = ServerConnector.GetGroupedData(allMissions);
-                    Application.Current.Dispatcher.Invoke(() =>
+                    List<EqpMissionViewModel> missions = new();
+                    foreach (var mission in missionGroup)
                     {
-                        foreach (var mission in missionGroup)
-                        {
-                            EqpMissionViewModel eqpMission = new(mission);
-                            eqpMission.FillMissionViewCollection();
-                            EqpMissionViewModels.Add(eqpMission);
-                            //TODO:排序
-                        }
-                        if (EqpMissionViewModels.Count >= 1)
-                        {
-                            SelectedEqpMission = EqpMissionViewModels[0];
-                        }
-                    });
+
+                        EqpMissionViewModel eqpMission = new(mission);
+                        eqpMission.FillMissionViewCollection();
+                        missions.Add(eqpMission);
+                    }
+                    if (missions.Count >= 1)
+                    {
+                        missions.Sort();
+                        EqpMissionViewModels = new(missions);
+                        SelectedEqpMission = EqpMissionViewModels[0];
+                    }
                 }
                 catch(System.Net.Http.HttpRequestException ex)
                 {
-                    Application.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(async () =>
                     {
-                        DialogHost.Show(new MessageAcceptDialog { Message = { Text = "服务器连接失败，请联系管理员" } }, "MainWindowDialog");
+                        await DialogHost.Show(new MessageAcceptDialog("服务器连接失败，请联系管理员"), "MainWindowDialog");
                     });
                     AppLogClass.Logger.Error(":服务器连接失败，异常信息：{0}", ex.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    AppLogClass.Logger.Error(":获取任务时发生异常，异常信息：{0}", ex.Message);
                     throw;
                 }
+
             });
+            DialogHost.Close("MainWindowDialog");
+            DialogHost.Show(new MessageAcceptDialog("刷新完成"), "MainWindowDialog");
         }
         public void ShowSelectedPanelMission()
         {
@@ -153,7 +158,7 @@ namespace CutInspect.ViewModel
             {
                 lock (finishLock)
                 {
-                    var id = SelectPanelMission?.PanelInfo?.Id;
+                    var id = SelectPanelMission?.Id;
                     if (id != null)
                     {
                         if (SelectPanelMission != null && SelectedEqpMission != null)
@@ -173,8 +178,8 @@ namespace CutInspect.ViewModel
                             var isRemoved = SelectedEqpMission.RemoveOneFromOBCollection(ref panelMission);
                             if (panelMission != null)
                             {
-                                panelMission.PanelInfo.Status = result == true ? 1 : 0;
-                                panelMission.PanelInfo.UpdateDate = DateTime.Now;
+                                panelMission.Status = result == true ? 1 : 0;
+                                panelMission.UpdateDate = DateTime.Now;
                                 AddToFinishedCollection(panelMission);
                             }
                             if (isRemoved)

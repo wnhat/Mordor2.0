@@ -2,9 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -77,22 +74,20 @@ namespace CutInspect.ViewModel
         }
         public void FillMissionViewCollection()
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            while (PanelMissionOBCollection?.Count <= 10)
             {
-                while (PanelMissionOBCollection?.Count <= 20)
+                if (missionQueue != null && missionQueue.TryDequeue(out InspectItem? inspectItem))
                 {
-                    if (missionQueue != null && missionQueue.TryDequeue(out InspectItem? inspectItem))
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-
-                        PanelMission a = new(inspectItem);
                         PanelMissionOBCollection?.Add(new(inspectItem));
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    });
                 }
-            });
+                else
+                {
+                    break;
+                }
+            }
         }
 
         public bool RemoveOneFromOBCollection(ref PanelMission selectedPanelMission)
@@ -125,16 +120,20 @@ namespace CutInspect.ViewModel
     public class PanelMission: InspectItem
     {
         public BitmapImage? PanelImage { get; private set; }
-        public InspectItem? PanelInfo { get; private set; }
         public PanelMission()
         {
 
         }
-        public PanelMission(InspectItem Item)
+        public PanelMission(InspectItem Item):base()
         {
+            var propCollection = typeof(InspectItem).GetProperties();
+            foreach (var item in propCollection)
+            {
+                var propValue = item.GetValue(Item);
+                item.SetValue(this, propValue);
+            }
             if (Item.Id != null)
             {
-                PanelInfo = Item;
                 try
                 {
                     var imageStream = ServerConnector.GetImage(Item.Id);
@@ -144,14 +143,17 @@ namespace CutInspect.ViewModel
                     bitmapImage.EndInit();
                     bitmapImage.Freeze();
                     PanelImage = bitmapImage;
+                    AppLogClass.Logger.Information(":ObjectId:{0} 图片初始化成功;", Item.Id);
                 }
-                catch (NotSupportedException)
+                catch (NotSupportedException ex)
                 {
                     PanelImage = null;
+                    AppLogClass.Logger.Error(":ObjectId:{0} 图片初始化失败；异常信息：{1}", Item.Id, ex.Message);
                     return;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    AppLogClass.Logger.Error(":ObjectId:{0} 初始化图片时发生异常；异常信息：{1}", Item.Id, ex.Message);
                     throw;
                 }
             }

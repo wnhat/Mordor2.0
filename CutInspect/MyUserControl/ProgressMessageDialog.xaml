@@ -19,5 +19,13 @@
             IsIndeterminate="True"
             Style="{StaticResource MaterialDesignCircularProgressBar}"
             Value="0" />
+        <Button
+            Grid.Row="1"
+            Margin="16,16,16,0"
+            HorizontalAlignment="Center"
+            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+            Content="ACCEPT"
+            IsDefault="True"
+            Style="{StaticResource MaterialDesignFlatButton}" />
     </Grid>
 </UserControl>
