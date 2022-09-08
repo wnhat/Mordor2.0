@@ -5,20 +5,51 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using CutInspect.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using TIBCO.Rendezvous;
 
 namespace CutInspect
 {
     public static class ServerConnector
     {
+        static string service = "21200";
+        static string network = ";225.21.21.2";
+        static string daemon = "10.141.70.61:7500";
+        static string subject = "BOE.B7.MEM.PRD.PEMsvr";
+        static Transport transport = null;
         static readonly RestClient restClient = new("http://10.141.34.78:26208/EAC/");
 
         static ServerConnector()
         {
             restClient.Options.MaxTimeout = 10000;
+
+            // initial MES connector
+            try
+            {
+                TIBCO.Rendezvous.Environment.Open();
+            }
+            catch (RendezvousException exception)
+            {
+                Console.Error.WriteLine("Failed to open Rendezvous Environment: {0}", exception.Message);
+                Console.Error.WriteLine(exception.StackTrace);
+                System.Environment.Exit(1);
+            }
+
+            // Create Network transport
+            try
+            {
+                transport = new NetTransport(service, network, daemon);
+            }
+            catch (RendezvousException exception)
+            {
+                Console.Error.WriteLine("Failed to create NetTransport");
+                Console.Error.WriteLine(exception.StackTrace);
+                System.Environment.Exit(1);
+            }
         }
         public static InspectItem[] GetInfo(DateTime starttime,DateTime endtime)
         {
@@ -132,6 +163,94 @@ namespace CutInspect
                 ServerLogClass.Logger.Error("：服务器连接失败，无法获取图片信息，异常信息：{0}", ex.Message);
                 throw;
             }
+        }
+        public static void SendXjudge(string[] ids)
+        {
+            Message message = new Message();
+            try
+            {
+                message.SendSubject = subject;
+            }
+            catch (RendezvousException exception)
+            {
+                // todo: log
+            }
+            try
+            {
+                // todo: log 
+                string str = BuildXjudge(ids);
+                message.AddField(new MessageField("xmlData", str));
+                transport.Send(message);
+            }
+            catch (RendezvousException exception)
+            {
+                // todo: log
+            }
+        }
+        public static string BuildXjudge(string[] ids)
+        {
+            string machineName = "ImgInsp";
+            string tranID = DateTime.Now.ToString(@"yyyyMMddHHmmssffffff");
+            XmlDocument xmlDoc = new XmlDocument();
+
+            //Message节点
+            XmlElement mesElement = xmlDoc.CreateElement("Message");
+
+            //Header节点 & 子节点添加
+            XmlElement headElement = xmlDoc.CreateElement("Header");
+            XmlElement[] HeadChildElements = new XmlElement[9];
+            HeadChildElements[0] = xmlDoc.CreateElement("MESSAGENAME");
+            HeadChildElements[0].InnerText = "AOIPanelJudgeReport";
+            HeadChildElements[1] = xmlDoc.CreateElement("SHOPNAME");
+            HeadChildElements[1].InnerText = "EAC";
+            HeadChildElements[2] = xmlDoc.CreateElement("TRANSACTIONID");
+            HeadChildElements[2].InnerText = tranID;
+            HeadChildElements[3] = xmlDoc.CreateElement("ORIGINALSOURCESUBJECTNAME");
+            HeadChildElements[3].InnerText = "BOE.B7.CUT.AOI." + machineName;
+            HeadChildElements[4] = xmlDoc.CreateElement("SOURCESUBJECTNAME");
+            HeadChildElements[4].InnerText = "BOE.B7.CUT.AOI." + machineName;
+            HeadChildElements[5] = xmlDoc.CreateElement("TARGETSUBJECTNAME");
+            HeadChildElements[5].InnerText = "BOE.B7.MEM.PRD.PEMsvr";
+            HeadChildElements[6] = xmlDoc.CreateElement("EVENTUSER");
+            HeadChildElements[6].InnerText = machineName;
+            HeadChildElements[7] = xmlDoc.CreateElement("EVENTCOMMENT");
+            HeadChildElements[7].InnerText = "AOIPanelJudgeReport";
+            HeadChildElements[8] = xmlDoc.CreateElement("listener");
+            HeadChildElements[8].InnerText = "PEMListener";
+            foreach (var item in HeadChildElements) headElement.AppendChild(item);
+            mesElement.AppendChild(headElement);
+
+            //Body节点 & 子节点添加
+            XmlElement bodyElement = xmlDoc.CreateElement("Body");
+            XmlElement[] bodyChildElements = new XmlElement[5];
+            bodyChildElements[0] = xmlDoc.CreateElement("MACHINENAME");
+            bodyChildElements[0].InnerText = machineName;
+            bodyChildElements[1] = xmlDoc.CreateElement("PROCESSOPERATIONNAME");
+            bodyChildElements[1].InnerText = "C20000N";
+            bodyChildElements[2] = xmlDoc.CreateElement("PRODUCTSPECNAME");
+            bodyChildElements[2].InnerText = "";
+            bodyChildElements[3] = xmlDoc.CreateElement("PRODUCTIONTYPE");
+            //panelList
+            bodyChildElements[4] = xmlDoc.CreateElement("PANELLIST");
+            foreach (var item in ids)
+            {
+                XmlElement panelElement = xmlDoc.CreateElement("PANEL");
+                XmlElement panel_name_el = xmlDoc.CreateElement("PANELNAME");
+                panel_name_el.InnerText = item;
+                XmlElement judge_type_el = xmlDoc.CreateElement("JUDGETYPE");
+                judge_type_el.InnerText = "LLOAOI";
+                XmlElement judge_el = xmlDoc.CreateElement("JUDGE");
+                judge_el.InnerText = "X";
+                panelElement.AppendChild(panel_name_el);
+                panelElement.AppendChild(judge_type_el);
+                panelElement.AppendChild(judge_el);
+                bodyChildElements[4].AppendChild(panelElement);
+            }
+            foreach (var item in bodyChildElements) bodyElement.AppendChild(item);
+            mesElement.AppendChild(bodyElement);
+            xmlDoc.AppendChild(mesElement);
+
+            return xmlDoc.InnerXml;
         }
     }
 }
