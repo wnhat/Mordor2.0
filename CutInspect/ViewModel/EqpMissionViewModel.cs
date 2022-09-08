@@ -1,4 +1,6 @@
 ﻿using CutInspect.Model;
+using CutInspect.MyUserControl;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -92,14 +94,22 @@ namespace CutInspect.ViewModel
 
         public bool RemoveOneFromOBCollection(ref PanelMission selectedPanelMission)
         {
-                if (PanelMissionOBCollection.Remove(selectedPanelMission))
+            if (PanelMissionOBCollection.Remove(selectedPanelMission))
+            {
+                try
                 {
                     FillMissionViewCollection();
-                    CheckedMissionCount = CheckedMissionCount >= 0 ? CheckedMissionCount-- : 0;
-                    //PanelMissionFinishedEvent?.Invoke(SelectPanelMission, new());
-                    return true;
                 }
-                return false;
+                catch(Exception ex)
+                {
+                    DialogHost.Show(new MessageAcceptDialog(string.Format("{0}", ex.Message)), "MainWindowDialog");
+                    AppLogClass.Logger.Error(":{0}", ex.Message);
+                    return false;
+                }
+                CheckedMissionCount = CheckedMissionCount >= 0 ? CheckedMissionCount-- : 0;
+                return true;
+            }
+            return false;
         }
 
         public int CompareTo(EqpMissionViewModel? other)
@@ -149,7 +159,6 @@ namespace CutInspect.ViewModel
                 {
                     PanelImage = null;
                     AppLogClass.Logger.Error(":ObjectId:{0} 图片初始化失败；异常信息：{1}", Item.Id, ex.Message);
-                    return;
                 }
                 catch (Exception ex)
                 {

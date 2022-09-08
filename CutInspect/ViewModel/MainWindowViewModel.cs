@@ -50,6 +50,7 @@ namespace CutInspect.ViewModel
         public CommandImplementation GetMissionCommand { get;}
         public CommandImplementation ShowFirstPanelMissionCommand { get; }
         public CommandImplementation JudgeCommand { get; }
+        public CommandImplementation CopyCommand { get; }
         public ObservableCollection<EqpMissionViewModel> EqpMissionViewModels
         {
             get => eqpMissionViewModels;
@@ -80,6 +81,7 @@ namespace CutInspect.ViewModel
             GetMissionCommand = new(_ => GetMission());//TODO：canexec方法；
             ShowFirstPanelMissionCommand = new(_=> ShowFirstPanelMission());
             JudgeCommand = new(PanelMissionJudge,_=> SelectPanelMission!=null);
+            CopyCommand = new(CopyToClipboard);
             _ = new DispatcherTimer(
                     TimeSpan.FromMilliseconds(1000),
                     DispatcherPriority.Normal,
@@ -118,20 +120,14 @@ namespace CutInspect.ViewModel
                         SelectedEqpMission = EqpMissionViewModels[0];
                     }
                 }
-                catch(System.Net.Http.HttpRequestException ex)
+                catch (Exception ex)
                 {
                     Application.Current.Dispatcher.Invoke(async () =>
                     {
-                        await DialogHost.Show(new MessageAcceptDialog("服务器连接失败，请联系管理员"), "MainWindowDialog");
+                        await DialogHost.Show(new MessageAcceptDialog(string.Format("{0}", ex.Message)), "MainWindowDialog");
                     });
-                    AppLogClass.Logger.Error(":服务器连接失败，异常信息：{0}", ex.Message);
-                }
-                catch (Exception ex)
-                {
                     AppLogClass.Logger.Error(":获取任务时发生异常，异常信息：{0}", ex.Message);
-                    throw;
                 }
-
             });
             DialogHost.Close("MainWindowDialog");
             DialogHost.Show(new MessageAcceptDialog("刷新完成"), "MainWindowDialog");
@@ -164,24 +160,20 @@ namespace CutInspect.ViewModel
                         if (SelectPanelMission != null && SelectedEqpMission != null)
                         {
                             PanelMission panelMission = SelectPanelMission;
-                            Task.Run(() =>
+                            try
                             {
-                                try
-                                {
-                                    ServerConnector.SendResult(id, result == true ? 1 : 0);
-                                }
-                                catch (Exception)
-                                {
-                                    throw;
-                                }
-                            });
-                            var isRemoved = SelectedEqpMission.RemoveOneFromOBCollection(ref panelMission);
-                            if (panelMission != null)
-                            {
-                                panelMission.Status = result == true ? 1 : 0;
-                                panelMission.UpdateDate = DateTime.Now;
-                                AddToFinishedCollection(panelMission);
+                                ServerConnector.SendResult(id, result == true ? 1 : 0);
                             }
+                            catch (Exception ex)
+                            {
+                                DialogHost.Show(new MessageAcceptDialog("发送检查结果时发生异常，请联系管理员"), "MainWindowDialog");
+                                AppLogClass.Logger.Error(ex.Message);
+                                return;
+                            }
+                            var isRemoved = SelectedEqpMission.RemoveOneFromOBCollection(ref panelMission);
+                            panelMission.Status = result == true ? 1 : 0;
+                            panelMission.UpdateDate = DateTime.Now;
+                            AddToFinishedCollection(panelMission);
                             if (isRemoved)
                             {
                                 ShowFirstPanelMission();
@@ -190,6 +182,11 @@ namespace CutInspect.ViewModel
                     }
                 }
             }
+        }
+
+        public void CopyToClipboard(object o)
+        {
+            Clipboard.SetDataObject(o.ToString());
         }
         public void AddToFinishedCollection(PanelMission panelMission)
         {

@@ -360,7 +360,7 @@
                                 <Canvas
                                     x:Name="SmallBox"
                                     Width="860"
-                                    Height="720"
+                                    Height="620"
                                     ClipToBounds="True"
                                     MouseDown="SmallBox_MouseDown"
                                     MouseMove="MoveRect_MouseMove"
@@ -370,7 +370,7 @@
                                         <ImageBrush
                                             x:Name="FullSizeImageBox"
                                             ImageSource="{Binding BitmapImage, FallbackValue={StaticResource DefaultImage}, TargetNullValue={StaticResource DefaultImage}}"
-                                            Stretch="Fill" />
+                                            Stretch="UniformToFill" />
                                     </Canvas.Background>
                                     <Rectangle
                                         x:Name="MoveRect"
@@ -382,9 +382,9 @@
                                         Opacity="0.3"
                                         Stroke="Blue"
                                         Visibility="Visible" />
-                                    <Canvas.Clip>
+                                    <!--<Canvas.Clip>
                                         <RectangleGeometry Rect="0,0,860,620" />
-                                    </Canvas.Clip>
+                                    </Canvas.Clip>-->
                                 </Canvas>
                             </materialDesign:Card>
                             <DockPanel Grid.Row="1" Grid.Column="1">
@@ -478,8 +478,7 @@
                                                 SelectionMode="Single">
                                                 <ListView.View>
                                                     <GridView>
-                                                        <GridViewColumn DisplayMemberBinding="{Binding ProductId}" Header="PanelId">
-                                                        </GridViewColumn>
+                                                        <GridViewColumn DisplayMemberBinding="{Binding ProductId}" Header="PanelId" />
                                                         <GridViewColumn Header="IsChecked">
                                                             <GridViewColumn.CellTemplate>
                                                                 <DataTemplate>
@@ -495,6 +494,20 @@
                                                         <GridViewColumn DisplayMemberBinding="{Binding StartTime, StringFormat={}{0:MM-dd HH:mm:ss}, FallbackValue=08-01 00:00:00}" Header="Date" />
                                                     </GridView>
                                                 </ListView.View>
+                                                <ListView.ContextMenu>
+                                                    <ContextMenu>
+                                                        <MenuItem Header="复制">
+                                                            <MenuItem
+                                                                Command="{Binding CopyCommand}"
+                                                                CommandParameter="{Binding SelectPanelMission.ProductId}"
+                                                                Header="Panel ID" />
+                                                            <MenuItem
+                                                                Command="{Binding CopyCommand}"
+                                                                CommandParameter="{Binding SelectPanelMission.Id}"
+                                                                Header="Object ID" />
+                                                        </MenuItem>
+                                                    </ContextMenu>
+                                                </ListView.ContextMenu>
                                             </ListView>
                                         </TabItem>
                                         <TabItem>

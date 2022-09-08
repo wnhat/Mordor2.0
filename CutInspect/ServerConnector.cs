@@ -41,18 +41,21 @@ namespace CutInspect
                     {
                         string jsonstring = response.Content;
                         InspectItem[] deserializedProduct = JsonConvert.DeserializeObject<InspectItem[]>(jsonstring);
-                        ServerLogClass.Logger.Information("：获取任务成功（{0}--{1}）；执行时间：{0}",starttime.ToString(),endtime.ToString(), execTime.ToString());
+                        ServerLogClass.Logger.Information("：获取任务成功（{0}--{1}）；执行时间：{2}",starttime.ToString(),endtime.ToString(), execTime.ToString());
                         return deserializedProduct;
                     }
                 }
                 else
                 {
-                    throw new Exception(String.Format("：获取任务失败（{0}--{1}），response不成功；执行时间：{2}", starttime.ToString(), endtime.ToString(), execTime.ToString()));
+                    string errString = String.Format("获取任务失败（{0}--{1}），response不成功；执行时间：{2}", starttime.ToString(), endtime.ToString(), execTime.ToString());
+                    ServerLogClass.Logger.Error("：{0}",errString);
+                    throw new Exception(errString);
                 }
             }
             catch (System.Net.Http.HttpRequestException ex)
             {
-                ServerLogClass.Logger.Error("：服务器连接失败，无法获取任务信息，异常信息：{0}",ex.Message);
+                string errString = string.Format("服务器连接失败，无法获取任务信息，异常信息：{0}", ex.Message);
+                ServerLogClass.Logger.Error("：{0}",errString);
                 throw;
             }
         }
@@ -82,13 +85,21 @@ namespace CutInspect
             };
 
             request.AddJsonBody(jsonresult.ToString());
-            var response = restClient.Post(request);
-            if (response.IsSuccessful)
+            try
             {
+                var response = restClient.Post(request);
+                if (response.IsSuccessful)
+                {
+                }
+                else
+                {
+                    throw new Exception("上传检查结果失败，请检查服务器连接；");
+                }
             }
-            else
+            catch (System.Net.Http.HttpRequestException ex)
             {
-                throw new Exception("上传检查结果失败，请检查服务器连接；");
+                ServerLogClass.Logger.Error("：服务器连接失败，无法发送结果信息，异常信息：{0}", ex.Message);
+                throw;
             }
         }
         public static MemoryStream GetImage(string id)
