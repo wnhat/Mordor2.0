@@ -50,4 +50,10 @@
     </EmbeddedResource>
   </ItemGroup>
 
+    <ItemGroup>
+	    <Reference Include="TIBCO.Rendezvous">
+		    <HintPath>C:\tibco\tibrv\8.4\bin\TIBCO.Rendezvous.dll</HintPath>
+	    </Reference>
+    </ItemGroup>
+
 </Project>
