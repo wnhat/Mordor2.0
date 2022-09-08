@@ -14,9 +14,7 @@ namespace CutInspect.ViewModel
         private string? eqpName = "";
         private int totalCount = 0;
         private int checkedMissionCount = 0;
-        //public event EventHandler? PanelMissionFinishedEvent;
         private readonly Queue<InspectItem>? missionQueue = new();
-        private ObservableCollection<InspectItem> panelItemOBcollection = new();
         public ObservableCollection<PanelMission>? panelMissionOBCollection = new();
         private InspectItem? selectMission;
         private PanelMission? selectPanelMission;
@@ -45,11 +43,6 @@ namespace CutInspect.ViewModel
             get => panelMissionOBCollection;
             set => SetProperty(ref panelMissionOBCollection, value);
         }
-        public ObservableCollection<InspectItem> PanelItemOBcollection
-        {
-            get => panelItemOBcollection;
-            set => SetProperty(ref panelItemOBcollection, value);
-        }
         public InspectItem? SelectMission
         {
             get => selectMission;
@@ -65,14 +58,14 @@ namespace CutInspect.ViewModel
             EqpName = groupData.EqpName;
             TotalCount = groupData.TotalItems;
             CheckedMissionCount = groupData.FinishedItem;
-            foreach (var itme in groupData.InspectItems)
-            {
-                if (itme.Status == null)
-                {
-                    PanelItemOBcollection.Add(itme);
-                    missionQueue?.Enqueue(itme);
-                }
-            }
+            //foreach (var itme in groupData.InspectItems)
+            //{
+            //    if (itme.Status == null)
+            //    {
+            //        missionQueue?.Enqueue(itme);
+            //    }
+            //}
+            missionQueue = new(groupData.InspectItems);
         }
         public void FillMissionViewCollection()
         {

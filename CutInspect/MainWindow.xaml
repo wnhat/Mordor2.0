@@ -107,7 +107,7 @@
                                 Width="180"
                                 VerticalAlignment="Center"
                                 HorizontalContentAlignment="Center"
-                                Content="{Binding SelectPanelMission.ProductId, FallbackValue=PanelID}"
+                                Content="{Binding SelectedPanelMission.ProductId, FallbackValue=PanelID}"
                                 FontSize="14"
                                 IsTabStop="False"
                                 MouseDoubleClick="PanelidLableMouseDoubleClick"
@@ -369,6 +369,8 @@
                                     <Canvas.Background>
                                         <ImageBrush
                                             x:Name="FullSizeImageBox"
+                                            AlignmentX="Left"
+                                            AlignmentY="Top"
                                             ImageSource="{Binding BitmapImage, FallbackValue={StaticResource DefaultImage}, TargetNullValue={StaticResource DefaultImage}}"
                                             Stretch="UniformToFill" />
                                     </Canvas.Background>
@@ -382,9 +384,6 @@
                                         Opacity="0.3"
                                         Stroke="Blue"
                                         Visibility="Visible" />
-                                    <!--<Canvas.Clip>
-                                        <RectangleGeometry Rect="0,0,860,620" />
-                                    </Canvas.Clip>-->
                                 </Canvas>
                             </materialDesign:Card>
                             <DockPanel Grid.Row="1" Grid.Column="1">
@@ -403,7 +402,10 @@
                                             <Canvas
                                                 x:Name="BigBox"
                                                 Width="350"
-                                                Height="350">
+                                                Height="350"
+                                                MouseDown="BigBox_MouseDown"
+                                                MouseMove="BigBox_MouseMove"
+                                                MouseUp="BigBox_MouseUp">
                                                 <Image
                                                     x:Name="BigImg"
                                                     Canvas.Left="0"
@@ -414,9 +416,41 @@
                                                                          FallbackValue=2520}"
                                                     Source="{Binding BitmapImage, FallbackValue={StaticResource DefaultImage}, TargetNullValue={StaticResource DefaultImage}}"
                                                     Stretch="Fill" />
+                                                <Line
+                                                    x:Name="MarkCrossLineV"
+                                                    Stroke="Red"
+                                                    X1="{cal:Binding MarkPoint.X}"
+                                                    X2="{cal:Binding MarkPoint.X}"
+                                                    Y1="{cal:Binding MarkPoint.Y-5}"
+                                                    Y2="{cal:Binding MarkPoint.Y+5}" />
+                                                <Line
+                                                    x:Name="MarkCrossLineH"
+                                                    Stroke="Red"
+                                                    X1="{cal:Binding 0+MarkPoint.X-5}"
+                                                    X2="{cal:Binding 0+MarkPoint.X+5}"
+                                                    Y1="{cal:Binding 0+MarkPoint.Y}"
+                                                    Y2="{cal:Binding 0+MarkPoint.Y}" />
+                                                <Line
+                                                    x:Name="SpecLineLeft"
+                                                    Opacity="0.5"
+                                                    Stroke="Blue"
+                                                    StrokeThickness="1"
+                                                    X1="{cal:Binding 0+MarkPoint.X+CutPrecisionParam.specCenterShift-CutPrecisionParam.specWidth,
+                                                                     FallbackValue=175}"
+                                                    X2="{cal:Binding 0+MarkPoint.X+CutPrecisionParam.specCenterShift-CutPrecisionParam.specWidth,
+                                                                     FallbackValue=175}"
+                                                    Y1="{cal:Binding 0+MarkPoint.Y-80,
+                                                                     FallbackValue=70}"
+                                                    Y2="{cal:Binding 0+MarkPoint.Y+80,
+                                                                     FallbackValue=230}" />
                                                 <Canvas.Clip>
                                                     <RectangleGeometry Rect="0,0,350,350" />
                                                 </Canvas.Clip>
+                                                <Canvas.ContextMenu>
+                                                    <ContextMenu>
+                                                        <MenuItem Header="保存为样本" Command="{Binding SaveToRecipeCommand}"/>
+                                                    </ContextMenu>
+                                                </Canvas.ContextMenu>
                                             </Canvas>
                                         </materialDesign:Card>
                                         <Grid Grid.Row="1">
@@ -448,9 +482,6 @@
                                                 <TextBlock Style="{StaticResource MaterialDesignHeadline3TextBlock}" Text="NG" />
                                             </Button>
                                         </Grid>
-                                        <!--<StackPanel Grid.Row="2">
-                                            <Button Command="{Binding ShowFirstPanelMissionCommand}" />
-                                        </StackPanel>-->
                                     </Grid>
                                 </materialDesign:Card>
                                 <materialDesign:Card Margin="10,5,5,5" UniformCornerRadius="5">
@@ -473,7 +504,7 @@
                                                 Height="400"
                                                 d:ItemsSource="{d:SampleData ItemCount=6}"
                                                 ItemsSource="{Binding SelectedEqpMission.PanelMissionOBCollection}"
-                                                SelectedItem="{Binding SelectPanelMission, Mode=TwoWay}"
+                                                SelectedItem="{Binding SelectedPanelMission, Mode=TwoWay}"
                                                 SelectionChanged="FinishedListView_SelectionChanged"
                                                 SelectionMode="Single">
                                                 <ListView.View>
@@ -499,13 +530,21 @@
                                                         <MenuItem Header="复制">
                                                             <MenuItem
                                                                 Command="{Binding CopyCommand}"
-                                                                CommandParameter="{Binding SelectPanelMission.ProductId}"
+                                                                CommandParameter="{Binding SelectedPanelMission.ProductId}"
                                                                 Header="Panel ID" />
                                                             <MenuItem
                                                                 Command="{Binding CopyCommand}"
-                                                                CommandParameter="{Binding SelectPanelMission.Id}"
+                                                                CommandParameter="{Binding SelectedPanelMission.Id}"
                                                                 Header="Object ID" />
+                                                            <MenuItem
+                                                                Command="{Binding CopyCommand}"
+                                                                CommandParameter="{Binding SelectedPanelMission.PanelImage}"
+                                                                Header="图片" />
                                                         </MenuItem>
+                                                        <MenuItem
+                                                            Command="{Binding CopyCommand}"
+                                                            CommandParameter="{Binding SelectedPanelMission.PanelImage}"
+                                                            Header="保存图片" />
                                                     </ContextMenu>
                                                 </ListView.ContextMenu>
                                             </ListView>
@@ -518,7 +557,7 @@
                                                 Height="400"
                                                 d:ItemsSource="{d:SampleData ItemCount=4}"
                                                 ItemsSource="{Binding FinishedPanelMIssion}"
-                                                SelectedItem="{Binding SelectPanelMission, Mode=TwoWay}"
+                                                SelectedItem="{Binding SelectedPanelMission, Mode=TwoWay}"
                                                 SelectionChanged="FinishedListView_SelectionChanged"
                                                 SelectionMode="Single">
                                                 <ListView.View>

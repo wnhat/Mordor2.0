@@ -29,6 +29,7 @@ namespace CutInspect
     {
         private readonly MainWindowViewModel _viewModel = new();
         private bool rect_MoveEnableFlag = false;
+        private bool mark_MoveEnableFlag = false;
 
         public MainWindow()
         {
@@ -143,6 +144,25 @@ namespace CutInspect
             }
             rect_MoveEnableFlag = true;
             MoveRect_MouseMove(sender, e);
+        }
+
+        private void BigBox_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            mark_MoveEnableFlag = true;
+            BigBox_MouseMove(sender, e);
+        }
+
+        private void BigBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (mark_MoveEnableFlag)
+            {
+                _viewModel.MarkPoint = e.GetPosition(BigBox);
+            }
+        }
+
+        private void BigBox_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            mark_MoveEnableFlag = false;
         }
     }
 }

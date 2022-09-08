@@ -20,11 +20,15 @@ namespace CutInspect.ViewModel
         private object finishLock = new();
         private DateTime dateTime;
         private int moveRectWidth = 100;
+        private Point markPoint = new();
+        private int markPosX = 175;
+        private int markPosY = 175;
+        private CutPrecisionSpecParameters cutPrecisionParam = new();
         private ColorTool colorTool = new();
         private DateTimePickerViewModel dateTimePicker = new();
         private ObservableCollection<EqpMissionViewModel> eqpMissionViewModels = new();
         private ObservableCollection<PanelMission> finishedPanelMIssion = new();
-        private PanelMission? selectPanelMission;
+        private PanelMission? selectedPanelMission;
         private EqpMissionViewModel? selectedEqpMission;
         private BitmapImage? bitmapImage;
         public DateTime DateTime
@@ -36,6 +40,26 @@ namespace CutInspect.ViewModel
         {
             get => moveRectWidth;
             set => SetProperty(ref moveRectWidth, value);
+        }
+        public Point MarkPoint
+        {
+            get => markPoint;
+            set => SetProperty(ref markPoint, value);
+        }
+        public int MarkPosX
+        {
+            get => markPosX;
+            set => SetProperty(ref markPosX, value);
+        }
+        private int MarkPosY
+        {
+            get => markPosY;
+            set => SetProperty(ref markPosY, value);
+        }
+        public CutPrecisionSpecParameters CutPrecisionParam
+        {
+            get => cutPrecisionParam;
+            set => SetProperty(ref cutPrecisionParam, value);
         }
         public ColorTool ColorTool
         {
@@ -51,6 +75,7 @@ namespace CutInspect.ViewModel
         public CommandImplementation ShowFirstPanelMissionCommand { get; }
         public CommandImplementation JudgeCommand { get; }
         public CommandImplementation CopyCommand { get; }
+        public CommandImplementation SaveToFileCommand { get; }
         public ObservableCollection<EqpMissionViewModel> EqpMissionViewModels
         {
             get => eqpMissionViewModels;
@@ -61,10 +86,10 @@ namespace CutInspect.ViewModel
             get => finishedPanelMIssion;
             set => SetProperty(ref finishedPanelMIssion, value);
         }
-        public PanelMission? SelectPanelMission
+        public PanelMission? SelectedPanelMission
         {
-            get => selectPanelMission;
-            set => SetProperty(ref selectPanelMission, value);
+            get => selectedPanelMission;
+            set => SetProperty(ref selectedPanelMission, value);
         }
         public EqpMissionViewModel? SelectedEqpMission
         {
@@ -80,8 +105,9 @@ namespace CutInspect.ViewModel
         {
             GetMissionCommand = new(_ => GetMission());//TODO：canexec方法；
             ShowFirstPanelMissionCommand = new(_=> ShowFirstPanelMission());
-            JudgeCommand = new(PanelMissionJudge,_=> SelectPanelMission!=null);
+            JudgeCommand = new(PanelMissionJudge,_=> SelectedPanelMission!=null);
             CopyCommand = new(CopyToClipboard);
+            SaveToFileCommand = new(SaveToFile);
             _ = new DispatcherTimer(
                     TimeSpan.FromMilliseconds(1000),
                     DispatcherPriority.Normal,
@@ -94,8 +120,8 @@ namespace CutInspect.ViewModel
 
         private async void GetMission()
         {
-            EqpMissionViewModels.Clear();
             DialogHost.Show(new ProgressMessageDialog(), "MainWindowDialog");
+            EqpMissionViewModels.Clear();
             await Task.Run(() =>
             {
                 var startTime = DateTimePicker.StartTime;
@@ -134,17 +160,17 @@ namespace CutInspect.ViewModel
         }
         public void ShowSelectedPanelMission()
         {
-            BitmapImage = SelectPanelMission?.PanelImage;
+            BitmapImage = SelectedPanelMission?.PanelImage;
         }
         public void ShowFinishedPanelMission()
         {
-            BitmapImage = SelectPanelMission?.PanelImage;
+            BitmapImage = SelectedPanelMission?.PanelImage;
         }
         public void ShowFirstPanelMission()
         {
             if (SelectedEqpMission?.PanelMissionOBCollection?.Count >= 1)
             {
-                SelectPanelMission = SelectedEqpMission?.PanelMissionOBCollection[0];
+                SelectedPanelMission = SelectedEqpMission?.PanelMissionOBCollection[0];
                 ShowSelectedPanelMission();
             }
         }
@@ -154,12 +180,12 @@ namespace CutInspect.ViewModel
             {
                 lock (finishLock)
                 {
-                    var id = SelectPanelMission?.Id;
+                    var id = SelectedPanelMission?.Id;
                     if (id != null)
                     {
-                        if (SelectPanelMission != null && SelectedEqpMission != null)
+                        if (SelectedPanelMission != null && SelectedEqpMission != null)
                         {
-                            PanelMission panelMission = SelectPanelMission;
+                            PanelMission panelMission = SelectedPanelMission;
                             try
                             {
                                 ServerConnector.SendResult(id, result == true ? 1 : 0);
@@ -186,8 +212,29 @@ namespace CutInspect.ViewModel
 
         public void CopyToClipboard(object o)
         {
-            Clipboard.SetDataObject(o.ToString());
+            if(o == null)
+            {
+                return;
+            }
+            if(o is string s)
+            {
+                Clipboard.SetDataObject(s);
+            }
+            else if(o is BitmapImage image)
+            {
+                Clipboard.SetDataObject(image);
+            }
+            else
+            {
+                Clipboard.SetDataObject(o.ToString());
+            }
         }
+
+        public void SaveToFile(object o)
+        {
+
+        }
+
         public void AddToFinishedCollection(PanelMission panelMission)
         {
             Application.Current.Dispatcher.Invoke(() =>

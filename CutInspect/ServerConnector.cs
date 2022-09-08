@@ -32,11 +32,11 @@ namespace CutInspect
             {
                 TIBCO.Rendezvous.Environment.Open();
             }
-            catch (RendezvousException exception)
+            catch (RendezvousException ex)
             {
-                Console.Error.WriteLine("Failed to open Rendezvous Environment: {0}", exception.Message);
-                Console.Error.WriteLine(exception.StackTrace);
-                System.Environment.Exit(1);
+                Console.Error.WriteLine("Failed to open Rendezvous Environment: {0}", ex.Message);
+                Console.Error.WriteLine(ex.StackTrace);
+                throw;
             }
 
             // Create Network transport
@@ -44,11 +44,11 @@ namespace CutInspect
             {
                 transport = new NetTransport(service, network, daemon);
             }
-            catch (RendezvousException exception)
+            catch (RendezvousException ex)
             {
                 Console.Error.WriteLine("Failed to create NetTransport");
-                Console.Error.WriteLine(exception.StackTrace);
-                System.Environment.Exit(1);
+                Console.Error.WriteLine(ex.StackTrace);
+                throw;
             }
         }
         public static InspectItem[] GetInfo(DateTime starttime,DateTime endtime)
@@ -171,7 +171,7 @@ namespace CutInspect
             {
                 message.SendSubject = subject;
             }
-            catch (RendezvousException exception)
+            catch (RendezvousException ex)
             {
                 // todo: log
             }
@@ -182,7 +182,7 @@ namespace CutInspect
                 message.AddField(new MessageField("xmlData", str));
                 transport.Send(message);
             }
-            catch (RendezvousException exception)
+            catch (RendezvousException ex)
             {
                 // todo: log
             }

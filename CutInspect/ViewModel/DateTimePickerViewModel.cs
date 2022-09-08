@@ -69,7 +69,7 @@ namespace CutInspect.ViewModel
             PickedDate = DateTime.Now;
             StartTime = PickedDate.Hour > 6 && PickedDate.Hour <= 18 ? PickedDate.Date + TimeSpan.FromHours(6) : (PickedDate.Hour <= 6  ? PickedDate.Date - TimeSpan.FromHours(6):PickedDate.Date + TimeSpan.FromHours(18));
             StepBackOneDayCommand = new(_ => PickedDate -= TimeSpan.FromDays(1));
-            StepOneDayCommand = new(_ => PickedDate += TimeSpan.FromDays(1),_=> PickedDate.Day<DateTime.Now.Day);
+            StepOneDayCommand = new(_ => PickedDate += TimeSpan.FromDays(1),_=> PickedDate.Date<DateTime.Now.Date);
             NowDateCommand = new(_ => PickedDate = DateTime.Now);
         }
         public void SetStartTime(object? sender,EventArgs args)

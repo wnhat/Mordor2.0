@@ -31,6 +31,7 @@ namespace CutInspect.Model
         public GroupData(string EqpName,List<InspectItem> items)
         {
             this.EqpName = EqpName;
+            items.Sort((x, y) => { return (x.StartTime > y.StartTime) == true ? 1 : -1; });
             this.InspectItems = items;
         }
     }
