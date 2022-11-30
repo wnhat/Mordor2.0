@@ -40,6 +40,10 @@ namespace CoreClass
             List<int> eq_id_list = Enumerable.Range(1, 33).ToList();
             return Name2IP(eq_id_list, pc_name_list, pc_side_list);
         }
+        public static PC GetPC(string pcip)
+        {
+            return PcListAll.Where((x) => (x.PcIp == pcip)).FirstOrDefault() ;
+        }
     }
 
 }

@@ -13,7 +13,7 @@ namespace CoreClass
 {
     public static class DBconnector
     {
-        static string connectstring = "mongodb://172.16.200.101:27017";
+        static string connectstring = "mongodb://172.16.200.102:26001";
         //static string connectstring = "mongodb://localhost:27017";
         static MongoClient mongoClient = new MongoClient(connectstring);
         /// <summary>
@@ -62,7 +62,6 @@ namespace CoreClass
             InitialInspectMission();
             InitialMeslot();
         }
-
         private static void InitialInspectMission()
         {
             var collectionList = DICSDB.ListCollections().ToList();

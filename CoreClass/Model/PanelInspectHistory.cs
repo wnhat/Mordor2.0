@@ -1,14 +1,18 @@
 ﻿using CoreClass.DICSEnum;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
+using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using StackExchange.Redis;
 using System;
+using System.Collections.Generic;
 
 namespace CoreClass.Model
 {
     public class PanelInspectHistory
     {
-        public static IMongoCollection<PanelInspectHistory> Result = DBconnector.DICSDB.GetCollection<PanelInspectHistory>("InspectResult");
+        public static IMongoCollection<PanelInspectHistory> Collection = DBconnector.DICSDB.GetCollection<PanelInspectHistory>("InspectResult");
 
         [BsonId]
         public ObjectId ID;
@@ -149,20 +153,46 @@ namespace CoreClass.Model
         public static PanelInspectHistory Get(string panelid)
         {
             var filter = Builders<PanelInspectHistory>.Filter.Eq("PanelId", panelid);
-            return Result.Find(filter).FirstOrDefault();
+            return Collection.Find(filter).FirstOrDefault();
         }
         public static PanelInspectHistory[] Get(string[] panelid)
         {
             var filter = Builders<PanelInspectHistory>.Filter.All("PanelId", panelid);
-            return Result.Find(filter).ToList().ToArray();
+            return Collection.Find(filter).ToList().ToArray();
         }
-        public static void InsertPanelHistory(PanelInspectHistory input)
+        public static void MongoInsertPanelHistory(PanelInspectHistory input)
         {
-            Result.InsertOneAsync(input);
+            Collection.InsertOneAsync(input);
         }
-        public static void InsertPanelHistory(PanelInspectHistory[] input)
+        public static void MongoInsertPanelHistory(PanelInspectHistory[] input)
         {
-            Result.InsertManyAsync(input);
+            Collection.InsertManyAsync(input);
+        }
+        public static void RedisInsertPanelHistory(string key,PanelInspectHistory[] input)
+        {
+            List<RedisValue> json = new List<RedisValue>();
+            foreach (var item in input)
+            {
+                BsonDocument buffer = new BsonDocument();
+                var writer = new BsonDocumentWriter(buffer);
+                BsonSerializer.Serialize<PanelInspectHistory>(writer, item);
+                var panel = buffer.ToJson();
+
+                json.Add(panel);
+            }
+            RedisConnector.Redis.SetAddAsync(key, json.ToArray());
+        }
+        public static string Serialize(PanelInspectHistory obj)
+        {
+            BsonDocument buffer = new BsonDocument();
+            var writer = new BsonDocumentWriter(buffer);
+            BsonSerializer.Serialize<PanelInspectHistory>(writer, obj);
+            var json = buffer.ToJson();
+            return json;
+        }
+        public static PanelInspectHistory Deserialize(string json)
+        {
+            return BsonSerializer.Deserialize<PanelInspectHistory>(json);
         }
     }
 }

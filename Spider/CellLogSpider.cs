@@ -97,7 +97,7 @@ namespace Spider
                 }
 
                 // TODO: Add error handler;
-                PanelInspectHistory.InsertPanelHistory(searchresult);
+                PanelInspectHistory.MongoInsertPanelHistory(searchresult);
             }
         }
         PanelInspectHistory[] Search(LogSpiderBase log)

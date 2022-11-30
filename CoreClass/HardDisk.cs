@@ -1,5 +1,6 @@
 ﻿using CoreClass.DICSEnum;
 using CoreClass.Model;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +22,27 @@ namespace CoreClass
         {
             ParentPc = parentPc;
             DiskName = diskName;
+        }
+        public string RedisInfoKey
+        {
+            get
+            {
+                return "path:info:" + ParentPc.PcIp + ":" + DiskName.ToString();
+            }
+        }
+        public static string RedisInfoListKey
+        {
+            get
+            {
+                return "path:info:list";
+            }
+        }
+        public string RedisPathKey
+        {
+            get
+            {
+                return "path:path:" + ParentPc.PcIp + ":" + DiskName.ToString();
+            }
         }
         public string DefectInfoPath
         {

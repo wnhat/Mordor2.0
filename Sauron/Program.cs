@@ -12,7 +12,7 @@ namespace Sauron
     {
         static void Main(string[] args)
         {
-            DBconnector.InitialDB();
+            //DBconnector.InitialDB();
             MissionManager missionManager = new MissionManager();
             missionManager.AddMissionTest();
             Console.WriteLine("启动完成");

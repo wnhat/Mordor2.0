@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NRediSearch" Version="2.2.79" />
+    <PackageReference Include="NReJSON" Version="4.0.0" />
+    <PackageReference Include="Redis.OM" Version="0.3.1" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.66" />
+    <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="8.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CoreClass\CoreClass.csproj" />
+  </ItemGroup>
+
+</Project>

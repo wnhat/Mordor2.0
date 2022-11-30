@@ -119,8 +119,9 @@ namespace CoreClass.Model
 
             foreach (var path in panelPaths)
             {
-                var dirTime = new DirectoryInfo(path.OriginImagePath).CreationTime;
-                if (dirTime - his.InspDate < TimeSpan.FromMinutes(30))
+                var dirTime = new DirectoryInfo(path.OriginImagePath).CreationTime.ToUniversalTime();
+                TimeSpan timeSpan = dirTime - his.InspDate;
+                if (TimeSpan.FromMinutes(-30) < timeSpan && timeSpan < TimeSpan.FromMinutes(30))
                 {
                     // 添加DICS用图
                     DirContainer dir = new DirContainer(path.ResultPath);
@@ -130,7 +131,7 @@ namespace CoreClass.Model
                     {
                         foreach (var Defectimagefile in dir.FileContainerArray)
                         {
-                            if (Defectimagefile.Name.Contains(".jpg"))
+                            if (Defectimagefile.Name.Contains(".jpg") && defectimages.Count < 15)
                             {
                                 defectimages.Add(new ImageContainer(Defectimagefile.Name, Defectimagefile.Data));
                             }
