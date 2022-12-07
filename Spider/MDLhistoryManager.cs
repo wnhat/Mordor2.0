@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using CoreClass;
 using CoreClass.Model;
 using NRediSearch;
 using NReJSON;
 using System.Globalization;
+using System.Xml;
 
-namespace Newspider
+namespace Spider
 {
     public static class MDLhistoryManager
     {
@@ -30,7 +29,7 @@ namespace Newspider
                 }
             });
         }
-        public static bool Dispatch() 
+        public static bool Dispatch()
         {
             try
             {
@@ -56,7 +55,7 @@ namespace Newspider
             }
             catch (Exception e)
             {
-                Loger.Logger.Error(e,"从redis MDL history buffer中获取记录时出现异常情况");
+                Loger.Logger.Error(e, "从redis MDL history buffer中获取记录时出现异常情况");
             }
             return true;
         }
@@ -69,7 +68,7 @@ namespace Newspider
             string rediskeyday = "yeild:mdl:daily:" + year + "/" + month + "/" + day;
             string rediskeyweek = "yeild:mdl:week:" + year + "/" + week;
             string rediskeymonth = "yeild:mdl:month:" + year + "/" + month;
-            string rediskeyyear = "yeild:mdl:year:"+ year;
+            string rediskeyyear = "yeild:mdl:year:" + year;
 
             string[] keys = new string[] { rediskeyday, rediskeyweek, rediskeymonth, year };
             foreach (var key in keys)

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Newspider": {
+      "commandName": "Project",
+      "commandLineArgs": "localhost"
+    }
+  }
+}

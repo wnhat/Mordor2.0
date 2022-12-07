@@ -102,7 +102,7 @@ namespace Newspider
                 // TODO: Add error handler, and add to redis server;
                 PanelInspectHistory.MongoInsertPanelHistory(searchresult);
                 // Add a Wait time to ensure that mongodb has added the objectid;
-                Thread.Sleep(5000);
+                // Thread.Sleep(5000);
                 PanelInspectHistory.RedisInsertPanelHistory(this.RedisPanelHistoryWaitQueueKey,searchresult);
             }
         }

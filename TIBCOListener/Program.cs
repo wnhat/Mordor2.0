@@ -111,7 +111,6 @@ namespace TIBListener
             {
                 FilePathLogClass.Logger.Error(e, "初始化参数时发生错误；");
                 System.Environment.Exit(1);
-                throw;
             }
         }
         static void OnMessageReceived(object listener, MessageReceivedEventArgs messageReceivedEventArgs)

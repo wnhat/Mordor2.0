@@ -20,6 +20,9 @@ namespace Newspider
     public static class CellLogManager
     {
         static List<CellLogSpider> spiders = new List<CellLogSpider>();
+        /// <summary>
+        /// 初始化cell log spider 如果redis数据库中没有对应的信息，则按照今日进行spider初始化；
+        /// </summary>
         static CellLogManager()
         {
             var pclist = IpTransform.Name2IP(new Pcinfo[] { Pcinfo.MAIN }).ToList();
@@ -72,59 +75,40 @@ namespace Newspider
         {
             Loger.Logger.Information("开始刷新cell log；");
             DateTime searchdate = DateTime.Now;
-            Parallel.ForEach(spiders, (spider) => {
-                spider.StartSearchAuto(searchdate);
-                UpdateCellLogSpider(spider);
-            });
+
+            //Parallel.ForEach(spiders, (spider) => {
+            //    spider.StartSearchAuto(searchdate);
+            //    UpdateCellLogSpider(spider);
+            //});
+            foreach (var item in spiders)
+            {
+                item.StartSearchAuto(searchdate);
+                UpdateCellLogSpider(item);
+            }
+
             Loger.Logger.Information("cell log 数据刷取结束；");
-            Loger.Logger.Information("开始添加新的AET检查结果文件；");
+
+            Loger.Logger.Information("AddNewResultFileTask");
             var eq = IpTransform.Name2IP(new Pcinfo[] { Pcinfo.MAIN }).ToList();
-            Parallel.ForEach(eq, (eq) => {
-                AddNewResultFile(eq.EqName,time);
+            Parallel.ForEach(eq, (eq) =>
+            {
+                AddNewResultFileTask(eq.EqName, time);
             });
         }
-        public static void InitialNewResultFile(PanelInspectHistory hist,List<PanelPathContainer> path)
-        {
-            try
-            {
-                // 正常文件可在500ms传输完成；
-                AETresult newAETresult = new AETresult(hist, path.ToArray());
-                if (newAETresult.ResultImages == null && newAETresult.DefectImages == null)
-                {
-                    // 说明文件为空，或着没有任何图像文件，没有上传意义；
-                }
-                else
-                {
-                    // mongodb 添加AETresult；
-                    try
-                    {
-                        AETresult.AETresultCollection.InsertOne(newAETresult);
-                    }
-                    catch (FormatException e)
-                    {
-                        Loger.Testlogger.Information("新的检查结果文件mongodb size限制，{0},{1}", e.Message, hist.PanelId);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Loger.Testlogger.Error(e, "在创建新的检查结果文件时发生了错误，请检查详情确认发生错误的原因;{0}", hist);
-            }
-        }
-        public static void AddNewResultFile(string eqname,DateTime time)
+        public static void AddNewResultFileTask(string eqname,DateTime time)
         {
             string rediskey = "spider:panel:waitqueue:" + eqname;
-            var result = RedisConnector.Redis.SetMembers(rediskey,CommandFlags.PreferReplica);
+            var result = RedisConnector.Redis.SetMembersAsync(rediskey,CommandFlags.PreferReplica).Result;
             if (result.Length != 0)
             {
                 Dictionary<RedisValue, PanelInspectHistory> paneldict = new Dictionary<RedisValue, PanelInspectHistory>();
                 foreach (var item in result)
-                {
+                { 
                     paneldict.Add(item,PanelInspectHistory.Deserialize(item.ToString()));
                 }
                 var panelidArray = from panel in paneldict.Values
                                    select panel.PanelId;
-                var pathdict = RedisConnector.GetPanelPathList(panelidArray.ToArray());
+                var pathdict = FilePathManager.GetPanelPathList(panelidArray.ToArray());
 
                 foreach (var item in paneldict)
                 {
@@ -133,7 +117,15 @@ namespace Newspider
                         var path = pathdict[item.Value.PanelId];
                         if (path != null && path.Count() != 0)
                         {
-                            InitialNewResultFile(item.Value, path);
+                            //InitialNewResultFile(item.Value, path);
+                            AETResultTask newtask = new AETResultTask()
+                            {
+                                RedisKey = rediskey,
+                                InspectHistory = item.Value,
+                                Paths = path,
+                                Value = item.Key,
+                            };
+                            AETResultTaskManager.AddTask(newtask);
                         }
                     }
                     else
@@ -141,7 +133,8 @@ namespace Newspider
                         Loger.Logger.Error("存在panel在添加AETresult时未返回路径信息（无路径也应返回null）；{0}", item);
                     }
                     // redis数据库set中删除该项目；
-                    RedisConnector.Redis.SetRemoveAsync(rediskey, item.Key);
+                    // 切换至插入时
+                    var returnValue = RedisConnector.Redis.SetRemoveAsync(rediskey, item.Key).Result;
                 }
             }
         }

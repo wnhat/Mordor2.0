@@ -32,8 +32,6 @@ namespace Spider
         static Spider()
         {
             // 为poller绑定触发事件；
-            routerSocket.ReceiveReady += OnMessageArrive;
-            PathRefreshTimer.Elapsed += FilePathRefresh;
             OtherTimer.Elapsed += LaunchNewResultFile;
             // 初始化爬虫组件；
             InitialSpider();
@@ -41,7 +39,6 @@ namespace Spider
         internal static void Run()
         {
             Loger.Logger.Information("开始刷新文件夹路径；");
-            FileManager.RefreshFileList();
             LaunchNewResultFile();
             Loger.Logger.Information("启动完成");
             Poller.Run();
@@ -76,10 +73,6 @@ namespace Spider
                 Spiders.ReplaceOne(filter, item);
             }
         }
-        static void FilePathRefresh(object sender, NetMQTimerEventArgs eventArgs)
-        {
-            FileManager.RefreshFileList();
-        }
         static void LaunchNewResultFile(object sender, NetMQTimerEventArgs eventArgs)
         {
             // TODO：异步执行，应注意异步执行时，超出执行时间间隔未完成的将会导致异常
@@ -106,32 +99,6 @@ namespace Spider
             }
 
             Loger.Logger.Information("添加完成；");
-        }
-        static void OnMessageArrive(object sender, NetMQSocketEventArgs eventArgs)
-        {
-            /* 对客户端发送的事件进行分Type响应（按照Message首位）*/
-            NetMQMessage messageIn = eventArgs.Socket.ReceiveMultipartMessage();
-            try
-            {
-                BaseMessage switchmessage = new BaseMessage(messageIn);
-                if (switchmessage.TheMessageType == MessageType.CLINET_GET_PANEL_PATH)
-                {
-                    PanelPathMessage panelIdInfo = new PanelPathMessage(messageIn);
-                    string[] panelid = panelIdInfo.panelPathDic.Keys.ToArray();
-                    var pathDict = FileManager.GetPanelPathList(panelid).PathDict;
-                    PanelPathMessage newpanelinfomassage = new PanelPathMessage(pathDict);
-                    eventArgs.Socket.SendMultipartMessage(newpanelinfomassage);
-                }
-            }
-            catch (VersionException e)
-            {
-                var newmessage = new BaseMessage(MessageType.VERSION_ERROR);
-                eventArgs.Socket.SendMultipartMessage(newmessage);
-            }
-            catch (Exception e)
-            {
-                Loger.Logger.Error(e.Message);
-            }
         }
     }
 }

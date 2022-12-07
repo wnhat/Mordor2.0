@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Diagnostics;
 
 namespace TaskTest
 {
@@ -14,7 +15,19 @@ namespace TaskTest
     {
         static void Main(string[] args)
         {
-            FileManager.TEST();
+            PerformanceCounterCategory pcg = new PerformanceCounterCategory("Network Interface");
+            foreach (var instance in pcg.GetInstanceNames())
+            {
+                PerformanceCounter pcsent = new PerformanceCounter("Network Interface", "Bytes Sent/sec", instance);
+                PerformanceCounter pcreceived = new PerformanceCounter("Network Interface", "Bytes Received/sec", instance);
+
+                Console.WriteLine("name: {0}", instance);
+                pcsent.NextValue();
+                pcreceived.NextValue();
+                Thread.Sleep(1000);
+                Console.WriteLine("Bytes Sent: {0}", pcsent.NextValue() / 1024);
+                Console.WriteLine("Bytes Received: {0}", pcreceived.NextValue() / 1024);
+            }
         }
     }
     public static class FileManager
