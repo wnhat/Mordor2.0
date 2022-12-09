@@ -12,9 +12,6 @@ namespace TIBListener
         static readonly string[] ConnectString = {
             "172.16.220.35:6379",
             "172.16.220.55:6379",
-            "172.16.220.95:6379",
-            "172.16.220.75:6379",
-            "172.16.220.85:6379",
             "172.16.220.65:6379"
         };
         static readonly string TestHost = "localhost:6379";

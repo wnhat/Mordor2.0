@@ -22,6 +22,7 @@ namespace TIBListener
         static List<ListenParameter> listenParameters = new List<ListenParameter>();
         static void Main(string[] args)
         {
+            //AddInitialListenParam();
             InitialListener();
         }
         static void AddInitialListenParam()

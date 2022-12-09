@@ -25,7 +25,7 @@ namespace Newspider
         static NetMQTimer OtherTimer = new NetMQTimer(TimeSpan.FromSeconds(600));
         public static RouterSocket routerSocket = new RouterSocket(SpiderParameter.Pcip);
 
-        static NetMQPoller Poller = new NetMQPoller { PathRefreshTimer, OtherTimer };
+        static NetMQPoller Poller = new NetMQPoller { PathRefreshTimer, OtherTimer, routerSocket };
 
         /// <summary>
         /// 初始化爬虫时，对各个触发事件进行绑定，注意触发的事件间隔设定；
@@ -35,6 +35,7 @@ namespace Newspider
             // 为poller绑定触发事件；
             PathRefreshTimer.Elapsed += FilePathRefresh;
             OtherTimer.Elapsed += CellLogRefresh;
+            routerSocket.ReceiveReady += OnMessageArrive;
             // 初始化爬虫组件；
 
         }
